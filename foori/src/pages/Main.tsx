@@ -1,4 +1,7 @@
 import Header from "src/components/header/Header";
+import FoodFilter from "src/components/main/FoodFilter";
+import KaKaoMap from "src/components/main/KaKaoMap";
+import SearchPlace from "src/components/main/SearchPlace";
 
 const Main = () => {
   const MainStyle =
@@ -7,6 +10,9 @@ const Main = () => {
   return (
     <main className={MainStyle}>
       <Header />
+      <SearchPlace />
+      <FoodFilter />
+      <KaKaoMap />
     </main>
   );
 };
