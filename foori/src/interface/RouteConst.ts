@@ -3,4 +3,6 @@ export const RouteConst = {
   Login: "/login", // 로그인
   SignUp: "/signup", // 회원가입
   MyPage: "/mypage", // 마이페이지
+  FindID: "/findid", // 아이디 찾기
+  FindPW: "/findpw", // 비밀번호 찾기
 };

@@ -9,9 +9,7 @@ const Login = () => {
 
   const InputContainer =
     "w-full flex flex-col justify-center items-center my-[1%]";
-
   const InputStyle = "w-[45%] h-[3vh] rounded-md";
-
   const InputTitle = "w-[45%] flex justify-start items-center mb-[1%]";
 
   const ButtonStyle =
@@ -54,13 +52,19 @@ const Login = () => {
         </div>
         {/* 아이디 비밀번호 찾기, 회원가입 */}
         <div className="w-[45%] flex justify-between text-[#4446] my-[1%]">
-          <h1>아이디 찾기</h1>
-          <h1>비밀번호 찾기</h1>
+          <Link to="/findid">
+            <h1>아이디 찾기</h1>
+          </Link>
+          <Link to="/findpw">
+            <h1>비밀번호 찾기</h1>
+          </Link>
           <Link to="/signup">
             <h1>회원가입</h1>
           </Link>
         </div>
+        {/* 로그인 버튼 */}
         <button className={ButtonStyle}>Login</button>
+        {/* 카카오 로그인 버튼 */}
         <button className={KakaoButtonStyle}>Login with Kakao</button>
       </div>
     </>
