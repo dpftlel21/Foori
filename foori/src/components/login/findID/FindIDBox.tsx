@@ -1,5 +1,7 @@
 import Logo from "src/components/common/Logo";
 import Email from "../../../assets/images/email.png";
+import CompleteBtn from "./button/CompleteBtn";
+import IDFindBtn from "./button/IDFindBtn";
 
 const FindIDBox = () => {
   const Container =
@@ -44,6 +46,12 @@ const FindIDBox = () => {
             type="text"
             placeholder="이메일을 입력하세요."
           />
+        </div>
+
+        {/* 완료, 비밀번호 찾기 버튼 */}
+        <div className="w-full flex justify-center mt-[2%]">
+          <CompleteBtn />
+          <IDFindBtn />
         </div>
       </div>
     </>

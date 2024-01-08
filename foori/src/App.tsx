@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import MyPage from "./pages/MyPage";
 import FindID from "./pages/FindID";
 import FindPassword from "./pages/FindPassword";
+import Detail from "./pages/Detail";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path={RouteConst.MyPage} element={<MyPage />} />
         <Route path={RouteConst.FindID} element={<FindID />} />
         <Route path={RouteConst.FindPW} element={<FindPassword />} />
+        <Route path={RouteConst.Detail} element={<Detail />} />
       </Routes>
     </>
   );

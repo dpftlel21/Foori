@@ -5,4 +5,5 @@ export const RouteConst = {
   MyPage: "/mypage", // 마이페이지
   FindID: "/findid", // 아이디 찾기
   FindPW: "/findpw", // 비밀번호 찾기
+  Detail: "/detail", // 상세페이지
 };
