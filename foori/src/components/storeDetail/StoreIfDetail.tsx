@@ -1,4 +1,6 @@
+import { useState } from "react";
 import Icon from "../../assets/images/icon.png";
+import ReservationModal from "./reservationModal/ReservationModal";
 
 const StoreIfDetail = () => {
   const DetailContainer =
@@ -19,6 +21,17 @@ const StoreIfDetail = () => {
     "w-[50%] h-[100%] flex flex-col justify-around overflow-scroll overflow-x-hidden";
   const ReviewLi =
     "w-full h-[20%] flex justify-around items-center bg-[#F0CCCC] ";
+
+  const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
+
+  const openReservationModal = () => {
+    setIsReservationModalOpen(true);
+  };
+
+  const closeReservationModal = () => {
+    setIsReservationModalOpen(false);
+  };
+
   return (
     <div className="w-full h-[92%] flex justify-center items-center">
       <div className={DetailContainer}>
@@ -43,7 +56,9 @@ const StoreIfDetail = () => {
 
           {/* 예약 버튼 */}
           <div className={DivideDiv}>
-            <button className={ButtonStyle}>예약하기</button>
+            <button className={ButtonStyle} onClick={openReservationModal}>
+              예약하기
+            </button>
           </div>
         </div>
 
@@ -70,7 +85,11 @@ const StoreIfDetail = () => {
           </ul>
         </div>
       </div>
+
+      {/* 예약 모달 */}
+      <ReservationModal isOpen={isReservationModalOpen} onClose={closeReservationModal} />
     </div>
   );
 };
+
 export default StoreIfDetail;
