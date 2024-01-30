@@ -1,3 +1,4 @@
+import Calendar from "react-calendar";
 
 interface ReservationModalProps {
     isOpen: boolean;
@@ -44,7 +45,11 @@ const ReservationModal = ({isOpen, onClose}: ReservationModalProps) => {
           <div className={DivideDiv}>
           <button className={ButtonStyle} onClick={onClose}>닫기</button>
           </div>
+
+
         </div>
+
+        <Calendar />
 
         
         </div>
