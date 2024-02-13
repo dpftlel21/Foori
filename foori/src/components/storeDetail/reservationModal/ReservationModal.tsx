@@ -1,4 +1,7 @@
-import Calendar from "react-calendar";
+import Calendar from "../reservationModal/Calendar";
+import ReservationDetail from "./ReservationDetail";
+import ReservationMenu from "./ReservationMenu";
+
 
 interface ReservationModalProps {
     isOpen: boolean;
@@ -49,9 +52,13 @@ const ReservationModal = ({isOpen, onClose}: ReservationModalProps) => {
 
         </div>
 
+        <div className="w-full flex justify-around">
         <Calendar />
+        <ReservationDetail />
+        </div>
 
-        
+        <ReservationMenu />
+
         </div>
     )
 
