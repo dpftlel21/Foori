@@ -3,18 +3,18 @@
 
 const ReservationMenu = () => {
 
-    const MenuContainer = 'w-full h-[30%] flex justify-between items-center'
+    const MenuContainer = 'w-full h-[30%] flex justify-around items-center'
     // 리뷰 스타일링
     const Review =
-    "w-[50%] h-[100%] flex flex-col justify-around overflow-scroll overflow-x-hidden";
+    "w-full h-[100%] grid grid-cols-2 gap-2 overflow-scroll overflow-x-hidden";
     const ReviewLi =
-    "w-full h-[30%] flex justify-around items-center my-[1%] bg-[#F0CCCC] ";
+    "w-full h-[5vh] flex justify-around items-center my-[1%] bg-[#F0CCCC] ";
 
 
     return (
         <div className={MenuContainer}>
-            <div className="w-[100%] h-[50%] flex flex-col items-center">
-                <h1 className="border-b-2 border-solid border-[#e38994fb]">메뉴 선택</h1>
+            <div className="w-[30vw] h-[20vh] flex flex-col items-center">
+                <h1 className="w-full flex justify-start border-b-2 border-solid border-[#e38994fb]">메뉴 선택</h1>
                 <ul className={Review}>
                     <li className={ReviewLi}></li>
                     <li className={ReviewLi}></li>

@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react';
 import './CustomCalendar.css'; // FullCalendar의 스타일을 덮어쓰기 위한 CSS 파일
 
 const Calendar = () => {
-  const CalendarContainer = "w-[40vw] h-[30vh] flex justify-around items-center";
+  const CalendarContainer = "w-[30vw] h-[30vh] flex justify-around items-center";
   const [timeOfDay, setTimeOfDay] = useState('morning'); // 'morning' 또는 'afternoon'
   const [numberOfPeople, setNumberOfPeople] = useState(2);
 

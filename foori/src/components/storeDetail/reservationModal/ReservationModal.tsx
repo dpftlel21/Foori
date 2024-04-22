@@ -52,7 +52,7 @@ const ReservationModal = ({isOpen, onClose}: ReservationModalProps) => {
 
         </div>
 
-        <div className="w-full flex justify-around">
+        <div className="w-full flex justify-center">
         <Calendar />
         <ReservationDetail />
         </div>
