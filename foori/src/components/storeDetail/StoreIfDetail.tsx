@@ -9,12 +9,10 @@ const StoreIfDetail = () => {
   const ReviewContent = "w-full h-[45%] flex flex-col justify-start";
   const StoreImgContainer = "w-full h-[10%] flex justify-start items-center";
 
-  const Content = "w-full h-[30%] flex justify-around items-center";
+  const Content   = "w-full h-[30%] flex justify-around items-center";
   const StoreInfo = "w-full flex justify-between items-center";
-  const DivideDiv =
-    "w-[45%] h-[100%] flex flex-col justify-around items-center";
-  const ButtonStyle =
-    "w-[23%] h-[6vh] ml-[12%] mb-[12%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
+  const DivideDiv = "w-[45%] h-[100%] flex flex-col justify-around items-center";
+  const ButtonStyle = "w-[23%] h-[6vh] ml-[12%] mb-[12%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
 
   // 리뷰 스타일링
   const Review =

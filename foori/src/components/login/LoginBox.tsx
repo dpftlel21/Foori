@@ -2,6 +2,7 @@ import Logo from "../common/Logo";
 import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import { Link } from "react-router-dom";
+import KaKaoButton from "./oauth/KaKaoBtn";
 
 const Login = () => {
   const LoginBox =
@@ -52,20 +53,14 @@ const Login = () => {
         </div>
         {/* 아이디 비밀번호 찾기, 회원가입 */}
         <div className="w-[45%] flex justify-between text-[#4446] my-[1%]">
-          <Link to="/findid">
-            <h1>아이디 찾기</h1>
-          </Link>
-          <Link to="/findpw">
-            <h1>비밀번호 찾기</h1>
-          </Link>
-          <Link to="/signup">
-            <h1>회원가입</h1>
-          </Link>
+          <Link to="/findid"><h1>아이디 찾기</h1></Link>
+          <Link to="/findpw"><h1>비밀번호 찾기</h1></Link>
+          <Link to="/signup"><h1>회원가입</h1></Link>
         </div>
         {/* 로그인 버튼 */}
         <button className={ButtonStyle}>Login</button>
         {/* 카카오 로그인 버튼 */}
-        <button className={KakaoButtonStyle}>Login with Kakao</button>
+        <KaKaoButton />
       </div>
     </>
   );
