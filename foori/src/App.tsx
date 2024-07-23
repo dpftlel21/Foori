@@ -8,6 +8,7 @@ import MyPage from "./pages/MyPage";
 import FindID from "./pages/FindID";
 import FindPassword from "./pages/FindPassword";
 import Detail from "./pages/Detail";
+import OauthCallback from "./components/login/oauth/OauthCallback";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path={RouteConst.FindID} element={<FindID />} />
         <Route path={RouteConst.FindPW} element={<FindPassword />} />
         <Route path={RouteConst.Detail} element={<Detail />} />
+        <Route path={RouteConst.OauthCallback} element={<OauthCallback />} />
       </Routes>
     </>
   );
