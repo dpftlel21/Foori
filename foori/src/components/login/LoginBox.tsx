@@ -3,6 +3,7 @@ import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import { Link } from "react-router-dom";
 import KaKaoButton from "./oauth/KaKaoBtn";
+import NaverButton from "./oauth/NaverBtn";
 
 const Login = () => {
   const LoginBox =
@@ -61,6 +62,7 @@ const Login = () => {
         <button className={ButtonStyle}>Login</button>
         {/* 카카오 로그인 버튼 */}
         <KaKaoButton />
+        <NaverButton />
       </div>
     </>
   );

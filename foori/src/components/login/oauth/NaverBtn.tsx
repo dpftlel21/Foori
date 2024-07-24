@@ -1,17 +1,22 @@
+import { getData} from "../../../util/api";
 
-const NaverBtn = () => {
+const NaverButton = () => {
+    const NaverBtnStyle = "w-[45%] h-[7%] my-[1%] bg-[#09ff00e4] text-white rounded-md hover:bg-[#e1af39] transition duration-500 ease-in-out text-[#232222c9]";
+
+    const handleClick = async () => {
+        try {
+            const result = await getData(process.env.REACT_APP_REDIRECT_URL + '/naver');
+            console.log("result", result);
+            // Redirect to Kakao login page
+            window.location.href = result.url;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
     return (
-
-        <div className="naver">
-            <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:3000/oauth/naver&state=STATE_STRING"
-                className="naverBtn">
-                <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="naver" />
-                <span>네이버로 로그인</span>
-            </a>
-        </div>
-
+        <button className={NaverBtnStyle} onClick={handleClick}>Login with Naver</button>
     );
-}
+};
 
-export default NaverBtn;
+export default NaverButton;
