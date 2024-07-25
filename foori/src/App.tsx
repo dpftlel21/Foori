@@ -21,7 +21,10 @@ function App() {
         <Route path={RouteConst.FindID} element={<FindID />} />
         <Route path={RouteConst.FindPW} element={<FindPassword />} />
         <Route path={RouteConst.Detail} element={<Detail />} />
-        <Route path={RouteConst.OauthCallback} element={<OauthCallback />} />
+        {/* OAuth 콜백 라우트 추가 */}
+        <Route path={RouteConst.KaKaoCallback} element={<OauthCallback />} />
+        <Route path={RouteConst.NaverCallback} element={<OauthCallback />} />
+        <Route path={RouteConst.GoogleCallback} element={<OauthCallback />} />
       </Routes>
     </>
   );

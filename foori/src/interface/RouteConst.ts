@@ -6,5 +6,7 @@ export const RouteConst = {
   FindID: "/findid", // 아이디 찾기
   FindPW: "/findpw", // 비밀번호 찾기
   Detail: "/detail", // 상세페이지
-  OauthCallback: "/callback/kakao", // OAuth 콜백
+  KaKaoCallback: "/callback/kakao", // OAuth 콜백
+  NaverCallback: "/callback/naver", // OAuth 콜백
+  GoogleCallback: "/callback/google", // OAuth 콜백
 };
