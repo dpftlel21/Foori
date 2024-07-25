@@ -2,8 +2,9 @@ import Logo from "../common/Logo";
 import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import { Link } from "react-router-dom";
-import KaKaoButton from "./oauth/KaKaoBtn";
-import NaverButton from "./oauth/NaverBtn";
+import KaKaoBtn from "./oauth/KaKaoBtn";
+import NaverBtn from "./oauth/NaverBtn";
+import GoogleBtn from "./oauth/GoogleBtn";
 
 const Login = () => {
   const LoginBox =
@@ -16,9 +17,6 @@ const Login = () => {
 
   const ButtonStyle =
     "w-[45%] h-[7%] my-[1%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
-
-  const KakaoButtonStyle =
-    "w-[45%] h-[7%] my-[1%] bg-[#ffea00e4] text-white rounded-md hover:bg-[#e1af39] transition duration-500 ease-in-out text-[#232222c9]";
 
   return (
     <>
@@ -61,8 +59,9 @@ const Login = () => {
         {/* 로그인 버튼 */}
         <button className={ButtonStyle}>Login</button>
         {/* 카카오 로그인 버튼 */}
-        <KaKaoButton />
-        <NaverButton />
+        <KaKaoBtn />
+        <NaverBtn />
+        <GoogleBtn />
       </div>
     </>
   );

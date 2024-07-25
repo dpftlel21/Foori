@@ -1,18 +1,24 @@
-
+import { getData} from "../../../util/api";
 
 
 const GoogleBtn = () => {
 
-    const googleLogin = () => {
-        window.location.href = "http://localhost:5000/auth/google";
-    }
+const GoogleBtnStyle = "w-[45%] h-[7%] my-[1%] bg-[#e8ece8e4] text-white rounded-md hover:bg-[#e1af39] transition duration-500 ease-in-out text-[#232222c9]";
 
-    return (
-        <button onClick={googleLogin} className="google-btn">
-            <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="google" />
-            <span>Google</span>
-        </button>
-    )
+const handleClick = async () => {
+    try {
+        const result = await getData(process.env.REACT_APP_REDIRECT_URL + '/google');
+        console.log("result", result);
+        // Redirect to Kakao login page
+        window.location.href = result.url;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+return (
+    <button className={GoogleBtnStyle} onClick={handleClick}>Login with Google</button>
+);
 
 }
 

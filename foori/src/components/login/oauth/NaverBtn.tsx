@@ -1,6 +1,6 @@
 import { getData} from "../../../util/api";
 
-const NaverButton = () => {
+const NaverBtn = () => {
     const NaverBtnStyle = "w-[45%] h-[7%] my-[1%] bg-[#09ff00e4] text-white rounded-md hover:bg-[#e1af39] transition duration-500 ease-in-out text-[#232222c9]";
 
     const handleClick = async () => {
@@ -19,4 +19,4 @@ const NaverButton = () => {
     );
 };
 
-export default NaverButton;
+export default NaverBtn;
