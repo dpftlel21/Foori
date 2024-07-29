@@ -4,8 +4,7 @@ import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import Person from "../../assets/images/person.png";
 import Calendar from "../../assets/images/calendar.png";
-import { postData } from "../../util/api";
-
+import { postData, getData } from "../../util/api";
 
 const SignUpBox = () => {
   const SignUpBox = "w-[35%] h-[60%] flex flex-col justify-center items-center bg-gray-100 bg-opacity-40 border border-gray-400 rounded-md shadow-md text-sm";
@@ -30,7 +29,7 @@ const SignUpBox = () => {
 
   const handleCertify = async () => {
      try{
-        const result = await postData(`/verify/email`, { email: formData.email });
+        const result = await postData(process.env.REACT_APP_EMAIL_LINK, { email: formData.email });
         console.log("result", result);
      }
      catch(error){
@@ -50,7 +49,8 @@ const SignUpBox = () => {
               이메일
             </label>
             {/* 인증하기 버튼 */}
-            <button 
+            <button
+            type="submit" 
             className="w-[25%] h-[3vh] ml-[1%] bg-[#FF800B] text-white text-xs  rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out"
             onClick={handleCertify}
             >
