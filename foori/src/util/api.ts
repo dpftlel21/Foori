@@ -1,6 +1,5 @@
-
-
-export const getData = async (url) => {
+// GET 요청 함수
+export const getData = async (url: string) => {
     
     try {
         const response = await fetch(url);
@@ -12,11 +11,11 @@ export const getData = async (url) => {
     }
 }
 
-
-export const postData = async (url, data) => {
+// POST 요청 함수
+export const postData = async (url: string, data: object) => {
    try {
-    console.log("url : ", url);
-    console.log("data : ", data);
+    // console.log("url : ", url);
+    // console.log("data : ", data);
        const response = await fetch(url, {
            method: 'POST',
            headers: {
