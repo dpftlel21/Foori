@@ -1,7 +1,13 @@
+import Header from "src/components/header/Header";
+import Content from "src/components/mypage/Content";
+
 const MyPage = () => {
+  const Container = "w-full h-screen bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]";
+
   return (
-    <div>
-      <h1>MyPage</h1>
+    <div className={Container}>
+      <Header />
+      <Content />
     </div>
   );
 };

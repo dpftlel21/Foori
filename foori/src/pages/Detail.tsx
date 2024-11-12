@@ -7,10 +7,10 @@ const Detail = () => {
 
   return (
     <>
-      <div className={Container}>
+      <main className={Container}>
         <Header />
         <StoreIfDetail />
-      </div>
+      </main>
     </>
   );
 };
