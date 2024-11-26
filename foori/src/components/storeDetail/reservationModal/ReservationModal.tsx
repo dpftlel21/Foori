@@ -1,4 +1,4 @@
-import Calendar from "../reservationModal/Calendar";
+import Calendar from "./Calendar";
 import ReservationDetail from "./ReservationDetail";
 import ReservationMenu from "./ReservationMenu";
 

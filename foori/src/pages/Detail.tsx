@@ -1,5 +1,5 @@
 import Header from "src/components/header/Header";
-import StoreIfDetail from "src/components/storeDetail/StoreIfDetail";
+import StoreIfDetail from "src/components/storedetail/StoreIfDetail";
 
 const Detail = () => {
   const Container =
