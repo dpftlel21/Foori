@@ -12,10 +12,10 @@ export const getData = async (url: string) => {
 }
 
 // POST 요청 함수
-export const postData = async (url: string, data: object) => {
+export const postData = async (url: string, data: Record<string, unknown>): Promise<any> => {
+   console.log('url', url);
+   console.log('data', data);
    try {
-    // console.log("url : ", url);
-    // console.log("data : ", data);
        const response = await fetch(url, {
            method: 'POST',
            headers: {
@@ -24,10 +24,16 @@ export const postData = async (url: string, data: object) => {
            body: JSON.stringify(data)
        });
        
-       const resData = await response.json();
+       if (!response.ok) {
+           throw new Error(`HTTP error! status: ${response.status}`);
+       }
        
+       const resData = await response.json();
+       console.log('resData', resData);
        return resData;
+       
    } catch (error) {
-         console.log("postError :" , error);   
-    }
+       console.error("postError:", error);
+       throw new Error(error instanceof Error ? error.message : 'An unknown error occurred during the POST request.');
+   }
 }

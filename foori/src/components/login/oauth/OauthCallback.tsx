@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const OauthCallback = () => {
     const [code, setCode] = useState<string>(null);
     const [kind, setKind] = useState<string>(null); // kind를 상태로 추가

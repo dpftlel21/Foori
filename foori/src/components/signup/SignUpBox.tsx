@@ -1,10 +1,10 @@
-import { useState } from "react";
 import Logo from "../common/Logo";
 import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import Person from "../../assets/images/person.png";
 import Calendar from "../../assets/images/calendar.png";
-import { postData, getData } from "../../util/api";
+import { postData } from "../../util/api";
+import { useFormValidation } from "../../hooks/useFormValidation";
 
 const SignUpBox = () => {
   const SignUpBox = "w-[35%] h-[60%] flex flex-col justify-center items-center bg-gray-100 bg-opacity-40 border border-gray-400 rounded-md shadow-md text-sm";
@@ -13,88 +13,155 @@ const SignUpBox = () => {
   const InputTitle  = "w-[45%] flex justify-start items-center mb-[1%]";
   const ButtonStyle = "w-[25%] h-[5vh] mt-[4%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
 
-  const [formData, setFormData] = useState({
+  const {
+    formData, 
+    handleChange, 
+    errors, 
+    validateForm
+  } = useFormValidation({
     email: "",
     password: "",
+    confirmPassword: "",
     nickname: "",
     birth: "",
   });
 
-  // INPUT 값 변경
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  // 이메일 인증
+  const handleCertify = async () => {
+    try {
+      const result = await postData(`${process.env.REACT_APP_BACK_URL}/mail/send-verification`, {email: formData.email});
+      console.log("result", result);
+    } catch(error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      if (!validateForm()) {
+        return;
+      }
 
-  const handleCertify = async () => {
-     try{
-        const result = await postData(process.env.REACT_APP_EMAIL_LINK, { email: formData.email });
-        console.log("result", result);
-     }
-     catch(error){
-        console.error('Error fetching data:', error);
-     }
-  }
+      const signUpData = {
+        email: formData.email,
+        password: formData.password,
+        name: formData.nickname,
+        birth: formData.birth
+      };
+
+      console.log('타입이 뭘까?',typeof signUpData);
+
+      const result = await postData(
+        `${process.env.REACT_APP_BACK_URL}/auth/register`, 
+        signUpData
+      );
+
+      if (!result.success) {
+        throw new Error(result.message || '회원가입에 실패했습니다.');
+      }
+
+      // 성공 처리
+      alert('회원가입이 완료되었습니다.');
+
+    } catch (error) {
+      // 에러 처리
+      console.error('회원가입 에러:', error);
+      alert(error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.');
+    }
+};
+
+
 
   return (
     <>
       <Logo />
-      <form className={SignUpBox}>
-        {/* 아이디 */}
+      <form onSubmit={handleSubmit} className={SignUpBox}>
+        {/* 이메일 입력 */}
         <div className={InputContainer}>
           <div className={InputTitle}>
             <img src={Email} alt="" className="w-[12%]" />
-            <label htmlFor="username" className="ml-[1%]">
+            <label htmlFor="email" className="ml-[1%]">
               이메일
             </label>
-            {/* 인증하기 버튼 */}
             <button
-            type="submit" 
-            className="w-[25%] h-[3vh] ml-[1%] bg-[#FF800B] text-white text-xs  rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out"
-            onClick={handleCertify}
+              type="button" 
+              className="w-[25%] h-[3vh] ml-[1%] bg-[#FF800B] text-white text-xs rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out"
+              onClick={handleCertify}
             >
               인증하기
             </button>
           </div>
           <input
-            className={InputStyle}
+            className={`${InputStyle} ${errors.email ? 'border-red-500' : ''}`}
             type="email"
             name="email"
             value={formData.email}
             placeholder="이메일을 입력하세요."
             onChange={handleChange}
           />
+          {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
         </div>
-        {/* 비밀번호 */}
+
+        {/* 비밀번호 입력 */}
         <div className={InputContainer}>
           <div className={InputTitle}>
             <img src={Lock} alt="" className="w-[12%]" />
-            <label htmlFor="username" className="ml-[1%]">
+            <label htmlFor="password" className="ml-[1%]">
               비밀번호
             </label>
           </div>
           <input
-            className={InputStyle}
-            type="text"
+            className={`${InputStyle} ${errors.password ? 'border-red-500' : ''}`}
+            type="password"
+            name="password"
+            value={formData.password}
             placeholder="비밀번호를 입력하세요."
+            onChange={handleChange}
           />
+          {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
         </div>
-        {/* 닉네임 */}
+
+        {/* 비밀번호 확인 */}
+        <div className={InputContainer}>
+          <div className={InputTitle}>
+            <img src={Lock} alt="" className="w-[12%]" />
+            <label htmlFor="confirmPassword" className="ml-[1%]">
+              비밀번호 확인
+            </label>
+          </div>
+          <input
+            className={`${InputStyle} ${errors.confirmPassword ? 'border-red-500' : ''}`}
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            placeholder="비밀번호를 다시 입력하세요."
+            onChange={handleChange}
+          />
+          {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
+        </div>
+
+        {/* 닉네임 입력 */}
         <div className={InputContainer}>
           <div className={InputTitle}>
             <img src={Person} alt="" className="w-[12%]" />
-            <label htmlFor="username" className="ml-[1%]">
+            <label htmlFor="nickname" className="ml-[1%]">
               닉네임
             </label>
           </div>
           <input
-            className={InputStyle}
+            className={`${InputStyle} ${errors.nickname ? 'border-red-500' : ''}`}
             type="text"
+            name="nickname"
+            value={formData.nickname}
             placeholder="닉네임을 입력하세요."
+            onChange={handleChange}
           />
+          {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname}</p>}
         </div>
-        {/* 생년월일 */}
+
+        {/* 생년월일 입력 */}
         <div className={InputContainer}>
           <div className={InputTitle}>
             <img src={Calendar} alt="사람 모양" className="w-[12%]" />
@@ -102,10 +169,18 @@ const SignUpBox = () => {
               생년월일
             </label>
           </div>
-            <input className={InputStyle} type="date" />
-          {/* 로그인 버튼 */}
-          <button type="submit" className={ButtonStyle}>완료하기</button>
+          <input 
+            className={`${InputStyle} ${errors.birth ? 'border-red-500' : ''}`}
+            type="date" 
+            name="birth"
+            value={formData.birth}
+            onChange={handleChange}
+          />
+          {errors.birth && <p className="text-red-500 text-xs">{errors.birth}</p>}
         </div>
+
+        {/* 완료 버튼 */}
+        <button type="submit" className={ButtonStyle}>완료하기</button>
       </form>
     </>
   );
