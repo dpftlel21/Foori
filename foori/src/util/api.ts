@@ -13,8 +13,8 @@ export const getData = async (url: string) => {
 
 // POST 요청 함수
 export const postData = async (url: string, data: Record<string, unknown>): Promise<any> => {
-   console.log('url', url);
-   console.log('data', data);
+   //console.log('url', url);
+   //console.log('data', data);
    try {
        const response = await fetch(url, {
            method: 'POST',
@@ -24,13 +24,13 @@ export const postData = async (url: string, data: Record<string, unknown>): Prom
            body: JSON.stringify(data)
        });
        
-       if (!response.ok) {
-           throw new Error(`HTTP error! status: ${response.status}`);
+       // 201 상태일 때 응답 본문이 있으면 그것을 반환하고, 없으면 빈 객체 반환
+       if (response.status === 201) {
+           const text = await response.text();
+           return text ? JSON.parse(text) : {};
        }
-       
-       const resData = await response.json();
-       console.log('resData', resData);
-       return resData;
+
+        return response.json();
        
    } catch (error) {
        console.error("postError:", error);

@@ -3,13 +3,16 @@ import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import Person from "../../assets/images/person.png";
 import Calendar from "../../assets/images/calendar.png";
-import { postData } from "../../util/api";
 import { useFormValidation } from "../../hooks/useFormValidation";
-
+import { authService } from "../../util/auth";
+import { useNavigate } from "react-router-dom";
 const SignUpBox = () => {
+
+  const navigate = useNavigate();
+  
   const SignUpBox = "w-[35%] h-[60%] flex flex-col justify-center items-center bg-gray-100 bg-opacity-40 border border-gray-400 rounded-md shadow-md text-sm";
   const InputContainer = "w-full flex flex-col justify-center items-center my-[1%]";
-  const InputStyle  = "w-[45%] h-[5vh] p-[1%] rounded-md ";
+  const InputStyle  = "w-[45%] h-[3vh] p-[1%] rounded-md ";
   const InputTitle  = "w-[45%] flex justify-start items-center mb-[1%]";
   const ButtonStyle = "w-[25%] h-[5vh] mt-[4%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
 
@@ -24,15 +27,16 @@ const SignUpBox = () => {
     confirmPassword: "",
     nickname: "",
     birth: "",
+    phone: ""
   });
 
-  // 이메일 인증
   const handleCertify = async () => {
     try {
-      const result = await postData(`${process.env.REACT_APP_BACK_URL}/mail/send-verification`, {email: formData.email});
-      console.log("result", result);
-    } catch(error) {
-      console.error('Error fetching data:', error);
+      await authService.verifyEmail(formData.email);
+      alert('인증 메일이 발송되었습니다.');
+    } catch (error) {
+      console.log(error instanceof Error ? error.message : '인증 메일 발송에 실패했습니다.');
+    } finally {
     }
   };
 
@@ -40,6 +44,7 @@ const SignUpBox = () => {
     e.preventDefault();
     
     try {
+      
       if (!validateForm()) {
         return;
       }
@@ -48,31 +53,19 @@ const SignUpBox = () => {
         email: formData.email,
         password: formData.password,
         name: formData.nickname,
-        birth: formData.birth
+        birth: formData.birth,
+        phoneNumber: formData.phone
       };
 
-      console.log('타입이 뭘까?',typeof signUpData);
-
-      const result = await postData(
-        `${process.env.REACT_APP_BACK_URL}/auth/register`, 
-        signUpData
-      );
-
-      if (!result.success) {
-        throw new Error(result.message || '회원가입에 실패했습니다.');
-      }
-
-      // 성공 처리
-      alert('회원가입이 완료되었습니다.');
+      await authService.register(signUpData);
 
     } catch (error) {
-      // 에러 처리
-      console.error('회원가입 에러:', error);
-      alert(error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.');
+      console.log(error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.');
+    } finally {
+      alert('회원가입이 완료되었습니다.');
+      navigate('/login');
     }
-};
-
-
+  };
 
   return (
     <>
@@ -141,7 +134,40 @@ const SignUpBox = () => {
           />
           {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
         </div>
-
+        {/* 생년월일 입력 */}
+        <div className={InputContainer}>
+          <div className={InputTitle}>
+            <img src={Calendar} alt="사람 모양" className="w-[12%]" />
+            <label htmlFor="birth" className="ml-[1%]">
+              생년월일
+            </label>
+          </div>
+          <input 
+            className={`${InputStyle} ${errors.birth ? 'border-red-500' : ''}`}
+            type="date" 
+            name="birth"
+            value={formData.birth}
+            onChange={handleChange}
+          />
+          {errors.birth && <p className="text-red-500 text-xs">{errors.birth}</p>}
+        </div>
+        {/* 휴대폰 번호 입력 */}
+        <div className={InputContainer}>
+          <div className={InputTitle}>
+            <img src={Calendar} alt="" className="w-[12%]" />
+            <label htmlFor="phone" className="ml-[1%]">
+              휴대폰 번호
+            </label>
+          </div>
+          <input
+            className={`${InputStyle} ${errors.phone ? 'border-red-500' : ''}`}
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            placeholder="휴대폰 번호를 입력하세요."
+            onChange={handleChange}
+          />
+        </div>
         {/* 닉네임 입력 */}
         <div className={InputContainer}>
           <div className={InputTitle}>
@@ -160,25 +186,6 @@ const SignUpBox = () => {
           />
           {errors.nickname && <p className="text-red-500 text-xs">{errors.nickname}</p>}
         </div>
-
-        {/* 생년월일 입력 */}
-        <div className={InputContainer}>
-          <div className={InputTitle}>
-            <img src={Calendar} alt="사람 모양" className="w-[12%]" />
-            <label htmlFor="birth" className="ml-[1%]">
-              생년월일
-            </label>
-          </div>
-          <input 
-            className={`${InputStyle} ${errors.birth ? 'border-red-500' : ''}`}
-            type="date" 
-            name="birth"
-            value={formData.birth}
-            onChange={handleChange}
-          />
-          {errors.birth && <p className="text-red-500 text-xs">{errors.birth}</p>}
-        </div>
-
         {/* 완료 버튼 */}
         <button type="submit" className={ButtonStyle}>완료하기</button>
       </form>
