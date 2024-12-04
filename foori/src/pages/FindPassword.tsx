@@ -1,4 +1,4 @@
-import FindPwBox from "src/components/login/findPassword/FindPwBox";
+import FindPwBox from "../components/login/findPassword/FindPwBox";
 
 const FindPassword = () => {
   const ContainerStyle =

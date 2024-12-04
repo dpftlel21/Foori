@@ -9,10 +9,14 @@ import FindID from "./pages/FindID";
 import FindPassword from "./pages/FindPassword";
 import Detail from "./pages/Detail";
 import OauthCallback from "./components/login/oauth/OauthCallback";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
+      <QueryClientProvider client={queryClient}>
       <Routes>
         <Route path={RouteConst.Main} element={<Main />} />
         <Route path={RouteConst.Login} element={<Login />} />
@@ -26,6 +30,7 @@ function App() {
         <Route path={RouteConst.NaverCallback} element={<OauthCallback />} />
         <Route path={RouteConst.GoogleCallback} element={<OauthCallback />} />
       </Routes>
+      </QueryClientProvider>
     </>
   );
 }

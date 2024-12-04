@@ -4,11 +4,12 @@ import Lock from "../../assets/images/lock.png";
 import Person from "../../assets/images/person.png";
 import Calendar from "../../assets/images/calendar.png";
 import { useFormValidation } from "../../hooks/useFormValidation";
-import { authService } from "../../util/auth";
+import { useAuth } from "../../util/auth";
 import { useNavigate } from "react-router-dom";
 const SignUpBox = () => {
 
   const navigate = useNavigate();
+  const { registerMutation, verifyEmailMutation } = useAuth();
   
   const SignUpBox = "w-[35%] h-[60%] flex flex-col justify-center items-center bg-gray-100 bg-opacity-40 border border-gray-400 rounded-md shadow-md text-sm";
   const InputContainer = "w-full flex flex-col justify-center items-center my-[1%]";
@@ -28,11 +29,11 @@ const SignUpBox = () => {
     nickname: "",
     birth: "",
     phone: ""
-  });
+  }, "signup");
 
   const handleCertify = async () => {
     try {
-      await authService.verifyEmail(formData.email);
+      await verifyEmailMutation.mutate(formData.email);
       alert('인증 메일이 발송되었습니다.');
     } catch (error) {
       console.log(error instanceof Error ? error.message : '인증 메일 발송에 실패했습니다.');
@@ -57,7 +58,7 @@ const SignUpBox = () => {
         phoneNumber: formData.phone
       };
 
-      await authService.register(signUpData);
+      await registerMutation.mutate(signUpData);
 
     } catch (error) {
       console.log(error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.');

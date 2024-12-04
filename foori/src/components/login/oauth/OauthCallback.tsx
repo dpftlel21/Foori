@@ -28,7 +28,7 @@ const OauthCallback = () => {
         async (code: string, kind: string) => { // kind를 매개변수로 추가
             try {
                 const param = { code };
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/${kind}`, {
+                const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/${kind}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

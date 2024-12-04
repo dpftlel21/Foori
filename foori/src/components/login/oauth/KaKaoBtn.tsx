@@ -7,7 +7,7 @@ const KaKaoBtn = () => {
 
     const handleClick = async () => {
         try {
-            const result = await getData(process.env.REACT_APP_REDIRECT_URL + '/kakao');
+            const result = await getData(import.meta.env.VITE_APP_REDIRECT_URL + '/kakao');
             // Redirect to Kakao login page
             window.location.href = result.url;
         } catch (error) {

@@ -7,7 +7,7 @@ const GoogleBtnStyle = "w-[45%] h-[7%] my-[1%] bg-[#e8ece8e4] text-white rounded
 
 const handleClick = async () => {
     try {
-        const result = await getData(process.env.REACT_APP_REDIRECT_URL + '/google');
+        const result = await getData(import.meta.env.VITE_APP_REDIRECT_URL + '/google');
         console.log("result", result);
         // Redirect to Kakao login page
         window.location.href = result.url;

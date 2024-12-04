@@ -1,4 +1,4 @@
-import FindIDBox from "src/components/login/findID/FindIDBox";
+import FindIDBox from "../components/login/findID/FindIDBox";
 
 const FindID = () => {
   const ContainerStyle =

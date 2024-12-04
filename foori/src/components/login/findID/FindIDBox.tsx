@@ -1,4 +1,4 @@
-import Logo from "src/components/common/Logo";
+import Logo from "../../common/Logo";
 import Email from "../../../assets/images/email.png";
 import CompleteBtn from "./button/CompleteBtn";
 import IDFindBtn from "./button/IDFindBtn";

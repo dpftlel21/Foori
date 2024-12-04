@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Header from "src/components/header/Header";
-import FoodFilter from "src/components/main/FoodFilter";
-import KaKaoMap from "src/components/main/KaKaoMap";
-import SearchPlace from "src/components/main/SearchPlace";
+import Header from "../components/header/Header";
+import FoodFilter from "../components/main/FoodFilter";
+import KaKaoMap from "../components/main/KaKaoMap";
+import SearchPlace from "../components/main/SearchPlace";
 
 const Main = () => {
   const [keyword, setKeyword] = useState<string>("");
