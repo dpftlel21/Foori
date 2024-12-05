@@ -21,9 +21,13 @@ export const postData = async (url: string, data: Record<string, unknown>): Prom
            headers: {
                'Content-Type': 'application/json'
            },
+           credentials: 'include',
            body: JSON.stringify(data)
        });
        
+       console.log("response", response);
+
+
        // 201 상태일 때 응답 본문이 있으면 그것을 반환하고, 없으면 빈 객체 반환
        if (response.status === 201) {
            const text = await response.text();
