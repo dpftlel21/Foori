@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ main ]  # 현재 사용 중인 브랜치명으로 수정해주세요
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -17,9 +17,11 @@ jobs:
         node-version: '18'
         
     - name: Install dependencies
+      working-directory: ./foori
       run: npm install
         
     - name: Build
+      working-directory: ./foori
       run: npm run build
         
     - name: Deploy to EC2
@@ -28,5 +30,5 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
-        source: "dist/*"
+        source: "foori/dist/*"
         target: "/usr/share/nginx/html"
