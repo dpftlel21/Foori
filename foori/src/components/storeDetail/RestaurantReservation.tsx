@@ -2,7 +2,7 @@ import { useState } from "react";
 import Icon from "../../assets/images/icon.png";
 import ReservationModal from "./reservationModal/ReservationModal";
 
-const StoreIfDetail = () => {
+const RestaurantReservation = () => {
   const DetailContainer =
     "w-[80%] h-[80%] flex flex-col justify-around  bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677]";
   // common
@@ -90,4 +90,4 @@ const StoreIfDetail = () => {
   );
 };
 
-export default StoreIfDetail;
+export default RestaurantReservation;

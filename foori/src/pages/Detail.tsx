@@ -1,5 +1,5 @@
 import Header from "../components/header/Header";
-import StoreIfDetail from "../components/storedetail/StoreIfDetail";
+import RestaurantReservation from '../components/storeDetail/RestaurantReservation';
 
 const Detail = () => {
   const Container =
@@ -9,7 +9,7 @@ const Detail = () => {
     <>
       <main className={Container}>
         <Header />
-        <StoreIfDetail />
+        <RestaurantReservation />
       </main>
     </>
   );
