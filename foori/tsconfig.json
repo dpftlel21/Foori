@@ -32,7 +32,8 @@
   ],
   "types": [
     // 다른 타입들...
-    "@types/react-scroll"
+    "@types/react-scroll",
+    "vite/client",
   ],
   "exclude": ["node_modules"]
 }

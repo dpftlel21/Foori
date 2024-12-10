@@ -14,10 +14,10 @@ const Login = () => {
     "w-[35%] h-[60%] flex flex-col justify-center items-center bg-gray-100 bg-opacity-40 border border-gray-400 rounded-md shadow-md text-sm";
   const InputContainer =
     "w-full flex flex-col justify-center items-center my-[1%]";
-  const InputStyle = "w-[45%] h-[3vh] rounded-md";
+  const InputStyle = "w-[45%] h-[3.5vh] p-[1%] rounded-md";
   const InputTitle = "w-[45%] flex justify-start items-center mb-[1%]";
   const ButtonStyle =
-    "w-[45%] h-[7%] my-[1%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
+    "w-[45%] h-[3.5vh] my-[1%] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out";
 
   const navigate = useNavigate();
   const { loginMutation, userInfoQuery } = useAuth();
@@ -58,58 +58,78 @@ const Login = () => {
   return (
     <>
       <Logo />
-      <form onSubmit={handleSubmit} className={LoginBox}>
-        {/* 아이디 */}
-        <div className={InputContainer}>
-          <div className={InputTitle}>
-            <img src={Email} alt="" className="w-10" />
-            <label htmlFor="username" className="ml-[1%]">
-              Email
-            </label>
+      <div className={LoginBox}>
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col items-center"
+        >
+          {/* 아이디 입력 */}
+          <div className={InputContainer}>
+            <div className={InputTitle}>
+              <img
+                src={Email}
+                alt="email"
+                className="w-[1.2rem] h-[1.2rem] mr-2"
+              />
+              <span>이메일</span>
+            </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="이메일을 입력하세요. ex) foori@gmail.com"
+              value={formData.email}
+              onChange={handleChange}
+              className={InputStyle}
+            />
           </div>
-          <input
-            className={`${InputStyle} ${errors.email ? 'border-red-500' : ''}`}
-            name="email"
-            type="email"
-            placeholder="이메일을 입력하세요."
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
-        </div>
-        {/* 비밀번호 */}
-        <div className={InputContainer}>
-          <div className={InputTitle}>
-            <img src={Lock} alt="" className="w-10" />
-            <label htmlFor="username" className="ml-[1%]">
-              Password
-            </label>
+
+          {/* 비밀번호 입력 */}
+          <div className={InputContainer}>
+            <div className={InputTitle}>
+              <img
+                src={Lock}
+                alt="lock"
+                className="w-[1.2rem] h-[1.2rem] mr-2"
+              />
+              <span>비밀번호</span>
+            </div>
+            <input
+              type="password"
+              name="password"
+              placeholder="비밀번호를 입력하세요."
+              value={formData.password}
+              onChange={handleChange}
+              className={InputStyle}
+            />
           </div>
-          <input
-            className={`${InputStyle} ${errors.password ? 'border-red-500' : ''}`}
-            type="password"
-            name="password"
-            placeholder="비밀번호를 입력하세요."
-            value={formData.password}
-            onChange={handleChange}
-          />
-          {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+
+          {/* 아이디 비밀번호 찾기, 회원가입 */}
+          <div className="w-[45%] flex justify-between text-[#4446] my-[1%]">
+            <Link to="/find-account">아이디/비밀번호 찾기</Link>
+            <Link to="/signup">회원가입</Link>
+          </div>
+
+          {/* 로그인 버튼 */}
+          <button type="submit" className={ButtonStyle}>
+            Login
+          </button>
+        </form>
+
+        {/* 구분선 */}
+        <div className="w-full flex items-center justify-center my-4">
+          <div className="w-1/3 h-[1px] bg-gray-300"></div>
+          <span className="mx-4 text-gray-500">또는</span>
+          <div className="w-1/3 h-[1px] bg-gray-300"></div>
         </div>
-        {/* 아이디 비밀번호 찾기, 회원가입 */}
-        <div className="w-[45%] flex justify-between text-[#4446] my-[1%]">
-          <Link to="/findid"><h1>아이디 찾기</h1></Link>
-          <Link to="/findpw"><h1>비밀번호 찾기</h1></Link>
-          <Link to="/signup"><h1>회원가입</h1></Link>
+
+        {/* 소셜 로그인 버튼들 */}
+        <div className="w-full flex flex-col items-center gap-2">
+          <KaKaoBtn />
+          <NaverBtn />
+          <GoogleBtn />
         </div>
-        {/* 로그인 버튼 */}
-        <button type="submit" className={ButtonStyle}>Login</button>
-        {/* 카카오 로그인 버튼 */}
-        <KaKaoBtn />
-        <NaverBtn />
-        <GoogleBtn />
-      </form>
+      </div>
     </>
   );
 };
-
-export default Login;
+export default Login

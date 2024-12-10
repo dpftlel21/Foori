@@ -1,4 +1,5 @@
 import { Map } from 'react-kakao-maps-sdk';
+import { useCrawledDataDetail } from '../../util/crawledData';
 import location from '../../assets/images/location.png';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
 import MarkerOverlay from './marker/MarkerOverlay';
@@ -8,8 +9,9 @@ interface KaKaoMapProps {
 }
 
 const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
-  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } =
-    useKakaoMap(keyword);
+  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } = useKakaoMap(keyword);
+  const placeDetail = useCrawledDataDetail("1");
+  console.log('placeDetail', placeDetail);
 
   // 스타일
   const MapContainer = 'w-full h-[60%] flex justify-center items-center';
@@ -22,6 +24,7 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
     if (place) {
       console.log('예약하기:', place.place_name);
       // 예약 로직 구현
+
     }
   };
 
