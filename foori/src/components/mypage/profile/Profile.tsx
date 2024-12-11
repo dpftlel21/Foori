@@ -1,4 +1,6 @@
 import Logo from "../../common/Logo";
+import OauthCon from './oauthCon/OauthCon';
+
 
 const Profile = () => {
     return (
@@ -10,9 +12,9 @@ const Profile = () => {
             <h1>사용자 이메일</h1>
           </div>
         </div>
-        <button className="w-[15%] h-[5vh]  bg-[#D87373] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out">
-          닉네임 변경
-        </button>
+        <div className="flex justify-between items-center">
+          <OauthCon actionType='connect' />
+        </div>
       </div>
     );
 }

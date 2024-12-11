@@ -1,10 +1,17 @@
 // GET 요청 함수
 export const getData = async (url: string) => {
+    console.log('url : ', url);
     
     try {
-        const response = await fetch(url);
-        console.log("url : ", url);
+        const response = await fetch(url,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+        });
         const data = await response.json();
+        console.log("data : ", data);
         return data;
     } catch (error) {
         console.log("에러 발생 :" , error);

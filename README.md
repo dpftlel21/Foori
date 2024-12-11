@@ -62,6 +62,7 @@
     Tailwind CSS 호환이 안돼서, `tailwind.config.js` 파일을 ES모듈 형식으로 변경하였습니다. 또한, `postcss.config.js` 파일을 추가하여 `npm install -D tailwindcss postcss autoprefixer` 명령어를 통해 호환성을 해결하였습니다. (의존성 설치) 그 이후에 `vite.config.ts` 파일에서 `postcss` 플러그인을 추가하여 호환성을 해결하였습니다.
 3. 카카오맵 마커 커스텀 오버레이 추가(예약하기), 검색 구현 / 2024. 12. 09
 4. 카카오맵 데이터 및 크롤링 데이터 매칭, 소셜 로그인 구현 / 2024. 12. 10
+5. 마이페이지 소셜 로그인 연동 구현 / 2024. 12. 11
 
     - 소셜로그인 CORS 에러 수정 필요
 

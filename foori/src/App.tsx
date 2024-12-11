@@ -8,7 +8,7 @@ import MyPage from "./pages/MyPage";
 import FindID from "./pages/FindID";
 import FindPassword from "./pages/FindPassword";
 import Detail from "./pages/Detail";
-import OauthCallback from "./components/login/oauth/OauthCallback";
+import OauthCallback from "./components/login/oauthLogin/OauthCallback";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();

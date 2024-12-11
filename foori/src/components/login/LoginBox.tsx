@@ -2,12 +2,10 @@ import Logo from "../common/Logo";
 import Email from "../../assets/images/email.png";
 import Lock from "../../assets/images/lock.png";
 import { Link } from "react-router-dom";
-import KaKaoBtn from "./oauth/KaKaoBtn";
-import NaverBtn from "./oauth/NaverBtn";
-import GoogleBtn from "./oauth/GoogleBtn";
 import { useFormValidation, } from "../../hooks/useFormValidation";
 import { useAuth } from "../../util/auth";
 import { useNavigate } from "react-router-dom";
+import OauthLogin from "./oauthLogin/OauthLogin";
 
 const Login = () => {
   const LoginBox =
@@ -123,11 +121,7 @@ const Login = () => {
         </div>
 
         {/* 소셜 로그인 버튼들 */}
-        <div className="w-full flex flex-col items-center gap-2">
-          <KaKaoBtn />
-          <NaverBtn />
-          <GoogleBtn />
-        </div>
+        <OauthLogin actionType='login' />
       </div>
     </>
   );
