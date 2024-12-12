@@ -7,7 +7,7 @@ import { useAuth } from "../../util/auth";
 const Header = () => {
   const { userInfoQuery } = useAuth();
   const userInfo = userInfoQuery.data;
-  console.log("헤더에 넣을 데이터", userInfo);
+  console.log("유저 정보", userInfo);
 
   return (
     <header className={`

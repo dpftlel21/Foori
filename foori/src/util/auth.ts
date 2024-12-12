@@ -88,19 +88,18 @@ export const useAuth = () => {
           credentials: 'include',
         },
       );
-      console.log("소셜 응답", response);
+      //console.log("소셜 응답", response);
       return response.json();
     },
     onSuccess: (data: OauthResponse) => {
       if (data.accessToken) {
-        localStorage.setItem('isLoggedIn', 'true');
+        cookieStorage.setToken(data.accessToken);
         navigate('/');
       }
     },
     onError: (error) => {
       if (error instanceof Error) {
         alert('마이페이지에서 계정 연동 후 사용 바랍니다.');
-        navigate('/mypage');
       } else {
         alert('로그인에 실패했습니다.');
         navigate('/login');
@@ -150,14 +149,20 @@ export const useAuth = () => {
     },
     onSuccess: (data) => {
       if (data.success) {
-        console.log('data', data);
+        //console.log('data', data);
         alert('계정 연동 완료');
         navigate('/mypage');
       }
     },
     onError: (error) => {
       if (error instanceof Error) {
-        alert('계정 연동 실패');
+        //console.log('error', error);
+        // response status가 401인 경우 확인
+        if (error.message.includes('status: 401')) {
+          alert('이미 등록된 소셜 계정입니다.');
+        } else {
+          alert('계정 연동 실패');
+        }
         navigate('/mypage');
       }
     },

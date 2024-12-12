@@ -19,6 +19,7 @@ export type LoginData = {
 export type LoginResponse = {
     accessToken: string;
     message?: string;
+    statusCode?: number;
 };
 
 export type OauthResponse = {
