@@ -20,6 +20,7 @@ export type LoginResponse = {
     accessToken: string;
     message?: string;
     statusCode?: number;
+    status?: number;
 };
 
 export type OauthResponse = {
