@@ -11,7 +11,7 @@ export const getData = async (url: string) => {
             credentials: 'include',
         });
         const data = await response.json();
-        console.log("data : ", data);
+        //console.log("data : ", data);
         return data;
     } catch (error) {
         console.log("에러 발생 :" , error);

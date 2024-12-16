@@ -1,16 +1,17 @@
 import Logo from "../common/Logo";
 import Map from "../../assets/images/map.png";
-import Myinfo from "../../assets/images/myInfo.png";
+import MyInfo from "../../assets/images/myInfo.png";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../util/auth";
 
 const Header = () => {
   const { userInfoQuery } = useAuth();
   const userInfo = userInfoQuery.data;
-  console.log("유저 정보", userInfo);
+  //console.log("유저 정보", userInfo);
 
   return (
-    <header className={`
+    <header
+      className={`
       w-full h-[8vh] 
       flex justify-around items-center 
       bg-opacity-40 bg-[#ce5a0d44] 
@@ -19,7 +20,8 @@ const Header = () => {
       md:text-sm xl:text-xl
       md:sticky md:top-0
       block absolute bottom-0 md:relative md:bottom-auto
-    `}>
+    `}
+    >
       {/* 모바일에서만 보이는 아이콘형 메뉴 */}
       <div className="flex md:hidden">
         <div className="w-[20%] h-[70%] flex flex-col justify-center items-center">
@@ -28,7 +30,7 @@ const Header = () => {
         </div>
         <Logo />
         <div className="w-[20%] h-[70%] flex flex-col justify-center items-center">
-          <img src={Myinfo} alt="myPage" className="w-[45%] h-[50%]" />
+          <img src={MyInfo} alt="myPage" className="w-[45%] h-[50%]" />
           <span>마이 페이지</span>
         </div>
       </div>
@@ -43,7 +45,9 @@ const Header = () => {
           <span>마이 페이지</span>
         </Link>
         <Link to="/login">
-          <span>{userInfo ? `${userInfo.name} 님 환영합니다!` : '로그인하기'}</span>
+          <span>
+            {userInfo ? `${userInfo.name} 님 환영합니다!` : '로그인하기'}
+          </span>
         </Link>
       </div>
     </header>

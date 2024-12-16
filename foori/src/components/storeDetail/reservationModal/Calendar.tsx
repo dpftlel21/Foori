@@ -1,34 +1,36 @@
 import { useState } from 'react';
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import './CustomCalendar.css'; // FullCalendar의 스타일을 덮어쓰기 위한 CSS 파일
+import './CustomCalendar.css';
 
 const Calendar = () => {
-  const CalendarContainer = "w-[30vw] h-[30vh] flex justify-around items-center";
-  const [timeOfDay, setTimeOfDay] = useState('morning'); // 'morning' 또는 'afternoon'
+  const CalendarContainer =
+    'w-[30vw] h-[35vh] flex justify-around items-center';
+  const [timeOfDay, setTimeOfDay] = useState('morning');
   const [numberOfPeople, setNumberOfPeople] = useState(2);
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
-  const handleTimeOfDayChange = (event : any) => {
-    setTimeOfDay(event.target.value);
-  };
-
-  const handleNumberOfPeopleChange = (event : any) => {
-    setNumberOfPeople(event.target.value);
+  const handleDateClick = (arg: any) => {
+    // arg.dateStr은 'YYYY-MM-DD' 형식의 문자열입니다
+    setSelectedDate(arg.dateStr);
+    console.log('선택된 날짜:', arg.dateStr);
   };
 
   return (
     <div className={CalendarContainer}>
-    <FullCalendar
-    locale="kr"
-    plugins={[dayGridPlugin, interactionPlugin]}
-    headerToolbar={{
-      left: 'prev',
-      center: 'title',
-      right: 'next',
-    }}
-  />
+      <FullCalendar
+        locale="kr"
+        plugins={[dayGridPlugin, interactionPlugin]}
+        headerToolbar={{
+          left: 'prev',
+          center: 'title',
+          right: 'next',
+        }}
+        dateClick={handleDateClick} // 날짜 클릭 이벤트 핸들러 추가
+        selectable={true} // 날짜 선택 가능하도록 설정
+      />
     </div>
   );
 };

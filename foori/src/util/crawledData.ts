@@ -29,7 +29,7 @@ export const useCrawledData = () => {
 export const useCrawledDataDetail = (id: string) => {
     const { data, isLoading, error } = useQuery({
       queryKey: ['crawledDataDetail', id],
-      queryFn: () => getData(`api/place/${id}`),
+      queryFn: () => getData(`${import.meta.env.VITE_BACK_URL}/api/place/${id}`),
     });
 
     return { data, isLoading, error };

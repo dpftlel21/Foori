@@ -1,7 +1,12 @@
 
+interface ReservationMenuProps {
+    menus: {
+        name: string;
+        price: number;
+    }[]
+}
 
-
-const ReservationMenu = () => {
+const ReservationMenu = ({menus}: ReservationMenuProps) => {
 
     const MenuContainer = 'w-full h-[30%] flex justify-around items-center'
     // 리뷰 스타일링
@@ -16,10 +21,9 @@ const ReservationMenu = () => {
             <div className="w-[30vw] h-[20vh] flex flex-col items-center">
                 <h1 className="w-full flex justify-start border-b-2 border-solid border-[#e38994fb]">메뉴 선택</h1>
                 <ul className={Review}>
-                    <li className={ReviewLi}></li>
-                    <li className={ReviewLi}></li>
-                    <li className={ReviewLi}></li>
-                    <li className={ReviewLi}></li>
+                    {menus.map((menu, index) => (
+                        <li className={ReviewLi} key={index}>{menu.name} - {menu.price}원</li>
+                    ))}
                 </ul>
             </div>
 

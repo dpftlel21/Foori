@@ -1,5 +1,5 @@
 import { Map } from 'react-kakao-maps-sdk';
-import { useCrawledDataDetail } from '../../util/crawledData';
+import {useNavigate} from 'react-router-dom';
 import location from '../../assets/images/location.png';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
 import MarkerOverlay from './marker/MarkerOverlay';
@@ -10,8 +10,11 @@ interface KaKaoMapProps {
 
 const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
   const { places, selectedPlace, setSelectedPlace, center, moveCurrent } = useKakaoMap(keyword);
-  const placeDetail = useCrawledDataDetail("1");
-  console.log('placeDetail', placeDetail);
+  const navigate = useNavigate();
+  // 전체조회 후 ID값 넘기는 쿼리
+  // 전체 조회 데이터는 재곤이한테 따로 받아야함
+  //const placeDetail = useCrawledDataDetail("1");
+  //console.log('placeDetail', placeDetail);
 
   // 스타일
   const MapContainer = 'w-full h-[60%] flex justify-center items-center';
@@ -22,9 +25,14 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
     const place = places.find((p) => p.id === placeId);
     
     if (place) {
-      console.log('예약하기:', place.place_name);
+      console.log('예약하기:', place);
       // 예약 로직 구현
-
+      navigate(`/detail/1`, {
+        // 현재는 1로 고정
+        state: {
+          placeInfo: place,
+        },
+      });
     }
   };
 
