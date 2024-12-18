@@ -32,7 +32,7 @@ export const useKakaoMap = (keyword: string) => {
       if (status === kakao.maps.services.Status.OK) {
         setPlaces(data);
         
-        console.log("getData",data);
+        //console.log("getData",data);
 
         // 검색된 장소들의 중심점으로 지도 이동
         if (data.length > 0) {

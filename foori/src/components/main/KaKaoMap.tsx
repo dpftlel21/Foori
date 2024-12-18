@@ -2,37 +2,62 @@ import { Map } from 'react-kakao-maps-sdk';
 import {useNavigate} from 'react-router-dom';
 import location from '../../assets/images/location.png';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
+import { useCrawledData } from '../../util/crawledData';
 import MarkerOverlay from './marker/MarkerOverlay';
 
 interface KaKaoMapProps {
   keyword: string;
 }
 
-const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
-  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } = useKakaoMap(keyword);
-  const navigate = useNavigate();
-  // 전체조회 후 ID값 넘기는 쿼리
-  // 전체 조회 데이터는 재곤이한테 따로 받아야함
-  //const placeDetail = useCrawledDataDetail("1");
-  //console.log('placeDetail', placeDetail);
+interface CrawledData {
+  id: string;
+  name: string;
+  category: string;
+  address: string;
+  open_days: string;
+  open_time: string;
+  close_time: string;
+  phone: string;
+  x: string;
+  y: string;
+}
 
+const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
   // 스타일
   const MapContainer = 'w-full h-[60%] flex justify-center items-center';
   const MapBox = 'w-[60%] h-[90%] bg-[#fcb69f] border-2 border-solid border-[#b61717] rounded-md';
   const Button = 'relative right-[4em] top-[6em] z-10 cursor-pointer';
 
+  // 카카오맵 데이터
+  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } = useKakaoMap(keyword);
+  // 크롤링 한 데이터
+  const { data } = useCrawledData();
+  // 크롤링 데이터와 카카오맵 데이터 매칭
+  const matchedPlaces = places.filter((place) =>
+    data?.some((crawledData: CrawledData) => crawledData.name === place.place_name),
+  );
+
+  const navigate = useNavigate();
+ 
+
   const handleReservation = (placeId: string) => {
-    const place = places.find((p) => p.id === placeId);
-    
-    if (place) {
-      console.log('예약하기:', place);
-      // 예약 로직 구현
-      navigate(`/detail/1`, {
-        // 현재는 1로 고정
-        state: {
-          placeInfo: place,
-        },
-      });
+    // 카카오맵 place 데이터 찾기
+    const kakaoPlace = matchedPlaces.find((p) => p.id === placeId);
+
+    if (kakaoPlace) {
+      // 매칭되는 크롤링 데이터 찾기
+      const crawledPlace = data?.find(
+        (item: CrawledData) => item.name === kakaoPlace.place_name,
+      );
+
+      if (crawledPlace) {
+        console.log('예약하기:', crawledPlace);
+        navigate(`/detail/${crawledPlace.id}`, {
+          state: {
+            placeInfo: crawledPlace
+          },
+        });
+      }
     }
   };
 
@@ -44,7 +69,7 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
           style={{ width: '100%', height: '100%', borderRadius: '6px' }}
           level={3}
         >
-          {places.map((place) => (
+          {matchedPlaces.map((place) => (
             <MarkerOverlay
               key={place.id}
               place={place}

@@ -18,9 +18,8 @@ interface CrawledDataType {
 export const useCrawledData = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ['crawledData'],
-        queryFn: () => getData('api/crawled-data'),
+        queryFn: () => getData(`${import.meta.env.VITE_BACK_URL}/api/place`),
     });
-
     return { data, isLoading, error };
 }
 
