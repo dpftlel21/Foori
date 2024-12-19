@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import MenuList from './MenuList';
 
 interface ReservationMenuProps {
   menus: {
@@ -8,15 +9,31 @@ interface ReservationMenuProps {
 }
 
 const ReservationMenu = ({ menus }: ReservationMenuProps) => {
-  const [selectedMenus, setSelectedMenus] = useState<{ [key: string]: number }>(
-    {},
-  );
+  // 스타일
+  const STYLES = {
+    container: 'w-full h-full flex flex-col md:flex-row bg-gray-50',
+    leftSection: 'w-full md:w-2/3 h-full flex flex-col p-4 space-y-4',
+    paymentSection:
+      'p-3 bg-white rounded-lg shadow-md border border-[#e38994fb]',
+    totalAmount: 'font-bold text-lg text-gray-800',
+    totalAmountValue: 'ml-2 text-[#e38994fb]',
+    button:
+      'bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
+    fullWidthButton:
+      'w-full bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
+    rightSection: 'w-full md:w-1/3 h-full bg-white border-l border-gray-100',
+    infoContainer: 'p-4',
+    infoTitle: 'text-lg font-bold text-gray-800 mb-3',
+    infoList: 'space-y-4',
+    infoBullet: 'flex items-start gap-2',
+    bulletPoint: 'text-[#e38994fb]',
+    infoText: 'text-gray-600 text-sm',
+  } as const;
 
-  const MenuContainer = 'w-full h-[30%] flex justify-around items-center';
-  const Review =
-    'w-full h-[100%] grid grid-cols-2 gap-2 overflow-scroll overflow-x-hidden';
-  const ReviewLi =
-    'w-full h-[5vh] flex justify-between items-center my-[1%] bg-[#F0CCCC] px-4';
+  // 선택된 메뉴
+  const [selectedMenus, setSelectedMenus] = useState<{
+    [key: string]: number;
+  }>({});
 
   const calculateTotal = () => {
     return Object.entries(selectedMenus).reduce(
@@ -40,66 +57,67 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
   };
 
   const handlePayment = () => {
-    // 결제 로직 구현
     console.log('선택된 메뉴:', selectedMenus);
     console.log('총 금액:', calculateTotal());
   };
 
   return (
-    <div className={MenuContainer}>
-      <div className="w-full h-[20vh] flex flex-col justify-center items-center">
-        <h1 className="w-full flex justify-start mb-4">
-          메뉴 선택
-        </h1>
-        <ul className={Review}>
-          {menus.map((menu, index) => (
-            <li className={ReviewLi} key={index}>
-              <div>
-                <span className="font-medium">{menu.name}</span>
-                <span className="ml-2 text-gray-600">
-                  {menu.price.toLocaleString()}원
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleQuantityChange(menu.name, -1)}
-                  className="px-2 py-1 bg-white rounded hover:bg-gray-300"
-                >
-                  -
+    <div className={STYLES.container}>
+      {/* 왼쪽 섹션 */}
+      <div className={STYLES.leftSection}>
+        <MenuList
+          menus={menus}
+          selectedMenus={selectedMenus}
+          onQuantityChange={handleQuantityChange}
+        />
+
+        {/* 결제/예약 섹션 */}
+        <div className={STYLES.paymentSection}>
+          <div className="flex justify-between items-center">
+            {Object.keys(selectedMenus).length > 0 ? (
+              <>
+                <p className={STYLES.totalAmount}>
+                  총 금액:
+                  <span className={STYLES.totalAmountValue}>
+                    {calculateTotal().toLocaleString()}원
+                  </span>
+                </p>
+                <button onClick={handlePayment} className={STYLES.button}>
+                  결제하기
                 </button>
-                <span className="w-8 text-center">
-                  {selectedMenus[menu.name] || 0}
-                </span>
-                <button
-                  onClick={() => handleQuantityChange(menu.name, 1)}
-                  className="px-2 py-1 bg-white rounded hover:bg-gray-300"
-                >
-                  +
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="w-full mt-4 flex flex-col items-end gap-2">
-          <p className="font-bold text-lg">
-            총 금액: {calculateTotal().toLocaleString()}원
-          </p>
-          {calculateTotal() > 0 && (
-            <button
-              onClick={handlePayment}
-              className="bg-[#e38994fb] text-white px-4 py-2 rounded hover:bg-[#d27883fb]"
-            >
-              결제하기
-            </button>
-          )}
+              </>
+            ) : (
+              <button className={STYLES.fullWidthButton}>예약하기</button>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="text-gray-600">
-        <h1 className="mb-2">
-          * 장소 예약만 하실 경우 바로 예약하기를 누르시면 됩니다.
-        </h1>
-        <h1>* 메뉴도 같이 선택하여 선 결제 후 예약하실 수도 있습니다.</h1>
+      {/* 오른쪽 안내사항 섹션 */}
+      <div className={STYLES.rightSection}>
+        <div className={STYLES.infoContainer}>
+          <h2 className={STYLES.infoTitle}>안내사항</h2>
+          <div className={STYLES.infoList}>
+            <div className={STYLES.infoBullet}>
+              <span className={STYLES.bulletPoint}>•</span>
+              <p className={STYLES.infoText}>
+                장소 예약만 하실 경우 바로 예약하기를 누르시면 됩니다.
+              </p>
+            </div>
+            <div className={STYLES.infoBullet}>
+              <span className={STYLES.bulletPoint}>•</span>
+              <p className={STYLES.infoText}>
+                메뉴도 같이 선택하여 선 결제 후 예약하실 수도 있습니다.
+              </p>
+            </div>
+            <div className={STYLES.infoBullet}>
+              <span className={STYLES.bulletPoint}>•</span>
+              <p className={STYLES.infoText}>
+                메뉴 변경은 예약 시간 24시간 전까지 가능합니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

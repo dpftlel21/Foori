@@ -41,7 +41,7 @@ const ReservationModal = ({
     'w-full mt-2 md:mt-4 border-b-2 border-solid border-[#e3899430] pb-4';
 
   const CalendarSection =
-    'w-full h-[70%] flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
+    'w-full h-[55%] flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
 
   return (
     <div className={ReservationContainer}>

@@ -9,44 +9,58 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
   const [selectedPeriod, setSelectedPeriod] = useState<
     '오전' | '점심' | '오후'
   >('오전');
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedMembers, setSelectedMembers] = useState<string>('');
 
-  // 공통 스타일 상수
   const STYLES = {
-    container: 'w-full max-w-[500px] p-6',
+    container: 'w-full max-w-[400px]',
     title: 'text-lg font-bold mb-2',
     subtitle: 'text-sm text-gray-500',
-    sectionContainer: 'mb-8',
-    periodButtonContainer: 'grid grid-cols-3 gap-4 mb-8',
-    timeButtonContainer: 'grid grid-cols-4 gap-2 mb-8',
+    sectionContainer: 'mb-3',
+    periodButtonContainer: 'grid grid-cols-3 gap-3 mb-6',
+    timeButtonContainer: 'grid grid-cols-4 gap-1.5 mb-6',
     memberButtonContainer: 'flex flex-wrap gap-2',
     periodButton: (isSelected: boolean) => `
-    py-2  // 높이 줄임
-    text-center 
-    transition-colors
-    border-b-2  // 밑줄 추가
-    ${
-      isSelected
-        ? 'border-[#e38994fb] text-[#e38994fb] font-bold'
-        : 'border-transparent text-gray-600'
-    }
-    hover:text-[#e38994fb]
-  `,
-    timeButton: (isBreakTime: boolean) => `
       py-2 
+      text-center 
+      transition-colors
+      border-b-2 
+      ${
+        isSelected
+          ? 'border-[#e38994fb] text-[#e38994fb] font-bold'
+          : 'border-transparent text-gray-600'
+      }
+      hover:text-[#e38994fb]
+    `,
+    timeButton: (isBreakTime: boolean, isSelected: boolean) => `
+      py-1.5 
       rounded-lg 
       text-center 
+      text-sm
       transition-colors
       ${
         isBreakTime
           ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-          : 'bg-[#e38994fb] text-white hover:bg-[#fcb69f]'
+          : isSelected
+            ? 'bg-[#e38994fb] text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
-    memberButton:
-      'px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-[#e38994fb] hover:text-white transition-colors',
+
+    memberButton: (isSelected: boolean) => `
+      px-3 
+      py-1.5 
+      text-sm
+      rounded-full 
+      transition-colors
+      ${
+        isSelected
+          ? 'bg-[#e38994fb] text-white'
+          : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
+      }
+    `,
   };
 
-  // 영업 시간을 기반으로 예약 가능 시간대 생성
   const generateTimeSlots = () => {
     const slots = [];
     const start = parseInt(openTime.split(':')[0]);
@@ -108,8 +122,12 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
         {filteredTimeSlots.map((slot, index) => (
           <button
             key={index}
-            className={STYLES.timeButton(slot.isBreakTime)}
+            className={STYLES.timeButton(
+              slot.isBreakTime,
+              selectedTime === slot.time,
+            )}
             disabled={slot.isBreakTime}
+            onClick={() => setSelectedTime(slot.time)}
           >
             {slot.time}
           </button>
@@ -120,8 +138,12 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
       <div className={STYLES.sectionContainer}>
         <h2 className={STYLES.title}>구성원</h2>
         <div className={STYLES.memberButtonContainer}>
-          {['2명', '3명', '4명', '5~6명', '6명 이상'].map((count, index) => (
-            <button key={index} className={STYLES.memberButton}>
+          {['2명', '3명', '4명', '5~6명', '6명 이상'].map((count) => (
+            <button
+              key={count}
+              className={STYLES.memberButton(selectedMembers === count)}
+              onClick={() => setSelectedMembers(count)}
+            >
               {count}
             </button>
           ))}
