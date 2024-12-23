@@ -1,21 +1,28 @@
-import Logo from "../common/Logo";
-import Map from "../../assets/images/map.png";
-import MyInfo from "../../assets/images/myInfo.png";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../util/auth";
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../api/auth';
+import { cookieStorage } from '../../api/cookies';
+import Map from '../../assets/images/map.png';
+import MyInfo from '../../assets/images/myInfo.png';
+import Logo from '../common/Logo';
 
 const Header = () => {
+  const navigate = useNavigate();
   const { userInfoQuery } = useAuth();
   const userInfo = userInfoQuery.data;
   //console.log("유저 정보", userInfo);
 
+  const logout = () => {
+    cookieStorage.removeToken();
+    navigate('/login');
+  };
+
   return (
     <header
       className={`
-      w-full h-[8vh] 
-      flex justify-around items-center 
-      bg-opacity-40 bg-[#ce5a0d44] 
-      border border-gray-400 shadow-md 
+      w-full h-[8vh]
+      flex justify-around items-center
+      bg-opacity-40 bg-[#ce5a0d44]
+      border border-gray-400 shadow-md
       font-bold
       md:text-sm xl:text-xl
       md:sticky md:top-0
@@ -44,11 +51,25 @@ const Header = () => {
         <Link to="/mypage">
           <span>마이 페이지</span>
         </Link>
-        <Link to="/login">
-          <span>
-            {userInfo ? `${userInfo.name} 님 환영합니다!` : '로그인하기'}
-          </span>
-        </Link>
+        {userInfo ? (
+          <div className="relative group">
+            <span className="cursor-pointer">
+              {userInfo.name} 님 환영합니다!
+            </span>
+            <div className="hidden group-hover:block absolute top-full right-0 bg-white shadow-md p-2 rounded">
+              <button
+                onClick={logout}
+                className="text-red-500 hover:text-red-700"
+              >
+                로그아웃
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Link to="/login">
+            <span>로그인하기</span>
+          </Link>
+        )}
       </div>
     </header>
   );

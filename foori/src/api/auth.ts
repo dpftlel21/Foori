@@ -1,12 +1,17 @@
 import { useMutation, useQuery } from 'react-query';
-import { LoginData, LoginResponse, SignUpData, SignUpResponse, OauthResponse } from '../util/global.type';
-import { postData } from '../util/api';
-import { cookieStorage } from '../util/cookies';
 import { useNavigate } from 'react-router-dom';
+import { postData } from './api';
+import { cookieStorage } from './cookies';
+import {
+  LoginData,
+  LoginResponse,
+  OauthResponse,
+  SignUpData,
+  SignUpResponse,
+} from './global.type';
 
 // 일반 로그인, 회원가입, 이메일 인증
 export const useAuth = () => {
-  
   const navigate = useNavigate();
 
   // 이메일 인증 mutation
@@ -127,7 +132,7 @@ export const useAuth = () => {
           credentials: 'include',
         },
       );
-      console.log("response", response);
+      console.log('response', response);
 
       // 응답 상태 확인
       if (!response.ok) {

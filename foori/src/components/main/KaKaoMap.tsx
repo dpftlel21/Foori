@@ -1,8 +1,8 @@
 import { Map } from 'react-kakao-maps-sdk';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useCrawledData } from '../../api/crawledData';
 import location from '../../assets/images/location.png';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
-import { useCrawledData } from '../../util/crawledData';
 import MarkerOverlay from './marker/MarkerOverlay';
 
 interface KaKaoMapProps {
@@ -25,20 +25,23 @@ interface CrawledData {
 const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
   // 스타일
   const MapContainer = 'w-full h-[60%] flex justify-center items-center';
-  const MapBox = 'w-[60%] h-[90%] bg-[#fcb69f] border-2 border-solid border-[#b61717] rounded-md';
+  const MapBox =
+    'w-[60%] h-[90%] bg-[#fcb69f] border-2 border-solid border-[#b61717] rounded-md';
   const Button = 'relative right-[4em] top-[6em] z-10 cursor-pointer';
 
   // 카카오맵 데이터
-  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } = useKakaoMap(keyword);
+  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } =
+    useKakaoMap(keyword);
   // 크롤링 한 데이터
   const { data } = useCrawledData();
   // 크롤링 데이터와 카카오맵 데이터 매칭
   const matchedPlaces = places.filter((place) =>
-    data?.some((crawledData: CrawledData) => crawledData.name === place.place_name),
+    data?.some(
+      (crawledData: CrawledData) => crawledData.name === place.place_name,
+    ),
   );
 
   const navigate = useNavigate();
- 
 
   const handleReservation = (placeId: string) => {
     // 카카오맵 place 데이터 찾기
@@ -54,7 +57,7 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
         console.log('예약하기:', crawledPlace);
         navigate(`/detail/${crawledPlace.id}`, {
           state: {
-            placeInfo: crawledPlace
+            placeInfo: crawledPlace,
           },
         });
       }

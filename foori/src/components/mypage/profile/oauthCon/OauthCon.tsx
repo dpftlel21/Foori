@@ -1,9 +1,9 @@
+import { ActionType } from '../../../../api/global.type';
+import googleLogo from '../../../../assets/images/google.jpg';
 import kakaoLogo from '../../../../assets/images/kakao.jpg';
 import naverLogo from '../../../../assets/images/naver.jpg';
-import googleLogo from '../../../../assets/images/google.jpg';
-import { ActionType } from '../../../../util/global.type';
 
-const OauthCon = ({actionType}: {actionType: ActionType}) => {
+const OauthCon = ({ actionType }: { actionType: ActionType }) => {
   const buttonStyle =
     'w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-50 transition-colors';
   const imageStyle = 'w-10 h-10 rounded-full object-cover';

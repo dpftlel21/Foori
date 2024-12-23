@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useCrawledDataDetail } from '../../api/crawledData';
 import Icon from '../../assets/images/icon.png';
 import ReservationModal from './reservationModal/ReservationModal';
-import { useCrawledDataDetail } from '../../util/crawledData';
-import { useParams } from 'react-router-dom';
 
 const RestaurantReservation = () => {
   const DetailContainer =
@@ -40,7 +40,7 @@ const RestaurantReservation = () => {
   const { placeId } = useParams();
   const placeDetail = useCrawledDataDetail(placeId);
   const placeInfo = placeDetail.data;
-  console.log("placeInfo", placeInfo);
+  console.log('placeInfo', placeInfo);
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
 
   const openReservationModal = () => {

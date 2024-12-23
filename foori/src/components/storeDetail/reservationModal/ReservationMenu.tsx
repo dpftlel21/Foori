@@ -35,6 +35,7 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
     [key: string]: number;
   }>({});
 
+  // 총 금액 계산
   const calculateTotal = () => {
     return Object.entries(selectedMenus).reduce(
       (total, [menuName, quantity]) => {
@@ -45,6 +46,7 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
     );
   };
 
+  // 메뉴 수량 변경
   const handleQuantityChange = (menuName: string, change: number) => {
     setSelectedMenus((prev) => {
       const newQuantity = (prev[menuName] || 0) + change;

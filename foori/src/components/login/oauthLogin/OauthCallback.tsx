@@ -1,6 +1,5 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useAuth } from '../../../util/auth';
-
+import { useEffect, useMemo, useState } from 'react';
+import { useAuth } from '../../../api/auth';
 
 const OauthCallback = () => {
   const { oauthLoginMutation, oauthConMutation } = useAuth();
