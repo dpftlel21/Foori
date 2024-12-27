@@ -39,8 +39,14 @@ export const passwordChange = async (
 
 // 프로필 이미지 업로드
 export const profileImageUpload = async (image: File) => {
+  //console.log('프로필 이미지 업로드', image);
+  const token = cookieStorage.getToken();
   const response = await fetch(`api/users/profile/upload`, {
-    method: 'PATCH',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
     body: image,
   });
 
