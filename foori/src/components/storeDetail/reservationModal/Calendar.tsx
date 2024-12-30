@@ -1,15 +1,12 @@
-import { useState } from 'react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
+import { useState } from 'react';
 import './CustomCalendar.css';
 
 const Calendar = () => {
   const CalendarContainer =
     'w-[30vw] h-[35vh] flex justify-around items-center';
-  const [timeOfDay, setTimeOfDay] = useState('morning');
-  const [numberOfPeople, setNumberOfPeople] = useState(2);
   const [selectedDate, setSelectedDate] = useState<string>('');
 
   const handleDateClick = (arg: any) => {

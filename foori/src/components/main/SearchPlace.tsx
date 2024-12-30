@@ -1,36 +1,41 @@
-import { useState } from "react";
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface SearchPlaceProps {
   onSearch: (keyword: string) => void;
 }
 
 const SearchPlace = ({ onSearch }: SearchPlaceProps) => {
-  const [keyword, setKeyword] = useState<string>("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(keyword); // 검색 키워드를 부모 컴포넌트로 전달
-  };
+  const [keyword, setKeyword] = useState<string>('');
 
   return (
-    <form
-      className="w-full flex justify-center mt-[5%]"
-      onSubmit={handleSearch}
+    <motion.form
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-[60%] mx-auto flex gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSearch(keyword);
+      }}
     >
-      <input
+      <motion.input
+        whileFocus={{ scale: 1.02 }}
         type="text"
-        className="w-[41%] h-[6vh] rounded-md p-[1%]"
+        className="flex-1 h-12 rounded-lg p-4 shadow-md text-sm md:text-base"
         placeholder="장소를 입력해주세요."
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
       />
-      <button
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         type="submit"
-        className="w-[2%] h-[6vh] ml-[1%] rounded-md bg-[#ffff]"
+        className="w-12 h-12 rounded-lg bg-white shadow-md flex items-center justify-center"
       >
         🔍
-      </button>
-    </form>
+      </motion.button>
+    </motion.form>
   );
 };
 

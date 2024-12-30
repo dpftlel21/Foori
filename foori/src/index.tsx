@@ -1,17 +1,17 @@
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import { ToastProvider } from "./contexts/ToastContext";
-import reportWebVitals from "./reportWebVitals";
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import { AppProvider } from './contexts/AppProvider';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <ToastProvider>
+    <AppProvider>
       <App />
-    </ToastProvider>
-  </BrowserRouter>
+    </AppProvider>
+  </BrowserRouter>,
 );
 
 reportWebVitals();

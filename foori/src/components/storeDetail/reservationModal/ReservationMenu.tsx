@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { useTossPay } from '../../../hooks/useTossPay';
 import MenuList from './MenuList';
-
 interface ReservationMenuProps {
   menus: {
     name: string;
@@ -9,6 +9,8 @@ interface ReservationMenuProps {
 }
 
 const ReservationMenu = ({ menus }: ReservationMenuProps) => {
+  const { handlePayment: handleTossPayment } = useTossPay();
+
   // 스타일
   const STYLES = {
     container: 'w-full h-full flex flex-col md:flex-row bg-gray-50',
@@ -58,9 +60,14 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
     });
   };
 
+  // 결제하기
   const handlePayment = () => {
-    console.log('선택된 메뉴:', selectedMenus);
-    console.log('총 금액:', calculateTotal());
+    handleTossPayment({
+      amount: calculateTotal(),
+      orderId: '1234567890',
+      orderName: '예약 결제',
+      customerName: '홍길동',
+    });
   };
 
   return (

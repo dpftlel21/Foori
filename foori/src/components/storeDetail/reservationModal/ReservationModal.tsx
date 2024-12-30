@@ -29,7 +29,7 @@ const ReservationModal = ({
   if (!isOpen) return null;
 
   const ReservationContainer =
-    'w-[95%] md:w-[80%] h-[90%] md:h-[73.9%] flex flex-col justify-start gap-4 mt-[2%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677] z-50 p-4';
+    'w-[95%] md:w-[80%] h-[90%] md:h-[75.4%] flex flex-col justify-start gap-4 mt-[2%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677] z-50 p-4';
 
   const TopSection =
     'w-full flex flex-col md:flex-row justify-between items-start md:items-center';
@@ -45,7 +45,7 @@ const ReservationModal = ({
 
   return (
     <div className={ReservationContainer}>
-      {/* 가게명, 평점, 돌아가기 버튼 */}
+      {/* 가게명, 평점 */}
       <div className={TopSection}>
         <div className={StoreInfoSection}>
           <h1 className="text-lg md:text-xl font-bold border-b-2 border-solid border-[#e38994fb]">

@@ -1,30 +1,96 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+
 const FoodFilter = () => {
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
-  // 버튼 데이터 배열
-  const filterItems = [
-    { text: '#한식', color: '#F24A4A', hoverColor: 'rgba(242, 74, 74, 0.83)' },
-    { text: '#중식', color: '#36A51A', hoverColor: 'rgba(54, 165, 26, 0.83)' },
-    { text: '#양식', color: '#1A84A5', hoverColor: 'rgba(26, 132, 165, 0.83)' },
-    { text: '#일식', color: '#262CC2', hoverColor: 'rgba(38, 44, 194, 0.83)' },
-    { text: '#분식', color: '#AA41EB', hoverColor: 'rgba(170, 65, 235, 0.83)' },
-    { text: '#카페', color: '#F874A7', hoverColor: 'rgba(248, 116, 167, 0.83)' }
-  ];
-
-  const FilterContainer = "w-full h-[10%] flex justify-center items-center";
-  const FilterButton = "w-[6vw] h-[5vh] mx-3 bg-[#fffdfcf2] rounded-md transition duration-500 ease-in-out hover:text-white";
+  const categories = {
+    today: {
+      title: '오늘 뭐 먹지?',
+      items: [
+        { icon: '🍖', text: '#한식', color: '#F24A4A' },
+        { icon: '🍣', text: '#일식', color: '#262CC2' },
+        { icon: '🍝', text: '#양식', color: '#1A84A5' },
+        { icon: '🍜', text: '#중식', color: '#36A51A' },
+        { icon: '🥘', text: '#아시안', color: '#FF6B6B' },
+        { icon: '🥗', text: '#샐러드', color: '#4CAF50' },
+        { icon: '🍰', text: '#디저트', color: '#FF69B4' },
+        { icon: '☕', text: '#카페', color: '#F874A7' },
+      ],
+    },
+    mood: {
+      title: '분위기로 찾기',
+      items: [
+        { icon: '🌅', text: '#오션뷰', color: '#4DACFF' },
+        { icon: '🎂', text: '#데이트', color: '#FF69B4' },
+        { icon: '💼', text: '#비즈니스', color: '#505050' },
+        { icon: '🎂', text: '#기념일', color: '#FFB6C1' },
+        { icon: '👨‍👩‍👧‍👦', text: '#가족모임', color: '#FF9800' },
+        { icon: '🎮', text: '#혼밥', color: '#9C27B0' },
+        { icon: '🌿', text: '#분위기좋은', color: '#66BB6A' },
+        { icon: '🎯', text: '#핫플레이스', color: '#FF5252' },
+      ],
+    },
+  } as const;
 
   return (
-    <div className={FilterContainer}>
-      {filterItems.map((item, index) => (
-        <button 
-          key={index} 
-          className={FilterButton}
-          onMouseOver={(e) => {(e.currentTarget as HTMLElement).style.backgroundColor = item.hoverColor;}}
-          onMouseOut={(e) => {(e.currentTarget as HTMLElement).style.backgroundColor = 'white'}}
-        >
-          {item.text}
-        </button>
-      ))}
+    <div className="w-full max-w-[60%] mx-auto space-y-4">
+      <div className="flex gap-4 w-full">
+        {Object.entries(categories).map(([key, category]) => (
+          <motion.button
+            key={key}
+            onClick={() =>
+              setExpandedCategory(expandedCategory === key ? null : key)
+            }
+            className={`px-5 py-2 rounded-lg shadow-md transition-all text-center
+            w-[180px] text-sm  // 너비와 텍스트 크기 조정
+            ${
+              expandedCategory === key ? 'bg-[#FF800B] text-white' : 'bg-white'
+            }`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {category.title}
+          </motion.button>
+        ))}
+      </div>
+
+      {/* 확장된 카테고리 내용 */}
+      <AnimatePresence>
+        {expandedCategory && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden w-full"
+          >
+            <div className="h-[90px] grid grid-cols-4 md:grid-cols-8 gap-2 p-2 bg-white rounded-lg shadow-md">
+              {categories[
+                expandedCategory as keyof typeof categories
+              ].items.map((item, index) => (
+                <motion.button
+                  key={index}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="text-2xl mb-1">{item.icon}</span>
+                  <span
+                    className="text-sm whitespace-nowrap"
+                    style={{ color: item.color }}
+                  >
+                    {item.text}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

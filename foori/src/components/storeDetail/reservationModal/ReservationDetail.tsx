@@ -21,10 +21,10 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
     timeButtonContainer: 'grid grid-cols-4 gap-1.5 mb-6',
     memberButtonContainer: 'flex flex-wrap gap-2',
     periodButton: (isSelected: boolean) => `
-      py-2 
-      text-center 
+      py-2
+      text-center
       transition-colors
-      border-b-2 
+      border-b-2
       ${
         isSelected
           ? 'border-[#e38994fb] text-[#e38994fb] font-bold'
@@ -33,25 +33,25 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
       hover:text-[#e38994fb]
     `,
     timeButton: (isBreakTime: boolean, isSelected: boolean) => `
-      py-1.5 
-      rounded-lg 
-      text-center 
+      py-1.5
+      rounded-lg
+      text-center
       text-sm
       transition-colors
       ${
         isBreakTime
           ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
           : isSelected
-            ? 'bg-[#e38994fb] text-white'
-            : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
+          ? 'bg-[#e38994fb] text-white'
+          : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
 
     memberButton: (isSelected: boolean) => `
-      px-3 
-      py-1.5 
+      px-3
+      py-1.5
       text-sm
-      rounded-full 
+      rounded-full
       transition-colors
       ${
         isSelected

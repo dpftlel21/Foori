@@ -14,35 +14,89 @@ const Header = () => {
   };
 
   return (
-    <header className="h-[20px] bg-gradient-to-r from-[#FFD4BC] to-[#FFBEA3] py-20 p-4 flex justify-between items-center">
-      <Logo />
-      <div className="flex gap-6">
-        <Link to="/mypage">
-          <span className="text-gray-800 hover:text-gray-600 transition-colors">
-            마이 페이지
-          </span>
-        </Link>
-        {userInfo ? (
-          <div className="relative group">
-            <span className="cursor-pointer text-gray-800">
-              {userInfo.name} 님 환영합니다!
-            </span>
-            <div className="hidden group-hover:block absolute top-full right-0 bg-white shadow-md p-2 rounded">
-              <button
-                onClick={logout}
-                className="text-red-500 hover:text-red-700"
-              >
-                로그아웃
-              </button>
-            </div>
+    <header
+      className={`
+  w-full h-[10vh] md:h-[80px]
+  transition-all duration-300
+
+  /* 모바일 스타일 */
+  fixed bottom-0 md:relative
+  bg-white md:bg-gradient-to-r from-[#FFD4BC] to-[#FFBEA3]
+
+`}
+    >
+      <div className="h-full max-w-6xl mx-auto flex items-center">
+        {/* PC 레이아웃 */}
+        <div className="hidden md:flex w-full justify-between items-center">
+          {/* 로고 + 푸리 */}
+          <div className="flex items-center">
+            <Logo /> {/* 로고 크기 조정 */}
+            <span className="text-base font-bold text-gray-800">Foori</span>
           </div>
-        ) : (
-          <Link to="/login">
-            <span className="text-gray-800 hover:text-gray-600 transition-colors">
-              로그인하기
-            </span>
+
+          {/* 네비게이션 메뉴 */}
+          <div className="flex items-center gap-6">
+            <Link
+              to="/main"
+              className="text-sm text-gray-800 hover:text-gray-600"
+            >
+              예약하기
+            </Link>
+            <Link
+              to="/mypage"
+              className="text-sm text-gray-800 hover:text-gray-600"
+            >
+              마이페이지
+            </Link>
+            {userInfo ? (
+              <div className="relative group">
+                <span className="text-sm cursor-pointer text-gray-800">
+                  {userInfo.name}님
+                </span>
+                <div className="hidden group-hover:block absolute top-full right-0 mt-1 bg-white shadow-md rounded">
+                  <button
+                    onClick={logout}
+                    className="w-[4.5vw] p-3 text-sm text-left text-red-500 hover:text-red-700 hover:bg-gray-50"
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="text-sm text-gray-800 hover:text-gray-600"
+              >
+                로그인
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* 모바일 레이아웃 */}
+        <div className="md:hidden w-full flex justify-around items-center">
+          <Link to="/main" className="flex flex-col items-center">
+            <span className="text-lg">🗺️</span>
+            <span className="text-[10px] text-gray-800">예약하기</span>
           </Link>
-        )}
+          <Link to="/mypage" className="flex flex-col items-center">
+            <span className="text-lg">👤</span>
+            <span className="text-[10px] text-gray-800">마이페이지</span>
+          </Link>
+          {userInfo ? (
+            <div className="flex flex-col items-center">
+              <span className="text-lg">👋</span>
+              <span className="text-[10px] text-gray-800">
+                {userInfo.name}님
+              </span>
+            </div>
+          ) : (
+            <Link to="/login" className="flex flex-col items-center">
+              <span className="text-lg">🔑</span>
+              <span className="text-[10px] text-gray-800">로그인</span>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );
