@@ -2,35 +2,23 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        working-directory: ./foori
-        run: npm install
-
-      - name: Build
-        working-directory: ./foori
-        run: npm run build
-
+      
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master # scp-action 대신 ssh-action 사용
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo rm -rf /usr/share/nginx/html/*  # 기존 파일 제거
-            sudo cp -r ~/foori/dist/* /usr/share/nginx/html/  # 새 파일 복사
-            sudo systemctl restart nginx  # nginx 재시작
+            cd ~/Foori/foori
+            git pull origin main
+            docker-compose down
+            docker system prune -f
+            docker-compose up -d --build
