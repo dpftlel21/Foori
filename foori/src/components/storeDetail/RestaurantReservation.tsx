@@ -40,7 +40,7 @@ const RestaurantReservation = () => {
   const { placeId } = useParams();
   const placeDetail = useCrawledDataDetail(placeId);
   const placeInfo = placeDetail.data;
-  console.log('placeInfo', placeInfo);
+  //console.log('placeInfo', placeInfo);
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
 
   const openReservationModal = () => {

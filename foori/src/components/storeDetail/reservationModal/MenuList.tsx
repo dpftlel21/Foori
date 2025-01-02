@@ -2,17 +2,18 @@ import { useState } from 'react';
 
 interface MenuListProps {
   menus: {
+    id: number;
     name: string;
     price: number;
   }[];
-  selectedMenus: { [key: string]: number };
-  onQuantityChange: (menuName: string, change: number) => void;
+  selectedMenus: { [key: number]: number };
+  onQuantityChange: (menuId: number, change: number) => void;
 }
 
 // 스타일
 const STYLES = {
   menuButton: `
-    w-full p-4 flex justify-between items-center bg-white rounded-xl 
+    w-full p-4 flex justify-between items-center bg-white rounded-xl
     shadow-sm border border-gray-100 hover:border-[#e38994fb] transition-all duration-200
   `,
   modal: `
@@ -55,7 +56,7 @@ const STYLES = {
   `,
   quantityButton: `
     w-7 h-7 flex items-center justify-center rounded-full
-    border border-[#e38994fb] text-[#e38994fb] 
+    border border-[#e38994fb] text-[#e38994fb]
     hover:bg-[#e38994fb] hover:text-white transition-all duration-200
   `,
   quantityText: `
@@ -77,6 +78,8 @@ const MenuList = ({
 }: MenuListProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  //console.log('menus', menus);
+  //console.log('selectedMenus', selectedMenus);
   return (
     <>
       <button onClick={() => setIsOpen(true)} className={STYLES.menuButton}>
@@ -130,7 +133,7 @@ const MenuList = ({
             <div className={STYLES.menuListContainer}>
               <div className={STYLES.menuList}>
                 {menus.map((menu) => (
-                  <div key={menu.name} className={STYLES.menuItem}>
+                  <div key={menu.id} className={STYLES.menuItem}>
                     <div className={STYLES.menuInfo}>
                       <span className={STYLES.menuName}>{menu.name}</span>
                       <span className={STYLES.menuPrice}>
@@ -139,16 +142,16 @@ const MenuList = ({
                     </div>
                     <div className={STYLES.quantityControl}>
                       <button
-                        onClick={() => onQuantityChange(menu.name, -1)}
+                        onClick={() => onQuantityChange(menu.id, -1)}
                         className={STYLES.quantityButton}
                       >
                         -
                       </button>
                       <span className={STYLES.quantityText}>
-                        {selectedMenus[menu.name] || 0}
+                        {selectedMenus[menu.id] || 0}
                       </span>
                       <button
-                        onClick={() => onQuantityChange(menu.name, 1)}
+                        onClick={() => onQuantityChange(menu.id, 1)}
                         className={STYLES.quantityButton}
                       >
                         +

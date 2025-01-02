@@ -1,17 +1,49 @@
 import { useState } from 'react';
 
+// 시간대 타입 정의
+type TimePeriod = '오전' | '점심' | '오후';
+
+// 시간 슬롯 인터페이스
+interface TimeSlot {
+  displayTime: string; // 화면에 표시될 시간 (예: "2:00")
+  actualTime: Date; // 실제 Date 객체
+  period: TimePeriod;
+  isBreakTime: boolean;
+}
+
+// Props 인터페이스
 interface ReservationDetailProps {
   openTime: string;
   closeTime: string;
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
+  selectedTime: Date | null;
+  setSelectedTime: (time: Date | null) => void;
+  selectedMembers: number;
+  setSelectedMembers: (members: number) => void;
 }
 
-const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<
-    '오전' | '점심' | '오후'
-  >('오전');
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [selectedMembers, setSelectedMembers] = useState<string>('');
+const ReservationDetail = ({
+  openTime,
+  closeTime,
+  selectedDate,
+  selectedTime,
+  setSelectedTime,
+  selectedMembers,
+  setSelectedMembers,
+}: ReservationDetailProps) => {
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('오전');
 
+  // 구성원 옵션
+  const MEMBER_OPTIONS = [
+    { display: '2명', value: 2 },
+    { display: '3명', value: 3 },
+    { display: '4명', value: 4 },
+    { display: '5~6명', value: 6 },
+    { display: '6명 이상', value: 8 },
+  ] as const;
+
+  // 스타일 정의
   const STYLES = {
     container: 'w-full max-w-[400px]',
     title: 'text-lg font-bold mb-2',
@@ -46,7 +78,6 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
           : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
-
     memberButton: (isSelected: boolean) => `
       px-3
       py-1.5
@@ -59,15 +90,16 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
           : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
-  };
+  } as const;
 
-  const generateTimeSlots = () => {
-    const slots = [];
+  // 시간 슬롯 생성 함수
+  const generateTimeSlots = (): TimeSlot[] => {
+    const slots: TimeSlot[] = [];
     const start = parseInt(openTime.split(':')[0]);
     const end = parseInt(closeTime.split(':')[0]);
 
     for (let hour = start; hour < end; hour++) {
-      let period;
+      let period: TimePeriod;
       if (hour < 12) {
         period = '오전';
       } else if (hour >= 12 && hour < 14) {
@@ -79,20 +111,34 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
       const displayHour = hour > 12 ? hour - 12 : hour;
       const isBreakTime = hour >= 15 && hour < 17;
 
+      // 현재 날짜로 Date 객체 생성
+      const timeDate = selectedDate ? new Date(selectedDate) : new Date();
+      timeDate.setHours(hour, 0, 0, 0);
+
       slots.push({
-        time: `${displayHour}:00`,
-        period: period,
-        originalHour: hour,
-        isBreakTime: isBreakTime,
+        displayTime: `${displayHour}:00`,
+        actualTime: timeDate,
+        period,
+        isBreakTime,
       });
     }
     return slots;
   };
 
+  // 시간 슬롯 생성 및 필터링
   const timeSlots = generateTimeSlots();
   const filteredTimeSlots = timeSlots.filter(
     (slot) => slot.period === selectedPeriod,
   );
+
+  // 시간 비교 함수
+  const isSameTime = (time1: Date | null, time2: Date): boolean => {
+    if (!time1) return false;
+    return (
+      time1.getHours() === time2.getHours() &&
+      time1.getMinutes() === time2.getMinutes()
+    );
+  };
 
   return (
     <div className={STYLES.container}>
@@ -104,13 +150,11 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
 
       {/* 시간대 선택 */}
       <div className={STYLES.periodButtonContainer}>
-        {['오전', '점심', '오후'].map((period) => (
+        {(['오전', '점심', '오후'] as const).map((period) => (
           <button
             key={period}
             className={STYLES.periodButton(selectedPeriod === period)}
-            onClick={() =>
-              setSelectedPeriod(period as '오전' | '점심' | '오후')
-            }
+            onClick={() => setSelectedPeriod(period)}
           >
             {period}
           </button>
@@ -124,12 +168,12 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
             key={index}
             className={STYLES.timeButton(
               slot.isBreakTime,
-              selectedTime === slot.time,
+              isSameTime(selectedTime, slot.actualTime),
             )}
             disabled={slot.isBreakTime}
-            onClick={() => setSelectedTime(slot.time)}
+            onClick={() => setSelectedTime(slot.actualTime)}
           >
-            {slot.time}
+            {slot.displayTime}
           </button>
         ))}
       </div>
@@ -138,13 +182,13 @@ const ReservationDetail = ({ openTime, closeTime }: ReservationDetailProps) => {
       <div className={STYLES.sectionContainer}>
         <h2 className={STYLES.title}>구성원</h2>
         <div className={STYLES.memberButtonContainer}>
-          {['2명', '3명', '4명', '5~6명', '6명 이상'].map((count) => (
+          {MEMBER_OPTIONS.map((option) => (
             <button
-              key={count}
-              className={STYLES.memberButton(selectedMembers === count)}
-              onClick={() => setSelectedMembers(count)}
+              key={option.value}
+              className={STYLES.memberButton(selectedMembers === option.value)}
+              onClick={() => setSelectedMembers(option.value)}
             >
-              {count}
+              {option.display}
             </button>
           ))}
         </div>

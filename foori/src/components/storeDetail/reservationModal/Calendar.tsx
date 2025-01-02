@@ -1,18 +1,20 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import { useState } from 'react';
 import './CustomCalendar.css';
 
-const Calendar = () => {
+interface CalendarProps {
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
+}
+
+const Calendar = ({ selectedDate, setSelectedDate }: CalendarProps) => {
   const CalendarContainer =
     'w-[30vw] h-[35vh] flex justify-around items-center';
-  const [selectedDate, setSelectedDate] = useState<string>('');
 
   const handleDateClick = (arg: any) => {
-    // arg.dateStr은 'YYYY-MM-DD' 형식의 문자열입니다
-    setSelectedDate(arg.dateStr);
-    console.log('선택된 날짜:', arg.dateStr);
+    const clickedDate = new Date(arg.date);
+    setSelectedDate(clickedDate);
   };
 
   return (
@@ -25,8 +27,21 @@ const Calendar = () => {
           center: 'title',
           right: 'next',
         }}
-        dateClick={handleDateClick} // 날짜 클릭 이벤트 핸들러 추가
-        selectable={true} // 날짜 선택 가능하도록 설정
+        dateClick={handleDateClick}
+        selectable={true}
+        selectMirror={true}
+        initialDate={selectedDate || new Date()}
+        dayCellClassNames={(arg) => {
+          if (
+            selectedDate &&
+            arg.date.getDate() === selectedDate.getDate() &&
+            arg.date.getMonth() === selectedDate.getMonth() &&
+            arg.date.getFullYear() === selectedDate.getFullYear()
+          ) {
+            return 'fc-day-selected';
+          }
+          return [];
+        }}
       />
     </div>
   );

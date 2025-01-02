@@ -1,17 +1,30 @@
-import { useState } from 'react';
-import { useTossPay } from '../../../hooks/useTossPay';
+//import { useTossPay } from '../../../hooks/useTossPay';
 import MenuList from './MenuList';
-interface ReservationMenuProps {
-  menus: {
-    name: string;
-    price: number;
-  }[];
+
+// 메뉴 정보 타입 정의
+interface Menu {
+  id: number;
+  name: string;
+  price: number;
 }
 
-const ReservationMenu = ({ menus }: ReservationMenuProps) => {
-  const { handlePayment: handleTossPayment } = useTossPay();
+// Props 인터페이스 - 부모로부터 받는 상태와 상태 변경 함수들
+interface ReservationMenuProps {
+  menus: Menu[];
+  selectedMenus: { [menuId: number]: number };
+  setSelectedMenus: React.Dispatch<
+    React.SetStateAction<{ [menuId: number]: number }>
+  >;
+  handleBooking: () => void;
+}
 
-  // 스타일
+const ReservationMenu = ({
+  menus,
+  selectedMenus,
+  setSelectedMenus,
+  handleBooking,
+}: ReservationMenuProps) => {
+  // 스타일 정의
   const STYLES = {
     container: 'w-full h-full flex flex-col md:flex-row bg-gray-50',
     leftSection: 'w-full md:w-2/3 h-full flex flex-col p-4 space-y-4',
@@ -32,52 +45,52 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
     infoText: 'text-gray-600 text-sm',
   } as const;
 
-  // 선택된 메뉴
-  const [selectedMenus, setSelectedMenus] = useState<{
-    [key: string]: number;
-  }>({});
+  // 메뉴 수량 변경 핸들러
+  const handleQuantityChange = (menuId: number, change: number) => {
+    setSelectedMenus((prev) => {
+      const newQuantity = (prev[menuId] || 0) + change;
+      if (newQuantity <= 0) {
+        // menuId에 해당하는 항목만 제거
+        const { [menuId]: removed, ...rest } = prev;
+        return rest;
+      }
+      // menuId에 해당하는 수량만 업데이트
+      return { ...prev, [menuId]: newQuantity };
+    });
+  };
 
-  // 총 금액 계산
+  // 총 금액 계산 함수
   const calculateTotal = () => {
-    return Object.entries(selectedMenus).reduce(
-      (total, [menuName, quantity]) => {
-        const menu = menus.find((m) => m.name === menuName);
+    return Object.entries(selectedMenus || {}).reduce(
+      (total, [menuId, quantity]) => {
+        const menu = menus.find((m) => m.id === Number(menuId));
         return total + (menu?.price || 0) * quantity;
       },
       0,
     );
   };
 
-  // 메뉴 수량 변경
-  const handleQuantityChange = (menuName: string, change: number) => {
-    setSelectedMenus((prev) => {
-      const newQuantity = (prev[menuName] || 0) + change;
-      if (newQuantity <= 0) {
-        const { [menuName]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [menuName]: newQuantity };
-    });
-  };
+  // Toss 결제 훅
+  //const { handlePayment: handleTossPayment } = useTossPay();
 
-  // 결제하기
-  const handlePayment = () => {
-    handleTossPayment({
-      amount: calculateTotal(),
-      orderId: '1234567890',
-      orderName: '예약 결제',
-      customerName: '홍길동',
-    });
-  };
+  // 결제 처리 핸들러 (재곤이 결제 끝나면 바꿔치기,, 현재는 handleBooking 함수(더미)로 대체)
+  // const handlePayment = () => {
+  //   handleTossPayment({
+  //     amount: calculateTotal(),
+  //     orderId: '1234567890',
+  //     orderName: '예약 결제',
+  //     customerName: '홍길동',
+  //   });
+  // };
 
   return (
     <div className={STYLES.container}>
-      {/* 왼쪽 섹션 */}
+      {/* 왼쪽 섹션 - 메뉴 목록 */}
       <div className={STYLES.leftSection}>
         <MenuList
           menus={menus}
           selectedMenus={selectedMenus}
-          onQuantityChange={handleQuantityChange}
+          onQuantityChange={handleQuantityChange} // 수량 변경 함수
         />
 
         {/* 결제/예약 섹션 */}
@@ -91,7 +104,7 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
                     {calculateTotal().toLocaleString()}원
                   </span>
                 </p>
-                <button onClick={handlePayment} className={STYLES.button}>
+                <button onClick={handleBooking} className={STYLES.button}>
                   결제하기
                 </button>
               </>
@@ -102,7 +115,7 @@ const ReservationMenu = ({ menus }: ReservationMenuProps) => {
         </div>
       </div>
 
-      {/* 오른쪽 안내사항 섹션 */}
+      {/* 오른쪽 섹션 - 안내사항 */}
       <div className={STYLES.rightSection}>
         <div className={STYLES.infoContainer}>
           <h2 className={STYLES.infoTitle}>안내사항</h2>
