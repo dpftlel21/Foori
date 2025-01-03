@@ -1,7 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
-const FoodFilter = () => {
+interface FoodFilterProps {
+  onCategorySelect: (category: string | null) => void;
+}
+
+const FoodFilter = ({ onCategorySelect }: FoodFilterProps) => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   const categories = {
@@ -16,6 +20,10 @@ const FoodFilter = () => {
         { icon: '🥗', text: '#샐러드', color: '#4CAF50' },
         { icon: '🍰', text: '#디저트', color: '#FF69B4' },
         { icon: '☕', text: '#카페', color: '#F874A7' },
+        { icon: '🍔', text: '#패스트푸드', color: '#b47cdf' },
+        { icon: '🍗', text: '#치킨', color: '#ff800b' },
+        { icon: '🍲', text: '#분식', color: '#ce2f2f' },
+        { icon: '🍺', text: '#술집', color: '#2cad48' },
       ],
     },
     mood: {
@@ -33,18 +41,28 @@ const FoodFilter = () => {
     },
   } as const;
 
+  const handleCategoryClick = (key: string) => {
+    if (expandedCategory === key) {
+      setExpandedCategory(null);
+      onCategorySelect(null);
+    } else {
+      setExpandedCategory(key);
+    }
+  };
+
+  const handleItemClick = (text: string) => {
+    const category = text.replace('#', '');
+    onCategorySelect(category);
+  };
+
   return (
     <div className="w-full max-w-[60%] mx-auto space-y-4">
       <div className="flex gap-4 w-full">
         {Object.entries(categories).map(([key, category]) => (
           <motion.button
             key={key}
-            onClick={() =>
-              setExpandedCategory(expandedCategory === key ? null : key)
-            }
-            className={`px-5 py-2 rounded-lg shadow-md transition-all text-center
-            w-[180px] text-sm  // 너비와 텍스트 크기 조정
-            ${
+            onClick={() => handleCategoryClick(key)}
+            className={`px-5 py-2 rounded-lg shadow-md transition-all text-center w-[180px] text-sm ${
               expandedCategory === key ? 'bg-[#FF800B] text-white' : 'bg-white'
             }`}
             whileHover={{ scale: 1.02 }}
@@ -55,7 +73,6 @@ const FoodFilter = () => {
         ))}
       </div>
 
-      {/* 확장된 카테고리 내용 */}
       <AnimatePresence>
         {expandedCategory && (
           <motion.div
@@ -65,12 +82,13 @@ const FoodFilter = () => {
             transition={{ duration: 0.3 }}
             className="overflow-hidden w-full"
           >
-            <div className="h-[90px] grid grid-cols-4 md:grid-cols-8 gap-2 p-2 bg-white rounded-lg shadow-md">
+            <div className="h-[90px] grid grid-cols-4 md:grid-cols-12 gap-2 p-2 bg-white rounded-lg shadow-md">
               {categories[
                 expandedCategory as keyof typeof categories
               ].items.map((item, index) => (
                 <motion.button
                   key={index}
+                  onClick={() => handleItemClick(item.text)}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: index * 0.05 }}

@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const FeaturedCollections = () => {
+  const navigate = useNavigate();
+
   const todayCategories = [
     { icon: '🍖', name: '한식' },
     { icon: '🍣', name: '일식' },
@@ -10,6 +13,10 @@ const FeaturedCollections = () => {
     { icon: '🥗', name: '샐러드' },
     { icon: '🍰', name: '디저트' },
     { icon: '☕', name: '카페' },
+    { icon: '🍔', name: '패스트푸드' },
+    { icon: '🍗', name: '치킨' },
+    { icon: '🍲', name: '분식' },
+    { icon: '🍺', name: '술집' },
   ];
 
   const moodCategories = [
@@ -41,6 +48,13 @@ const FeaturedCollections = () => {
     },
   };
 
+  const handleCategoryClick = (category: string) => {
+    navigate('/main', {
+      state: { selectedCategory: category },
+      replace: true,
+    });
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 space-y-12">
       {/* 오늘 뭐 먹지? 섹션 */}
@@ -63,6 +77,7 @@ const FeaturedCollections = () => {
             <motion.button
               key={index}
               variants={itemVariants}
+              onClick={() => handleCategoryClick(category.name)}
               whileHover={{
                 scale: 1.05,
                 backgroundColor: '#FFF5E9',
@@ -99,13 +114,14 @@ const FeaturedCollections = () => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          분위기로 찾기 ✨
+          분위기로 찾기 🌟
         </motion.h2>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
           {moodCategories.map((category, index) => (
             <motion.button
               key={index}
               variants={itemVariants}
+              onClick={() => handleCategoryClick(category.name)}
               whileHover={{
                 scale: 1.05,
                 backgroundColor: '#FFF5E9',

@@ -8,6 +8,7 @@ import MarkerOverlay from './marker/MarkerOverlay';
 
 interface KaKaoMapProps {
   keyword: string;
+  category: string | null;
 }
 
 interface CrawledData {
@@ -23,13 +24,16 @@ interface CrawledData {
   y: string;
 }
 
-const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
+const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
   // 카카오맵 데이터
   const { places, selectedPlace, setSelectedPlace, center, moveCurrent } =
-    useKakaoMap(keyword);
+    useKakaoMap({ keyword, category });
 
   // 크롤링 한 데이터
   const { data } = useCrawledData();
+
+  //console.log('places', places);
+  //console.log('data', data);
 
   // 크롤링 데이터와 카카오맵 데이터 매칭
   const matchedPlaces = places.filter((place) =>
@@ -37,6 +41,8 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
       (crawledData: CrawledData) => crawledData.name === place.place_name,
     ),
   );
+
+  //console.log('matchedPlaces', matchedPlaces);
 
   const navigate = useNavigate();
 
@@ -118,7 +124,7 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
           />
         </motion.button>
 
-        {/* 로딩 인디케이터 (선택사항) */}
+        {/* 로딩 인디케이터 */}
         {places.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -126,7 +132,7 @@ const KaKaoMap = ({ keyword }: KaKaoMapProps) => {
             className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
           >
             <div className="text-lg text-gray-600">
-              {keyword ? '검색 중...' : '장소를 검색해주세요'}
+              {keyword || category ? '검색 중...' : '장소를 검색해주세요'}
             </div>
           </motion.div>
         )}

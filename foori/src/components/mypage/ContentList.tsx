@@ -1,64 +1,89 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom'; // 추가
+import { useLocation } from 'react-router-dom';
 import { useMyPage } from '../../contexts/MyPageContext';
+import BookingStatus from './booking/BookingStatus';
 import Consumption from './consumption/Consumption';
 import EditProfile from './profile/EditProfile';
-import ReservationStatus from './reservation/ReservationStatus';
 import Review from './review/Review';
 
 const ContentList = () => {
-  const location = useLocation(); // 현재 경로 확인용
+  const location = useLocation();
   const { currentTab, setCurrentTab } = useMyPage();
   const [content, setContent] = useState<string>('editProfile');
 
   useEffect(() => {
-    // 직접 /mypage로 접근하거나 네비게이션 메뉴를 통해 접근할 때
     if (location.state?.from !== 'features') {
       setContent('editProfile');
       setCurrentTab('editProfile');
-    }
-    // FeaturesSection에서 넘어온 경우
-    else if (currentTab === 'consumption' || currentTab === 'review') {
+    } else if (currentTab === 'consumption' || currentTab === 'review') {
       setContent(currentTab);
     }
   }, [location, currentTab, setCurrentTab]);
 
-  const ContentList =
-    'w-[5vw] h-[3vh] flex justify-center text-center hover:bg-[#D87373] transition duration-500 ease-in-out';
-
   const Menu = [
-    { id: 'editProfile', text: '프로필 수정' },
-    { id: 'reservation', text: '예약 현황' },
-    { id: 'consumption', text: '소비 분석' },
-    { id: 'review', text: '내가 쓴 리뷰' },
+    {
+      id: 'editProfile',
+      text: '프로필 수정',
+      icon: '👤',
+    },
+    {
+      id: 'booking',
+      text: '예약 현황',
+      icon: '📅',
+    },
+    {
+      id: 'consumption',
+      text: '소비 분석',
+      icon: '📊',
+    },
+    {
+      id: 'review',
+      text: '내가 쓴 리뷰',
+      icon: '✍️',
+    },
   ];
 
   const List = {
     editProfile: <EditProfile />,
-    reservation: <ReservationStatus />,
+    booking: <BookingStatus />,
     consumption: <Consumption />,
     review: <Review />,
   };
 
   return (
-    <div className="flex">
-      <ul className="w-[7vw] h-[50vh] flex flex-col cursor-pointer shadow-lg border-r-2 border-solid border-[#EE6677]">
-        {Menu.map((item) => (
-          <li
-            key={item.id}
-            className={ContentList}
-            onClick={() => {
-              setContent(item.id);
-              if (item.id === 'consumption' || item.id === 'review') {
-                setCurrentTab(item.id as 'consumption' | 'review');
-              }
-            }}
-          >
-            {item.text}
-          </li>
-        ))}
-      </ul>
-      <div className="flex-1">{List[content as keyof typeof List]}</div>
+    <div className="w-[93%] flex flex-start h-full">
+      {/* 사이드 메뉴 */}
+      <div className="w-[15%] flex flex-col flex-start items-center p-2 border-r-2 border-solid border-[#EE6677]">
+        <div className="p-6">
+          <nav className="space-y-1">
+            {Menu.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setContent(item.id);
+                  if (item.id === 'consumption' || item.id === 'review') {
+                    setCurrentTab(item.id as 'consumption' | 'review');
+                  }
+                }}
+                className={`w-full px-4 py-3 flex items-center gap-3 rounded-lg transition-colors duration-200
+                  ${
+                    content === item.id
+                      ? 'bg-pink-50 text-pink-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium">{item.text}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* 컨텐츠 영역 */}
+      <div className="w-[85%] flex flex-col flex-start overflow-auto">
+        {List[content as keyof typeof List]}
+      </div>
     </div>
   );
 };
