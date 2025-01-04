@@ -93,7 +93,7 @@ export const useAuth = () => {
           credentials: 'include',
         },
       );
-      //console.log("소셜 응답", response);
+      console.log('소셜 응답', response);
       return response.json();
     },
     onSuccess: (data: OauthResponse) => {
@@ -121,6 +121,7 @@ export const useAuth = () => {
   >({
     mutationFn: async ({ code, provider }) => {
       const token = cookieStorage.getToken();
+      console.log('token', token);
       const response = await fetch(
         `${import.meta.env.VITE_CON_URL}/${provider}/callback?code=${code}`,
         {

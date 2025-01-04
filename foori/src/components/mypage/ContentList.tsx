@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMyPage } from '../../contexts/MyPageContext';
-import BookingStatus from './booking/BookingStatus';
+import BookingCalendar from './booking/BookingCalendar';
 import Consumption from './consumption/Consumption';
 import EditProfile from './profile/EditProfile';
 import Review from './review/Review';
@@ -45,7 +45,7 @@ const ContentList = () => {
 
   const List = {
     editProfile: <EditProfile />,
-    booking: <BookingStatus />,
+    booking: <BookingCalendar />,
     consumption: <Consumption />,
     review: <Review />,
   };
