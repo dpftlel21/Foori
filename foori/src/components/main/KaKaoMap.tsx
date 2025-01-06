@@ -57,11 +57,7 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
       );
 
       if (crawledPlace) {
-        navigate(`/detail/${crawledPlace.id}`, {
-          state: {
-            placeInfo: crawledPlace,
-          },
-        });
+        navigate(`/detail/${crawledPlace.id}`);
       }
     }
   };

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Header from '../components/header/Header';
 import FeaturesSection from '../components/home/FeaturesSection';
 import Footer from '../components/home/Footer';
 import HeroSection from '../components/home/HeroSection';
@@ -16,8 +15,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#FFE4D6]">
-      <Header />
-
       {/* 히어로 섹션 */}
       <HeroSection />
 

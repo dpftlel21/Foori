@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Header from '../components/header/Header';
 import FoodFilter from '../components/main/FoodFilter';
 import KaKaoMap from '../components/main/KaKaoMap';
 import SearchPlace from '../components/main/SearchPlace';
@@ -45,8 +44,7 @@ const Main = () => {
   //console.log('Current location state:', location.state);
 
   return (
-    <main className="w-full h-screen flex flex-col gap-8 items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
-      <Header />
+    <main className="w-full h-[91.52dvh] flex flex-col  gap-8 items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
       <SearchPlace onSearch={handleSearch} />
       <FoodFilter onCategorySelect={handleCategorySelect} />
       <KaKaoMap keyword={keyword} category={selectedCategory} />

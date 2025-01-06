@@ -15,6 +15,7 @@ export interface BookingListResponse {
     postalCode: string;
     telNum: string;
   };
+  isReviewed: number;
 }
 
 export interface BookingDetailResponse

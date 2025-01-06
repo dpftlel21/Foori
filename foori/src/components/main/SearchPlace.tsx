@@ -13,7 +13,7 @@ const SearchPlace = ({ onSearch }: SearchPlaceProps) => {
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="w-full max-w-[60%] mx-auto flex gap-2"
+      className="w-full mt-[3%] max-w-[60%] mx-auto flex gap-2"
       onSubmit={(e) => {
         e.preventDefault();
         onSearch(keyword);

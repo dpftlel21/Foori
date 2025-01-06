@@ -9,4 +9,5 @@ export const RouteConst = {
   KaKaoCallback: '/callback/kakao', // OAuth 콜백
   NaverCallback: '/callback/naver', // OAuth 콜백
   GoogleCallback: '/callback/google', // OAuth 콜백
+  WriteReview: '/review/:bookingId', // 리뷰
 };

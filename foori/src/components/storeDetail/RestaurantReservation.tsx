@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCrawledDataDetail } from '../../api/crawledData';
 import Icon from '../../assets/images/icon.png';
 import ReservationModal from './reservationModal/ReservationModal';
-
+import RestaurantReview from './reviewList/RestaurantReview';
 const RestaurantReservation = () => {
   const DetailContainer =
     'w-[95%] md:w-[80%] h-[90%] md:h-[80%] flex flex-col justify-around bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677]';
@@ -30,16 +30,11 @@ const RestaurantReservation = () => {
   const ButtonStyle =
     'w-[100px] md:w-[120px] h-[35px] md:h-[40px] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out font-bold';
 
-  // 리뷰 스타일링
-  const Review =
-    'w-full md:w-[50%] h-[100%] flex flex-col justify-around overflow-scroll overflow-x-hidden';
-  const ReviewLi =
-    'w-full h-[20%] flex justify-around items-center bg-[#F0CCCC] mb-2';
-
   // 파라미터 받아와서, 상세 조회
   const { placeId } = useParams();
   const placeDetail = useCrawledDataDetail(placeId);
   const placeInfo = placeDetail.data;
+
   //console.log('placeInfo', placeInfo);
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
 
@@ -96,18 +91,7 @@ const RestaurantReservation = () => {
           <h1 className="mb-[2%] border-b-2 border-solid border-[#e38994fb] text-base md:text-lg font-bold">
             리뷰 목록
           </h1>
-          {/* 리뷰 */}
-          <ul className={Review}>
-            {/* {placeInfo?.reviews.map((review: any) => (
-              <li className={ReviewLi} key={review.id}>
-                {review.content}
-              </li>
-            ))} */}
-            <li className={ReviewLi}></li>
-            <li className={ReviewLi}></li>
-            <li className={ReviewLi}></li>
-            <li className={ReviewLi}></li>
-          </ul>
+          <RestaurantReview restaurantId={Number(placeInfo.id)} />
         </div>
       </div>
 

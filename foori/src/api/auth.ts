@@ -10,7 +10,7 @@ import {
   SignUpResponse,
 } from './global.type';
 
-// 일반 로그인, 회원가입, 이메일 인증
+// 일반 로그인, 회원가입, 이메일 인증, 이메일 검증
 export const useAuth = () => {
   const navigate = useNavigate();
 
@@ -20,6 +20,14 @@ export const useAuth = () => {
       postData('api/mail/send-verification', { email }),
     onError: (error) => {
       console.error('이메일 인증 에러:', error);
+    },
+  });
+
+  // 이메일 검증 mutation
+  const verifyCodeMutation = useMutation({
+    mutationFn: (code: string) => postData('api/mail/verify-code', { code }),
+    onError: (error) => {
+      console.error('이메일 검증 에러:', error);
     },
   });
 
@@ -42,6 +50,9 @@ export const useAuth = () => {
     queryKey: ['userInfo'],
     queryFn: async () => {
       const token = cookieStorage.getToken();
+      if (!token) {
+        throw new Error('토큰이 없습니다');
+      }
       const response = await fetch('api/users/user-profile', {
         method: 'GET',
         headers: {
@@ -50,16 +61,17 @@ export const useAuth = () => {
         },
         credentials: 'include',
       });
-      //console.log("response", response);
       if (!response.ok) {
         throw new Error('사용자 정보를 가져오는데 실패했습니다');
       }
-
       return response.json();
     },
     enabled: !!cookieStorage.getToken(),
     staleTime: 1000 * 60 * 5, // 5분
     cacheTime: 1000 * 60 * 30, // 30분
+    refetchOnWindowFocus: false, // 창 포커스 시 재요청 방지
+    refetchInterval: false, // 주기적 재요청 방지
+    refetchOnMount: false, // 컴포넌트 마운트 시 재요청 방지
   });
 
   // 회원가입 mutation
@@ -176,6 +188,7 @@ export const useAuth = () => {
 
   return {
     verifyEmailMutation,
+    verifyCodeMutation,
     loginMutation,
     registerMutation,
     userInfoQuery,

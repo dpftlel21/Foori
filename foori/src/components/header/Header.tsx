@@ -7,6 +7,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { userInfoQuery } = useAuth();
   const userInfo = userInfoQuery.data;
+  //console.log('userInfo', userInfo);
 
   const logout = () => {
     cookieStorage.removeToken();
@@ -16,7 +17,7 @@ const Header = () => {
   return (
     <header
       className={`
-  w-full h-[10vh] md:h-[80px]
+  w-full h-[20%] md:h-[80px]
   transition-all duration-300
 
   /* 모바일 스타일 */
