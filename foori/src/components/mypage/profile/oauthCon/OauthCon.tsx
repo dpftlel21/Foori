@@ -1,7 +1,7 @@
-import { ActionType } from '../../../../api/global.type';
 import googleLogo from '../../../../assets/images/google.jpg';
 import kakaoLogo from '../../../../assets/images/kakao.jpg';
 import naverLogo from '../../../../assets/images/naver.jpg';
+import { ActionType } from '../../../../types/auth.type';
 
 const OauthCon = ({ actionType }: { actionType: ActionType }) => {
   const buttonStyle =

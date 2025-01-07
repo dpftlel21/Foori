@@ -1,4 +1,4 @@
-import { ActionType } from '../../../api/global.type';
+import { ActionType } from '../../../types/auth.type';
 
 const OauthLogin = ({ actionType }: { actionType: ActionType }) => {
   const kakaoButtonStyle =

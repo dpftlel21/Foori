@@ -1,14 +1,14 @@
 import { useMutation, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { postData } from './api';
-import { cookieStorage } from './cookies';
 import {
   LoginData,
   LoginResponse,
   OauthResponse,
   SignUpData,
   SignUpResponse,
-} from './global.type';
+} from '../types/auth.type';
+import { postData } from './api';
+import { cookieStorage } from './cookies';
 
 // 일반 로그인, 회원가입, 이메일 인증, 이메일 검증
 export const useAuth = () => {

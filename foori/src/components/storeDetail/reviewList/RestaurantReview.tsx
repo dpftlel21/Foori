@@ -1,87 +1,54 @@
-import { useEffect, useState } from 'react';
-import { getReview } from '../../../api/review';
+import { useState } from 'react';
+import ReviewPanel from './ReviewPanel';
+import ReviewPreview from './ReviewPreview';
 
-interface Review {
-  id: number;
-  rating: number;
-  content: string;
-  createdAt: string;
-  images?: string[];
-  user: {
-    nickname: string;
-  };
-}
-
-interface RestaurantReviewProps {
+interface ReviewProps {
   restaurantId: number;
 }
 
-const RestaurantReview = ({ restaurantId }: RestaurantReviewProps) => {
-  console.log('restaurantId', restaurantId);
-  const [reviews, setReviews] = useState<Review[]>([]);
+// 더미 데이터
+const DUMMY_REVIEWS = Array(10)
+  .fill(null)
+  .map((_, i) => ({
+    id: i + 1,
+    rating: Math.floor(Math.random() * 5) + 1,
+    content: `맛있어요! 정말 좋았습니다. 특히 서비스가 너무 좋았고, 음식도 맛있었어요. ${
+      i + 1
+    }번째 리뷰입니다.`,
+    images: i % 2 === 0 ? ['/dummy-food-1.jpg', '/dummy-food-2.jpg'] : [],
+    author: `사용자${i + 1}`,
+    createdAt: new Date(2024, 0, i + 1).toISOString(),
+  }));
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const data = await getReview(restaurantId);
-        setReviews(data);
-      } catch (error) {
-        console.error('리뷰 조회 실패:', error);
-      }
-    };
+const RestaurantReview = ({ restaurantId }: ReviewProps) => {
+  const [isFullView, setIsFullView] = useState(false);
+  const [sortBy, setSortBy] = useState<'latest' | 'rating'>('latest');
 
-    fetchReviews();
-  }, [restaurantId]);
+  const sortedReviews = [...DUMMY_REVIEWS].sort((a, b) => {
+    if (sortBy === 'latest') {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    return b.rating - a.rating;
+  });
+
+  const previewReviews = sortedReviews.slice(0, 3);
 
   return (
-    <div className="w-full h-full overflow-y-auto space-y-4 p-2">
-      {reviews?.length > 0 ? (
-        reviews.map((review) => (
-          <div
-            key={review.id}
-            className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 hover:border-pink-200 transition-all duration-300"
-          >
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <span className="font-medium text-gray-900">
-                  {review.user.nickname}
-                </span>
-                <span className="text-gray-500 text-sm ml-2">
-                  {new Date(review.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-yellow-400">
-                  {'★'.repeat(review.rating)}
-                </span>
-                <span className="text-gray-300">
-                  {'☆'.repeat(5 - review.rating)}
-                </span>
-              </div>
-            </div>
+    <>
+      <ReviewPreview
+        reviews={previewReviews}
+        totalCount={DUMMY_REVIEWS.length}
+        onShowAll={() => setIsFullView(true)}
+      />
 
-            <p className="text-gray-700 mb-3">{review.content}</p>
-
-            {review.images && review.images.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {review.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`리뷰 이미지 ${index + 1}`}
-                    className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg flex-shrink-0"
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ))
-      ) : (
-        <div className="text-center text-gray-500 py-8">
-          아직 작성된 리뷰가 없습니다.
-        </div>
-      )}
-    </div>
+      <ReviewPanel
+        isOpen={isFullView}
+        onClose={() => setIsFullView(false)}
+        reviews={sortedReviews}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+      />
+    </>
   );
 };
 

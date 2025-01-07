@@ -1,8 +1,13 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+
+module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      rotate: {
+        'y-45': '45deg',
+      },
+    },
   },
   animation: {
     slideIn: {
@@ -10,5 +15,5 @@ export default {
       '100%': { transform: 'translateX(0)' },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

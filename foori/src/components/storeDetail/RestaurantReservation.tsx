@@ -1,104 +1,93 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCrawledDataDetail } from '../../api/crawledData';
-import Icon from '../../assets/images/icon.png';
 import ReservationModal from './reservationModal/ReservationModal';
 import RestaurantReview from './reviewList/RestaurantReview';
+
 const RestaurantReservation = () => {
-  const DetailContainer =
-    'w-[95%] md:w-[80%] h-[90%] md:h-[80%] flex flex-col justify-around bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677]';
-
-  // common
-  const ReviewContent = 'w-full h-[40%] md:h-[45%] flex flex-col justify-start';
-  const StoreImgContainer =
-    'w-full h-auto md:h-[10%] flex justify-start items-center py-4 md:py-0';
-
-  const Content =
-    'w-full h-auto md:h-[30%] p-[3%] md:p-[1.5%] flex flex-col justify-between';
-  const StoreInfoContainer =
-    'w-full flex flex-col md:flex-row justify-between items-start md:items-center';
-  const StoreTitleContainer =
-    'w-full md:w-[20vw] flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-0 mb-4 md:mb-0';
-
-  const StoreName =
-    'text-lg md:text-xl font-bold border-b-2 border-solid border-[#e38994fb]';
-  const Category = 'text-sm text-[#FF800B] font-semibold md:ml-2';
-  const Rating = 'md:ml-[13%] font-bold';
-  const InfoText = 'mb-3 font-bold text-sm md:text-base';
-  const OpenTimeText = 'mb-3 font-bold text-base md:text-lg';
-  const BreakTimeText = 'mb-3 font-bold text-base md:text-lg text-[#d82035fa]';
-  const ButtonStyle =
-    'w-[100px] md:w-[120px] h-[35px] md:h-[40px] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out font-bold';
-
-  // 파라미터 받아와서, 상세 조회
   const { placeId } = useParams();
   const placeDetail = useCrawledDataDetail(placeId);
   const placeInfo = placeDetail.data;
-
-  //console.log('placeInfo', placeInfo);
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
 
-  const openReservationModal = () => {
-    setIsReservationModalOpen(true);
-  };
-
-  const closeReservationModal = () => {
-    setIsReservationModalOpen(false);
-  };
-
   return (
-    <div className="w-full h-[92%] flex justify-center items-center p-4">
-      <div className={DetailContainer}>
-        {/* 가게 정보, 예약버튼 */}
-        <div className={Content}>
-          <div className={StoreInfoContainer}>
-            {/* 가게명, 카테고리, 평점 */}
-            <div className={StoreTitleContainer}>
-              <h1 className={StoreName}>{placeInfo?.name}</h1>
-              <span className={Category}>{placeInfo?.category}</span>
-              <h1 className={Rating}>평점 : {placeInfo?.rating_avg} / 5.0</h1>
+    <div className="w-full h-[92dvh] flex justify-center items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
+      <div className="w-[50%] h-[80%] bg-white rounded-xl shadow-lg border-solid border-2 border-[#EE6677]">
+        {/* 상단 정보 섹션 */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            {/* 가게 기본 정보 */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold text-gray-800">
+                  {placeInfo?.name}
+                </h1>
+                <span className="px-2 py-1 bg-[#FF800B]/10 text-[#FF800B] rounded-full text-sm font-medium">
+                  {placeInfo?.category}
+                </span>
+              </div>
+              <div className="text-lg font-semibold text-gray-600">
+                평점: {placeInfo?.rating_avg} / 5.0
+              </div>
             </div>
 
             {/* 예약 버튼 */}
-            <button className={ButtonStyle} onClick={openReservationModal}>
+            <button
+              onClick={() => setIsReservationModalOpen(true)}
+              className="px-6 py-2.5 bg-[#FF800B] text-white rounded-lg
+                hover:bg-[#fcb69f] transition duration-300 font-medium
+                shadow-sm hover:shadow-md"
+            >
               예약하기
             </button>
           </div>
 
-          {/* 가게 주소, 오픈 시간, 브레이크 타임 */}
-          <div className="mt-4">
-            <h1 className={InfoText}>가게 주소 : {placeInfo?.address}</h1>
-            <h1 className={OpenTimeText}>
-              오픈 시간 :{' '}
-              {placeInfo?.openTime?.split(':').slice(0, 2).join(':')} ~{' '}
-              {placeInfo?.closeTime?.split(':').slice(0, 2).join(':')}
-            </h1>
-            <h1 className={BreakTimeText}>브레이크 타임 : 15:00 ~ 17:00</h1>
+          {/* 상세 정보 */}
+          <div className="mt-6 space-y-3">
+            <div className="flex items-start gap-2">
+              <span className="font-medium text-gray-700 min-w-[80px]">
+                주소
+              </span>
+              <span className="text-gray-600">{placeInfo?.address}</span>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <span className="font-medium text-gray-700 min-w-[80px]">
+                영업시간
+              </span>
+              <span className="text-gray-600">
+                {placeInfo?.openTime?.split(':').slice(0, 2).join(':')} ~{' '}
+                {placeInfo?.closeTime?.split(':').slice(0, 2).join(':')}
+              </span>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <span className="font-medium text-gray-700 min-w-[80px]">
+                브레이크타임
+              </span>
+              <span className="text-[#d82035]">15:00 ~ 17:00</span>
+            </div>
           </div>
         </div>
 
-        {/* 가게 이미지 */}
-        <div className={StoreImgContainer}>
-          <img
-            src={Icon}
-            alt="storeImage"
-            className="w-[30%] md:w-[15%] h-[100%] rounded-xl"
-          />
-        </div>
-
-        {/* 리뷰 목록 */}
-        <div className={ReviewContent}>
-          <h1 className="mb-[2%] border-b-2 border-solid border-[#e38994fb] text-base md:text-lg font-bold">
-            리뷰 목록
-          </h1>
-          <RestaurantReview restaurantId={Number(placeInfo.id)} />
+        {/* 리뷰 섹션 */}
+        <div className="p-6">
+          <div className="border-b border-gray-200 pb-4 mb-6">
+            <h2 className="text-xl font-bold text-gray-800">리뷰 목록</h2>
+            <p className="text-sm text-gray-500 mt-1">
+              방문하신 고객님들의 생생한 리뷰를 확인해보세요
+            </p>
+          </div>
+          <div className="max-h-[300px] overflow-y-auto">
+            <RestaurantReview restaurantId={Number(placeId)} />
+          </div>
         </div>
       </div>
 
       {/* 예약 모달 */}
       <ReservationModal
         isOpen={isReservationModalOpen}
-        onClose={closeReservationModal}
+        onClose={() => setIsReservationModalOpen(false)}
         placeInfo={placeInfo}
       />
     </div>
