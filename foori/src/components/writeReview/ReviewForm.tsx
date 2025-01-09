@@ -1,129 +1,130 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createReview } from '../../api/review';
+import { useToast } from '../../contexts/ToastContext';
+import ImageUpload from './ImageUpload';
+import StarRating from './StarRating';
 
 interface ReviewFormProps {
   bookingId: number;
   onCancel: () => void;
-  onSubmit: (review: Review) => void;
 }
 
-interface Review {
-  rating: number;
-  content: string;
-  bookingId: number;
-  images?: File[];
-}
-
-const ReviewForm = ({ bookingId, onCancel, onSubmit }: ReviewFormProps) => {
+const ReviewForm = ({ bookingId, onCancel }: ReviewFormProps) => {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
   const [images, setImages] = useState<File[]>([]);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImages([...images, ...Array.from(e.target.files)]);
+  const STYLES = {
+    container: 'w-full max-w-[600px] mx-auto p-6 bg-white rounded-lg shadow-md',
+    title: 'text-2xl font-bold text-center mb-6',
+    form: 'space-y-6',
+    label: 'block text-gray-700 text-sm font-medium mb-2',
+    textarea: `w-full h-32 p-3 border rounded-lg resize-none
+               focus:ring-2 focus:ring-[#FF800B] focus:outline-none`,
+    button: `w-full py-3 bg-[#FF800B] text-white rounded-lg
+             hover:bg-[#fcb69f] transition-all duration-300
+             disabled:opacity-50 hover:-translate-y-0.5
+             hover:shadow-lg hover:shadow-[#FF800B]/30`,
+    error: 'text-red-500 text-sm mt-1',
+    ratingContainer: 'flex items-center gap-2',
+    ratingLabel: 'text-gray-700 text-sm font-medium',
+    characterCount: 'text-right text-sm text-gray-500',
+    imageSection: 'space-y-2',
+  } as const;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 별점 유효성 검사 추가
+    if (rating < 1 || rating > 5) {
+      showToast('별점은 1점에서 5점 사이여야 합니다.', 'error');
+      return;
+    }
+
+    if (content.trim() === '') {
+      showToast('리뷰 내용을 입력해주세요.', 'error');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const reviewData = {
+        rating,
+        content,
+        bookingId,
+        images,
+      };
+
+      await createReview(reviewData);
+      showToast('리뷰가 성공적으로 등록되었습니다.', 'success');
+      navigate('/mypage');
+    } catch (error) {
+      console.error('리뷰 등록 에러:', error);
+      showToast('리뷰 등록에 실패했습니다.', 'error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+  const handleImageChange = (files: File[]) => {
+    if (files.length + images.length > 3) {
+      showToast('이미지는 최대 3개까지 업로드할 수 있습니다.', 'error');
+      return;
+    }
+    setImages((prev) => [...prev, ...files]);
   };
 
-  const handleSubmit = () => {
-    onSubmit({ rating, content, bookingId, images });
+  const handleImageRemove = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md space-y-6">
-      <p className="text-sm text-gray-600 mb-6">
-        리뷰 작성 시 매너있는 표현을 사용해주세요. 작성하신 리뷰는 수정이
-        불가능합니다.
-      </p>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          별점
-        </label>
-        <div className="flex">
-          {[...Array(5)].map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setRating(index + 1)}
-              className={`w-8 h-8 ${
-                index < rating ? 'text-yellow-400' : 'text-gray-300'
-              }`}
-            >
-              ★
-            </button>
-          ))}
+    <div className={STYLES.container}>
+      <h2 className={STYLES.title}>리뷰 작성</h2>
+      <form onSubmit={handleSubmit} className={STYLES.form}>
+        {/* 별점 선택 */}
+        <div className={STYLES.ratingContainer}>
+          <label className={STYLES.ratingLabel}>별점</label>
+          <StarRating rating={rating} setRating={setRating} />
+          <span className="text-sm text-gray-500">({rating}/5)</span>
         </div>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          리뷰 내용
-        </label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF800B] focus:border-transparent"
-          placeholder="리뷰를 작성해주세요"
-        />
-      </div>
+        {/* 리뷰 내용 */}
+        <div>
+          <label htmlFor="content" className={STYLES.label}>
+            리뷰 내용
+          </label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="리뷰를 작성해주세요"
+            className={STYLES.textarea}
+            maxLength={500}
+          />
+          <div className={STYLES.characterCount}>{content.length}/500</div>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          사진 첨부
-        </label>
-        <div className="flex gap-4 flex-wrap">
-          {images.map((image, index) => (
-            <div key={index} className="relative">
-              <img
-                src={URL.createObjectURL(image)}
-                alt={`업로드 이미지 ${index + 1}`}
-                className="w-24 h-24 object-cover rounded-lg"
-              />
-              <button
-                onClick={() => removeImage(index)}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-sm"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-          {images.length < 3 && (
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 hover:border-[#FF800B] hover:text-[#FF800B] transition-colors"
-            >
-              +
-            </button>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
+        {/* 이미지 업로드 */}
+        <div className={STYLES.imageSection}>
+          <label className={STYLES.label}>사진 첨부 (최대 3장)</label>
+          <ImageUpload
+            images={images}
+            onImageChange={handleImageChange}
+            onImageRemove={handleImageRemove}
+            maxImages={3}
           />
         </div>
-      </div>
 
-      <div className="flex justify-end space-x-4">
-        <button
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-        >
-          취소
+        {/* 제출 버튼 */}
+        <button type="submit" className={STYLES.button} disabled={isLoading}>
+          {isLoading ? '등록 중...' : '리뷰 등록하기'}
         </button>
-        <button
-          onClick={handleSubmit}
-          className="px-4 py-2 bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f]"
-        >
-          등록하기
-        </button>
-      </div>
+      </form>
     </div>
   );
 };

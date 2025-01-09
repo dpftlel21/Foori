@@ -1,13 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { writeReview } from '../api/review';
 import ReviewForm from '../components/writeReview/ReviewForm';
-
-interface Review {
-  rating: number;
-  content: string;
-  bookingId: number;
-  images?: File[];
-}
 
 const WriteReview = () => {
   const Container =
@@ -17,10 +9,6 @@ const WriteReview = () => {
 
   const IdParam = useParams();
   const bookingId = Number(IdParam.bookingId);
-
-  const handleSubmit = (review: Review) => {
-    writeReview(review);
-  };
 
   return (
     <main className={Container}>
@@ -33,7 +21,6 @@ const WriteReview = () => {
             <ReviewForm
               bookingId={bookingId}
               onCancel={() => window.history.back()}
-              onSubmit={handleSubmit}
             />
           </div>
         </div>

@@ -9,14 +9,13 @@ const Logo = () => {
   };
 
   return (
-    <div className="h-[10vh] flex justify-center items-center">
-      <img
-        src={Icon}
-        alt="icon"
-        className="w-[80%] h-[7vh] cursor-pointer"
-        onClick={handleHome}
-      />
-    </div>
+    <button
+      className="h-[10vh] flex justify-center items-center"
+      onClick={handleHome}
+    >
+      <img src={Icon} alt="icon" className="w-[80%] h-[7vh] cursor-pointer" />
+      <h1 className="text-2xl font-bold">Foori</h1>
+    </button>
   );
 };
 

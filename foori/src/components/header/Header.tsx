@@ -32,7 +32,6 @@ const Header = () => {
           {/* 로고 + 푸리 */}
           <div className="flex items-center">
             <Logo /> {/* 로고 크기 조정 */}
-            <span className="text-base font-bold text-gray-800">Foori</span>
           </div>
 
           {/* 네비게이션 메뉴 */}

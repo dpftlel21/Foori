@@ -13,11 +13,11 @@ const Review = () => {
   console.log('bookings', bookings);
 
   const completedBookings = bookings?.filter(
-    (booking) => booking.status === 1 && !booking.isReviewed,
+    (booking) => booking.status === 3 && !booking.isReviewed,
   );
 
   const writtenReviews = bookings?.filter(
-    (booking) => booking.status === 1 && booking.isReviewed,
+    (booking) => booking.status === 3 && booking.isReviewed,
   );
 
   return (

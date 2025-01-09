@@ -1,32 +1,39 @@
 export type SignUpData = {
-    email: string;
-    password: string;
-    name: string;
-    birth: string;
-    phoneNumber: string;
+  email: string;
+  password: string;
+  name: string;
+  birth: string;
+  phoneNumber: string;
 };
 
 export type SignUpResponse = {
-    accessToken: string;
-    message?: string;
+  accessToken: string;
+  message?: string;
 };
 
 export type LoginData = {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 };
 
 export type LoginResponse = {
-    accessToken: string;
-    message?: string;
-    statusCode?: number;
-    status?: number;
+  accessToken: string;
+  message?: string;
+  statusCode?: number;
+  status?: number;
 };
 
 export type OauthResponse = {
   success: boolean;
   accessToken: string;
   user?: any;
+  message?: string;
+};
+
+export type FindEmailResponse = {
+  name: string;
+  phoneNumber: string;
+  email: string;
   message?: string;
 };
 

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
-module.exports = {
+export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -15,5 +15,5 @@ module.exports = {
       '100%': { transform: 'translateX(0)' },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [],
 };

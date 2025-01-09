@@ -18,7 +18,15 @@ const queryClient = new QueryClient();
 
 function App() {
   const location = useLocation();
-  const noHeaderRoutes = [RouteConst.Login, RouteConst.SignUp];
+  const noHeaderRoutes = [
+    RouteConst.Login,
+    RouteConst.SignUp,
+    RouteConst.FindID,
+    RouteConst.FindPW,
+    RouteConst.KaKaoCallback,
+    RouteConst.NaverCallback,
+    RouteConst.GoogleCallback,
+  ];
 
   return (
     <QueryClientProvider client={queryClient}>

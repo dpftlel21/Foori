@@ -9,6 +9,7 @@ interface ReviewListProps {
 }
 
 const ReviewList = ({ items, emptyMessage, type }: ReviewListProps) => {
+  //onsole.log('items', items);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
 
   return (
