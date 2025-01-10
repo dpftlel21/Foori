@@ -3,7 +3,7 @@ import ReviewForm from '../components/writeReview/ReviewForm';
 
 const WriteReview = () => {
   const Container =
-    'w-full h-[91.52dvh] flex justify-center items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]';
+    'w-full h-[calc(100vh-5rem)] md:h-[calc(100vh-5rem)] flex justify-center items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]';
   const ContentContainer =
     'w-[60%] flex flex-col justify-center items-center bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677]';
 

@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <header
       className={`
-  w-full h-[20%] md:h-[80px]
+  w-full h-20 md:h-20
   transition-all duration-300
 
   /* 모바일 스타일 */

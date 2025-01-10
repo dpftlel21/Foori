@@ -2,15 +2,15 @@ import ContentList from './ContentList';
 import Profile from './profile/Profile';
 
 const Content = () => {
-  const ContentContainer =
-    'w-[90%] h-[90%] flex flex-col justify-center items-center  bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677]';
+  const STYLES = {
+    wrapper:
+      'w-[calc(100vw-2rem)] h-[calc(100vh-8rem)] md:max-w-[calc(100vw-10rem)] flex flex-col md:mx-auto bg-white border-solid border-2 border-[#EE6677] rounded-xl',
+  } as const;
 
   return (
-    <div className="w-full h-[91%] flex justify-center items-center">
-      <div className={ContentContainer}>
-        <Profile />
-        <ContentList />
-      </div>
+    <div className={STYLES.wrapper}>
+      <Profile />
+      <ContentList />
     </div>
   );
 };

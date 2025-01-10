@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { useMyPage } from '../../contexts/MyPageContext';
 import BookingCalendar from './booking/BookingCalendar';
 import Consumption from './consumption/Consumption';
@@ -7,18 +6,28 @@ import EditProfile from './profile/EditProfile';
 import Review from './review/Review';
 
 const ContentList = () => {
-  const location = useLocation();
   const { currentTab, setCurrentTab } = useMyPage();
   const [content, setContent] = useState<string>('editProfile');
 
-  useEffect(() => {
-    if (location.state?.from !== 'features') {
-      setContent('editProfile');
-      setCurrentTab('editProfile');
-    } else if (currentTab === 'consumption' || currentTab === 'review') {
-      setContent(currentTab);
-    }
-  }, [location, currentTab, setCurrentTab]);
+  const STYLES = {
+    wrapper: 'flex flex-col md:flex-row h-full',
+    // 모바일: 가로 탭 / PC: 세로 사이드바
+    nav: 'md:w-64 md:border-r md:border-[#EE6677]',
+    // 모바일 탭 스타일
+    mobileTabList: 'grid grid-cols-4 gap-1 p-4 bg-gray-50 md:hidden',
+    mobileTab:
+      'flex flex-col items-center justify-center p-4 rounded-2xl transition-colors duration-200',
+    mobileTabActive: 'bg-[#EE6677] text-white',
+    mobileTabInactive: 'bg-white text-gray-600',
+    tabIcon: 'text-xl mb-2',
+    tabText: 'text-sm whitespace-nowrap',
+    // PC 세로 탭 스타일
+    desktopTabList: 'hidden md:flex md:flex-col p-4 space-y-2',
+    desktopTab:
+      'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200',
+    desktopTabActive: 'bg-pink-50 text-pink-600',
+    desktopTabInactive: 'text-gray-600 hover:bg-gray-50',
+  } as const;
 
   const Menu = [
     {
@@ -51,39 +60,57 @@ const ContentList = () => {
   };
 
   return (
-    <div className="w-[93%] flex flex-start h-full">
-      {/* 사이드 메뉴 */}
-      <div className="w-[15%] flex flex-col flex-start items-center p-2 border-r-2 border-solid border-[#EE6677]">
-        <div className="p-6">
-          <nav className="space-y-1">
-            {Menu.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setContent(item.id);
-                  if (item.id === 'consumption' || item.id === 'review') {
-                    setCurrentTab(item.id as 'consumption' | 'review');
-                  }
-                }}
-                className={`w-full px-4 py-3 flex items-center gap-3 rounded-lg transition-colors duration-200
-                  ${
-                    content === item.id
-                      ? 'bg-pink-50 text-pink-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium">{item.text}</span>
-              </button>
-            ))}
-          </nav>
+    <div className={STYLES.wrapper}>
+      <nav className={STYLES.nav}>
+        {/* 모바일 가로 탭 */}
+        <div className={STYLES.mobileTabList}>
+          {Menu.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setContent(item.id);
+                if (item.id === 'consumption' || item.id === 'review') {
+                  setCurrentTab(item.id as 'consumption' | 'review');
+                }
+              }}
+              className={`${STYLES.mobileTab} ${
+                content === item.id
+                  ? STYLES.mobileTabActive
+                  : STYLES.mobileTabInactive
+              }`}
+            >
+              <span className={STYLES.tabIcon}>{item.icon}</span>
+              <span className={STYLES.tabText}>{item.text}</span>
+            </button>
+          ))}
         </div>
-      </div>
+
+        {/* PC 세로 탭 */}
+        <div className={STYLES.desktopTabList}>
+          {Menu.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setContent(item.id);
+                if (item.id === 'consumption' || item.id === 'review') {
+                  setCurrentTab(item.id as 'consumption' | 'review');
+                }
+              }}
+              className={`${STYLES.desktopTab} ${
+                content === item.id
+                  ? STYLES.desktopTabActive
+                  : STYLES.desktopTabInactive
+              }`}
+            >
+              <span>{item.icon}</span>
+              <span>{item.text}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
 
       {/* 컨텐츠 영역 */}
-      <div className="w-[85%] flex flex-col flex-start overflow-auto">
-        {List[content as keyof typeof List]}
-      </div>
+      {List[content as keyof typeof List]}
     </div>
   );
 };
