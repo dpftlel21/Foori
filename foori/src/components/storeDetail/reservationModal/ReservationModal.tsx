@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useAuth } from '../../../api/auth';
 import { handleReservation } from '../../../api/reservation';
+import { useToast } from '../../../contexts/ToastContext';
 import Calendar from './Calendar';
+import PaymentModal from './PaymentModal';
 import ReservationDetail from './ReservationDetail';
 import ReservationMenu from './ReservationMenu';
-
 interface ReservationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,8 +38,16 @@ const ReservationModal = ({
   const [selectedMenus, setSelectedMenus] = useState<{
     [key: number]: number;
   }>({});
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
 
+  const { userInfoQuery } = useAuth();
+  const { showToast } = useToast();
   if (!isOpen) return null;
+
+  const orderId = `ORDER_${Date.now()}_${placeInfo.id}_${Math.random()
+    .toString(36)
+    .substring(2, 8)}`;
 
   const ReservationContainer =
     'w-[95%] md:w-[80%] h-[90%] md:h-[75.4%] flex flex-col justify-start gap-4 mt-[2%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677] z-50 p-4';
@@ -54,7 +64,7 @@ const ReservationModal = ({
   const CalendarSection =
     'w-full h-[55%] flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
 
-  const handleBooking = async () => {
+  const handleBooking = async (amount: number) => {
     if (!selectedDate || !selectedTime) {
       alert('날짜와 시간을 선택해주세요.');
       return;
@@ -64,6 +74,9 @@ const ReservationModal = ({
       alert('메뉴를 선택해주세요.');
       return;
     }
+
+    // amount 상태 업데이트를 먼저 해줍니다
+    setTotalAmount(amount);
 
     // 날짜와 시간을 합친 새로운 Date 객체 생성
     const bookingData = {
@@ -81,20 +94,16 @@ const ReservationModal = ({
       })),
     };
 
-    console.log('bookingData Date type', typeof bookingData.bookingDateTime);
-    console.log('예약 데이터:', bookingData); // 디버깅용\
-
     try {
       const response = await handleReservation(bookingData);
       if (response.ok) {
-        alert('예약이 완료되었습니다.');
-        onClose();
+        setIsPaymentModalOpen(true);
       } else {
-        alert('예약에 실패했습니다.');
+        showToast('예약에 실패했습니다.', 'error');
       }
     } catch (error) {
       console.error('예약 에러:', error);
-      alert('예약 중 오류가 발생했습니다.');
+      showToast('예약 중 오류가 발생했습니다.', 'error');
     }
   };
 
@@ -148,8 +157,21 @@ const ReservationModal = ({
         menus={placeInfo.menus}
         selectedMenus={selectedMenus}
         setSelectedMenus={setSelectedMenus}
+        setTotalAmount={setTotalAmount}
         handleBooking={handleBooking}
       />
+
+      {/* 결제 모달은 isPaymentModalOpen이 true일 때만 렌더링 */}
+      {isPaymentModalOpen && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          amount={totalAmount}
+          orderId={orderId}
+          orderName={`${placeInfo.name} 예약`}
+          customerName={userInfoQuery.data?.name}
+        />
+      )}
     </div>
   );
 };

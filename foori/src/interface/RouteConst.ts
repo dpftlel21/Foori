@@ -10,4 +10,6 @@ export const RouteConst = {
   NaverCallback: '/callback/naver', // OAuth 콜백
   GoogleCallback: '/callback/google', // OAuth 콜백
   WriteReview: '/review/:bookingId', // 리뷰
+  PaymentSuccess: '/callback/payment/success', // 결제 성공
+  PaymentFail: '/callback/payment/fail', // 결제 실패
 };

@@ -1,201 +1,80 @@
-/* 캘린더 컨테이너 */
-.booking-calendar-container {
-  width: 100%;
-  height: 65dvh;
-  padding: 1rem;
-  margin: 0 auto;
-}
-
 .fc {
   width: 100%;
+  height: 100% !important;
   background: white;
   border: none !important;
-  aspect-ratio: 16/9;
-  max-height: 600px;
 }
 
-/* 헤더 스타일 */
 .fc .fc-toolbar.fc-header-toolbar {
-  margin-bottom: 0.5em;
-  padding: 0.5rem;
+  margin-bottom: 1.5em;
 }
 
-.fc .fc-toolbar-title {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #4b5563;
-}
-
-/* 버튼 스타일 */
 .fc .fc-button {
-  color: #be185d !important;
-  padding: 0.5em 0.75em;
-  font-weight: 500;
+  background-color: #e8a9a9 !important;
+  border-color: #e8a9a9 !important;
 }
 
-/* 요일 헤더 */
-.fc .fc-col-header-cell {
-  padding: 3px;
-  font-weight: 600;
+.fc .fc-button:hover {
+  background-color: #fcb69f !important;
+  border-color: #fcb69f !important;
+}
+
+.booking-content {
+  width: 100%;
   background: white;
+  border-radius: 0.25rem;
+  border: 1px solid #e8a9a9;
+  font-size: 0.875rem;
 }
 
-/* 주말 색상 */
-.fc .fc-day-sun .fc-col-header-cell-cushion {
-  color: #e11d48;
+/* 예약 상태별 스타일 */
+.status-CONFIRMED .booking-content {
+  border-color: #b7e3ff;
 }
 
-.fc .fc-day-sat .fc-col-header-cell-cushion {
-  color: #2563eb;
+.status-PENDING .booking-content {
+  border-color: #ffe4b8;
 }
 
-/* 날짜 셀 스타일 */
-.fc .fc-daygrid-day {
-  height: 150px !important;
-  max-height: 150px;
-  position: relative;
+.status-CANCELLED .booking-content {
+  border-color: #ffd7d7;
 }
 
-.fc .fc-daygrid-day-frame {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.fc .fc-daygrid-day-top {
-  flex-direction: row;
-  padding: 4px;
-}
-
-.fc .fc-daygrid-day-number {
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 2px 4px;
-}
-
-/* 오늘 날짜 스타일 */
-.fc .fc-day-today {
-  background: #fdf2f8 !important;
-}
-
-/* 이벤트 컨테이너 */
-.fc .fc-daygrid-day-events {
-  margin: 0;
-  padding: 2px 2px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  max-height: calc(100% - 24px);
-  overflow-y: auto;
-}
-
-/* 이벤트 스타일 */
-.booking-event {
-  margin: 1px 0;
-  padding: 4px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 100%;
-}
-
-.booking-event:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* 이벤트 상태별 스타일 */
-.booking-event.status-0 {
-  background-color: #fef9c3;
-  border: 1px solid #fde047;
-}
-
-.booking-event.status-1 {
-  background-color: #f0fdf4;
-  border: 1px solid #86efac;
-}
-
-.booking-event.status-2 {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-}
-
-/* 이벤트 내용 레이아웃 */
-.booking-event-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 100%;
-}
-
-.event-title {
-  font-weight: 600;
-  color: #1f2937;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.event-info {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-  color: #6b7280;
-}
-
-.event-time {
-  font-size: 0.7rem;
-  color: #6b7280;
-}
-
-.event-people {
-  font-size: 0.7rem;
-  color: #6b7280;
-}
-
-/* 이벤트 상태 뱃지 */
-.event-status {
-  font-size: 0.65rem;
-  padding: 1px 4px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-top: 1px;
-}
-
-/* 더보기 링크 스타일 */
-.fc .fc-daygrid-more-link {
-  background: #fdf2f8;
-  padding: 1px 4px;
-  border-radius: 4px;
-  color: #be185d;
-  font-size: 0.7rem;
-  margin: 2px 0;
-  cursor: pointer;
-}
-
-/* 반응형 스타일 */
+/* 모바일 대응 */
 @media (max-width: 768px) {
+  .fc .fc-toolbar.fc-header-toolbar {
+    display: grid;
+    grid-template-areas:
+      'left center right'
+      'title title title';
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
   .fc .fc-toolbar-title {
-    font-size: 1rem;
+    font-size: 1.1rem !important;
+    grid-area: title;
+    text-align: center;
   }
 
-  .fc .fc-daygrid-day {
-    height: 80px !important;
+  .booking-content {
+    font-size: 0.75rem;
   }
 
-  .event-title {
-    font-size: 0.7rem;
+  .fc .fc-daygrid-event {
+    padding: 1px 2px;
   }
 
-  .event-info,
-  .event-time,
-  .event-people {
-    font-size: 0.65rem;
+  .fc .fc-daygrid-day-events {
+    margin: 0;
+  }
+
+  .fc .fc-daygrid-day-number {
+    padding: 4px !important;
+    font-size: 0.875rem;
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.75rem;
   }
 }

@@ -3,6 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/header/Header';
 import OauthCallback from './components/login/oauthLogin/OauthCallback';
+import PaymentFail from './components/storeDetail/toss/PaymentFail';
+import PaymentSuccess from './components/storeDetail/toss/PaymentSuccess';
 import { RouteConst } from './interface/RouteConst';
 import Detail from './pages/Detail';
 import FindID from './pages/FindID';
@@ -44,6 +46,8 @@ function App() {
         <Route path={RouteConst.KaKaoCallback} element={<OauthCallback />} />
         <Route path={RouteConst.NaverCallback} element={<OauthCallback />} />
         <Route path={RouteConst.GoogleCallback} element={<OauthCallback />} />
+        <Route path={RouteConst.PaymentSuccess} element={<PaymentSuccess />} />
+        <Route path={RouteConst.PaymentFail} element={<PaymentFail />} />
       </Routes>
     </QueryClientProvider>
   );

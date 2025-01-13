@@ -1,4 +1,3 @@
-//import { useTossPay } from '../../../hooks/useTossPay';
 import MenuList from './MenuList';
 
 // 메뉴 정보 타입 정의
@@ -15,13 +14,15 @@ interface ReservationMenuProps {
   setSelectedMenus: React.Dispatch<
     React.SetStateAction<{ [menuId: number]: number }>
   >;
-  handleBooking: () => void;
+  setTotalAmount: React.Dispatch<React.SetStateAction<number>>;
+  handleBooking: (amount: number) => void;
 }
 
 const ReservationMenu = ({
   menus,
   selectedMenus,
   setSelectedMenus,
+  setTotalAmount,
   handleBooking,
 }: ReservationMenuProps) => {
   // 스타일 정의
@@ -70,18 +71,14 @@ const ReservationMenu = ({
     );
   };
 
-  // Toss 결제 훅
-  //const { handlePayment: handleTossPayment } = useTossPay();
-
-  // 결제 처리 핸들러 (재곤이 결제 끝나면 바꿔치기,, 현재는 handleBooking 함수(더미)로 대체)
-  // const handlePayment = () => {
-  //   handleTossPayment({
-  //     amount: calculateTotal(),
-  //     orderId: '1234567890',
-  //     orderName: '예약 결제',
-  //     customerName: '홍길동',
-  //   });
-  // };
+  const handlePayment = async () => {
+    const totalAmount = calculateTotal();
+    if (totalAmount > 0) {
+      await handleBooking(totalAmount);
+    } else {
+      alert('메뉴를 선택해주세요.');
+    }
+  };
 
   return (
     <div className={STYLES.container}>
@@ -104,7 +101,7 @@ const ReservationMenu = ({
                     {calculateTotal().toLocaleString()}원
                   </span>
                 </p>
-                <button onClick={handleBooking} className={STYLES.button}>
+                <button onClick={handlePayment} className={STYLES.button}>
                   결제하기
                 </button>
               </>
