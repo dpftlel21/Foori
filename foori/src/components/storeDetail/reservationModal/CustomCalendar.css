@@ -76,12 +76,12 @@
 
 /* 토요일 색상 */
 .fc-day-sat .fc-daygrid-day-number {
-  color: #4B89DC;
+  color: #4b89dc;
 }
 
 /* 일요일 색상 */
 .fc-day-sun .fc-daygrid-day-number {
-  color: #E74C3C;
+  color: #e74c3c;
 }
 
 /* 오늘 날짜 스타일 */
@@ -105,7 +105,7 @@
   .fc-daygrid-day-number {
     font-size: 0.8rem;
   }
-  
+
   .fc .fc-daygrid-day-frame {
     min-height: 40px;
   }
@@ -114,9 +114,9 @@
   .fc-daygrid-body::-webkit-scrollbar {
     display: none;
   }
-  
+
   .fc-daygrid-body {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }

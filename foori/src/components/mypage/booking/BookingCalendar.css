@@ -1,12 +1,11 @@
 .fc {
   width: 100%;
-  height: 100% !important;
   background: white;
   border: none !important;
 }
 
 .fc .fc-toolbar.fc-header-toolbar {
-  margin-bottom: 1.5em;
+  margin-bottom: 0.5em;
 }
 
 .fc .fc-button {
@@ -67,6 +66,13 @@
 
   .fc .fc-daygrid-day-events {
     margin: 0;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .fc .fc-daygrid-day-number {

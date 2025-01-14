@@ -26,6 +26,7 @@ const PaymentModal = ({
   useEffect(() => {
     const initPayment = async () => {
       if (isOpen && document.getElementById('payment-method')) {
+        console.log('orderId', orderId);
         const handler = await tossPay({
           amount,
           orderId,
@@ -39,7 +40,7 @@ const PaymentModal = ({
     initPayment();
   }, [isOpen]);
 
-  console.log('amount', amount);
+  //console.log('amount', amount);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

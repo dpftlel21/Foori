@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../api/auth';
 import { handleReservation } from '../../../api/reservation';
 import { useToast } from '../../../contexts/ToastContext';
@@ -6,6 +7,7 @@ import Calendar from './Calendar';
 import PaymentModal from './PaymentModal';
 import ReservationDetail from './ReservationDetail';
 import ReservationMenu from './ReservationMenu';
+
 interface ReservationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,14 +42,12 @@ const ReservationModal = ({
   }>({});
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+  const [orderId, setOrderId] = useState<string>('');
 
   const { userInfoQuery } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   if (!isOpen) return null;
-
-  const orderId = `ORDER_${Date.now()}_${placeInfo.id}_${Math.random()
-    .toString(36)
-    .substring(2, 8)}`;
 
   const ReservationContainer =
     'w-[95%] md:w-[80%] h-[90%] md:h-[75.4%] flex flex-col justify-start gap-4 mt-[2%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677] z-50 p-4';
@@ -62,8 +62,9 @@ const ReservationModal = ({
     'w-full mt-2 md:mt-4 border-b-2 border-solid border-[#e3899430] pb-4';
 
   const CalendarSection =
-    'w-full h-[55%] flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
+    'w-full flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
 
+  // 예약
   const handleBooking = async (amount: number) => {
     if (!selectedDate || !selectedTime) {
       alert('날짜와 시간을 선택해주세요.');
@@ -75,10 +76,8 @@ const ReservationModal = ({
       return;
     }
 
-    // amount 상태 업데이트를 먼저 해줍니다
     setTotalAmount(amount);
 
-    // 날짜와 시간을 합친 새로운 Date 객체 생성
     const bookingData = {
       bookingDateTime: new Date(
         `${selectedDate.toISOString().split('T')[0]}T${selectedTime
@@ -97,9 +96,24 @@ const ReservationModal = ({
     try {
       const response = await handleReservation(bookingData);
       if (response.ok) {
-        setIsPaymentModalOpen(true);
-      } else {
-        showToast('예약에 실패했습니다.', 'error');
+        const bookingResponse = await response.json();
+        const isConfirmed = window.confirm(
+          '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
+        );
+
+        // 분기 처리
+        // 결제 확인 후 예약 완료 (취소 시 마이페이지 이동 및 Toast 메시지, 결제 대기 상태)
+        if (isConfirmed) {
+          setOrderId(bookingResponse.orderId);
+          setIsPaymentModalOpen(true);
+        } else {
+          showToast(
+            '예약 마감 하루 전까지 미결제시 자동 취소됩니다.',
+            'warning',
+          );
+          navigate('/mypage');
+          onClose(); // 모달 닫기
+        }
       }
     } catch (error) {
       console.error('예약 에러:', error);

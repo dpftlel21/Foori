@@ -3,6 +3,7 @@ import { cookieStorage } from '../api/cookies';
 
 export interface BookingListResponse {
   id: number;
+  orderId: string;
   bookingDate: string;
   bookingTime: string;
   numOfPeople: number;

@@ -10,86 +10,224 @@ const RestaurantReservation = () => {
   const placeInfo = placeDetail.data;
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
 
+  const STYLES = {
+    container: `
+    w-full
+    h-[calc(100vh-80px)]
+    flex
+    justify-center
+    items-center
+    bg-gradient-to-b
+    from-[#ffecd2]
+    to-[#fcb69f]
+  `,
+
+    contentContainer: `
+    w-[calc(100vw-50px)]
+    max-w-[400px]
+    mx-auto
+    p-4
+    bg-white
+    border-2
+    border-solid
+    border-[#EE6677]
+    rounded-2xl
+    shadow-sm
+    flex
+    flex-col
+    gap-4
+    md:min-w-[calc(100vw-400px)]
+    md:mx-0
+  `,
+
+    infoSection: `
+      p-4
+      border-b
+      border-gray-200
+    `,
+
+    headerContainer: `
+      flex
+      flex-col
+      md:flex-row
+      justify-between
+      items-start
+      md:items-center
+      gap-4
+    `,
+
+    basicInfo: `
+      space-y-2
+    `,
+
+    titleContainer: `
+      flex
+      items-center
+      gap-3
+    `,
+
+    title: `
+      text-xl
+      font-bold
+      text-gray-800
+      md:text-2xl
+    `,
+
+    category: `
+      px-2
+      py-1
+      bg-[#FF800B]/10
+      text-[#FF800B]
+      rounded-full
+      text-sm
+      font-medium
+    `,
+
+    rating: `
+      text-base
+      font-semibold
+      text-gray-600
+      md:text-lg
+    `,
+
+    reserveButton: `
+      px-6
+      py-2.5
+      bg-[#FF800B]
+      text-white
+      rounded-lg
+      hover:bg-[#fcb69f]
+      transition
+      duration-300
+      font-medium
+      shadow-sm
+      hover:shadow-md
+      text-sm
+      md:text-base
+    `,
+
+    detailInfo: `
+      mt-6
+      space-y-3
+    `,
+
+    infoRow: `
+      flex
+      items-start
+      gap-2
+    `,
+
+    infoLabel: `
+      font-medium
+      text-gray-700
+      min-w-[80px]
+      text-sm
+      md:text-base
+    `,
+
+    infoValue: `
+      text-gray-600
+      text-sm
+      md:text-base
+    `,
+
+    breakTimeValue: `
+      text-[#d82035]
+      text-sm
+      md:text-base
+    `,
+
+    reviewSection: `
+      p-4
+    `,
+
+    reviewHeader: `
+      border-b
+      border-gray-200
+      pb-4
+      mb-6
+    `,
+
+    reviewTitle: `
+      text-xl
+      font-bold
+      text-gray-800
+    `,
+
+    reviewSubtitle: `
+      text-sm
+      text-gray-500
+      mt-1
+    `,
+
+    reviewList: `
+      max-h-[300px]
+      overflow-y-auto
+    `,
+  };
+
   return (
-    <div className="w-full h-[92dvh] flex justify-center items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
-      <div className="w-[50%] h-[80%] bg-white rounded-xl shadow-lg border-solid border-2 border-[#EE6677]">
-        {/* 상단 정보 섹션 */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            {/* 가게 기본 정보 */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-gray-800">
-                  {placeInfo?.name}
-                </h1>
-                <span className="px-2 py-1 bg-[#FF800B]/10 text-[#FF800B] rounded-full text-sm font-medium">
-                  {placeInfo?.category}
-                </span>
+    <div className={STYLES.container}>
+      <div className={STYLES.contentContainer}>
+        <div className={STYLES.infoSection}>
+          <div className={STYLES.headerContainer}>
+            <div className={STYLES.basicInfo}>
+              <div className={STYLES.titleContainer}>
+                <h1 className={STYLES.title}>{placeInfo?.name}</h1>
+                <span className={STYLES.category}>{placeInfo?.category}</span>
               </div>
-              <div className="text-lg font-semibold text-gray-600">
+              <div className={STYLES.rating}>
                 평점: {placeInfo?.rating_avg} / 5.0
               </div>
             </div>
 
-            {/* 예약 버튼 */}
             <button
               onClick={() => setIsReservationModalOpen(true)}
-              className="px-6 py-2.5 bg-[#FF800B] text-white rounded-lg
-                hover:bg-[#fcb69f] transition duration-300 font-medium
-                shadow-sm hover:shadow-md"
+              className={STYLES.reserveButton}
             >
               예약하기
             </button>
           </div>
 
-          {/* 상세 정보 */}
-          <div className="mt-6 space-y-3">
-            <div className="flex items-start gap-2">
-              <span className="font-medium text-gray-700 min-w-[80px]">
-                주소
-              </span>
-              <span className="text-gray-600">{placeInfo?.address}</span>
+          <div className={STYLES.detailInfo}>
+            <div className={STYLES.infoRow}>
+              <span className={STYLES.infoLabel}>주소</span>
+              <span className={STYLES.infoValue}>{placeInfo?.address}</span>
             </div>
 
-            <div className="flex items-start gap-2">
-              <span className="font-medium text-gray-700 min-w-[80px]">
-                영업시간
-              </span>
-              <span className="text-gray-600">
+            <div className={STYLES.infoRow}>
+              <span className={STYLES.infoLabel}>영업시간</span>
+              <span className={STYLES.infoValue}>
                 {placeInfo?.openTime?.split(':').slice(0, 2).join(':')} ~{' '}
                 {placeInfo?.closeTime?.split(':').slice(0, 2).join(':')}
               </span>
             </div>
 
-            <div className="flex items-start gap-2">
-              <span className="font-medium text-gray-700 min-w-[80px]">
-                브레이크타임
-              </span>
-              <span className="text-[#d82035]">15:00 ~ 17:00</span>
+            <div className={STYLES.infoRow}>
+              <span className={STYLES.infoLabel}>브레이크타임</span>
+              <span className={STYLES.breakTimeValue}>15:00 ~ 17:00</span>
             </div>
           </div>
         </div>
 
-        {/* 리뷰 섹션 */}
-        <div className="p-6">
-          <div className="border-b border-gray-200 pb-4 mb-6">
-            <h2 className="text-xl font-bold text-gray-800">리뷰 목록</h2>
-            <p className="text-sm text-gray-500 mt-1">
+        <div className={STYLES.reviewSection}>
+          <div className={STYLES.reviewHeader}>
+            <h2 className={STYLES.reviewTitle}>리뷰 목록</h2>
+            <p className={STYLES.reviewSubtitle}>
               방문하신 고객님들의 생생한 리뷰를 확인해보세요
             </p>
           </div>
-          <div className="max-h-[300px] overflow-y-auto">
+          <div className={STYLES.reviewList}>
             <RestaurantReview restaurantId={Number(placeId)} />
           </div>
         </div>
-      </div>
 
-      {/* 예약 모달 */}
-      <ReservationModal
-        isOpen={isReservationModalOpen}
-        onClose={() => setIsReservationModalOpen(false)}
-        placeInfo={placeInfo}
-      />
+        <ReservationModal
+          isOpen={isReservationModalOpen}
+          onClose={() => setIsReservationModalOpen(false)}
+          placeInfo={placeInfo}
+        />
+      </div>
     </div>
   );
 };
