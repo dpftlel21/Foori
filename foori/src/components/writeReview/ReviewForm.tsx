@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createReview } from '../../api/review';
+import { createReview } from '../../api/endpoints/review';
 import { useToast } from '../../contexts/ToastContext';
 import ImageUpload from './ImageUpload';
 import StarRating from './StarRating';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { passwordCheck } from '../../../api/profile';
+import { passwordCheck } from '../../../api/endpoints/profile';
 import Lock from '../../../assets/images/lock.png';
 import MenuContainer from '../../common/MenuContainer';
 import ProfileSettings from './profileSetting/ProfileSettings';

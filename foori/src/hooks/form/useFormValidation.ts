@@ -1,13 +1,14 @@
-// hooks/useFormValidation.ts
 import { useState } from 'react';
 
 interface ValidationRules {
-  email: (value: string) => string;
-  password: (value: string) => string;
+  email?: (value: string) => string;
+  password?: (value: string) => string;
   confirmPassword?: (value: string) => string;
   nickname?: (value: string) => string;
   birth?: (value: string) => string;
   phone?: (value: string) => string;
+  name?: (value: string) => string;
+  phoneNumber?: (value: string) => string;
 }
 
 interface FormData {
@@ -15,16 +16,23 @@ interface FormData {
 }
 
 // validationType을 파라미터로 추가
-export const useFormValidation = (initialState: FormData, validationType: 'login' | 'signup' = 'login') => {
+export const useFormValidation = (
+  initialState: FormData,
+  validationType: 'login' | 'signup' | 'findAccount' = 'login',
+) => {
   const [formData, setFormData] = useState<FormData>(initialState);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // 휴대폰 번호 - 자동생성
   const formatPhoneNumber = (value: string): string => {
     const numbers = value.replace(/[^\d]/g, '');
     if (numbers.length <= 3) return numbers;
-    if (numbers.length <= 7) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+    if (numbers.length <= 7)
+      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+      7,
+      11,
+    )}`;
   };
 
   // 기본 유효성 검사 규칙
@@ -37,12 +45,11 @@ export const useFormValidation = (initialState: FormData, validationType: 'login
     },
     password: (value: string) => {
       if (!value) return '비밀번호를 입력해주세요.';
-      // 회원가입일 때만 추가 검증
       if (validationType === 'signup' && value.length < 8) {
         return '비밀번호는 8자 이상이어야 합니다.';
       }
       return '';
-    }
+    },
   };
 
   // 회원가입 시 추가되는 유효성 검사 규칙
@@ -65,37 +72,76 @@ export const useFormValidation = (initialState: FormData, validationType: 'login
     phone: (value: string) => {
       if (!value) return '휴대폰 번호를 입력해주세요.';
       const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-      if (!phoneRegex.test(value.replace(/-/g, ''))) return '올바른 휴대폰 번호가 아닙니다.';
+      if (!phoneRegex.test(value.replace(/-/g, '')))
+        return '올바른 휴대폰 번호가 아닙니다.';
       return '';
-    }
+    },
+  };
+
+  // 아이디/비밀번호 찾기용 유효성 검사 규칙
+  const findAccountValidationRules: ValidationRules = {
+    name: (value: string) => {
+      if (!value) return '이름을 입력해주세요.';
+      if (value.length < 2) return '이름은 2자 이상이어야 합니다.';
+      return '';
+    },
+    phoneNumber: (value: string) => {
+      if (!value) return '휴대폰 번호를 입력해주세요.';
+      const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+      if (!phoneRegex.test(value.replace(/-/g, ''))) {
+        return '올바른 휴대폰 번호가 아닙니다.';
+      }
+      return '';
+    },
+    email: (value: string) => {
+      if (!value) return '이메일을 입력해주세요.';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) return '올바른 이메일 형식이 아닙니다.';
+      return '';
+    },
   };
 
   // validationType에 따라 적절한 규칙 선택
-  const validationRules = validationType === 'login' ? baseValidationRules : signupValidationRules;
+  const validationRules =
+    validationType === 'findAccount'
+      ? findAccountValidationRules
+      : validationType === 'signup'
+      ? signupValidationRules
+      : baseValidationRules;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
-    const formattedValue = name === 'phone' ? formatPhoneNumber(value) : value;
-    
-    setFormData(prev => ({ ...prev, [name]: formattedValue }));
-    
+
+    // 전화번호 필드일 경우 포맷팅 적용
+    const formattedValue =
+      name === 'phoneNumber' || name === 'phone'
+        ? formatPhoneNumber(value)
+        : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: formattedValue,
+    }));
+
     if (name in validationRules) {
-      const error = validationRules[name as keyof ValidationRules](formattedValue);
-      setErrors(prev => ({
+      const error =
+        validationRules[name as keyof ValidationRules](formattedValue);
+      setErrors((prev) => ({
         ...prev,
-        [name]: error
+        [name]: error,
       }));
     }
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     // 현재 formData의 키들만 검증
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       if (key in validationRules) {
-        const error = validationRules[key as keyof ValidationRules](formData[key]);
+        const error = validationRules[key as keyof ValidationRules](
+          formData[key],
+        );
         if (error) {
           newErrors[key] = error;
         }
@@ -111,6 +157,6 @@ export const useFormValidation = (initialState: FormData, validationType: 'login
     setFormData,
     handleChange,
     errors,
-    validateForm
+    validateForm,
   };
 };

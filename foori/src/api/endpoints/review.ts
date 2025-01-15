@@ -1,4 +1,4 @@
-import { cookieStorage } from '../api/cookies';
+import { cookieStorage } from '../utils/cookies';
 
 interface CreateReviewResponse {
   id: number;

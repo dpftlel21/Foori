@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '../../../api/auth';
+import { useOauth } from '../../../hooks/auth/useAuth';
 
 const OauthCallback = () => {
-  const { oauthLoginMutation, oauthConMutation } = useAuth();
+  const { oauthLoginMutation } = useOauth();
   const [isLoading, setIsLoading] = useState(true);
   const [type, setType] = useState<string | null>(null);
 
@@ -32,8 +32,7 @@ const OauthCallback = () => {
       return;
     }
 
-    const mutation =
-      storedType === 'login' ? oauthLoginMutation : oauthConMutation;
+    const mutation = oauthLoginMutation;
 
     // 한 번만 실행되도록 보장
     mutation.mutate(

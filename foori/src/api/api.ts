@@ -1,50 +1,77 @@
+import { cookieStorage } from './utils/cookies';
+
 // GET 요청 함수
-export const getData = async (url: string) => {
-    console.log('url : ', url);
-    
-    try {
-        const response = await fetch(url,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-        });
-        const data = await response.json();
-        //console.log("data : ", data);
-        return data;
-    } catch (error) {
-        console.log("에러 발생 :" , error);
+export const getData = async (
+  url: string,
+  params?: Record<string, unknown>,
+): Promise<any> => {
+  try {
+    const token = cookieStorage.getToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
-}
+
+    // URL에 쿼리 파라미터 추가
+    const queryString = params
+      ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
+      : '';
+
+    const response = await fetch(`${url}${queryString}`, {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('getError:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'An unknown error occurred',
+    );
+  }
+};
 
 // POST 요청 함수
-export const postData = async (url: string, data: Record<string, unknown>): Promise<any> => {
-   //console.log('url', url);
-   //console.log('data', data);
-   try {
-       const response = await fetch(url, {
-           method: 'POST',
-           headers: {
-               'Content-Type': 'application/json'
-           },
-           credentials: 'include',
-           body: JSON.stringify(data)
-       });
-       
-       console.log("response", response);
+export const postData = async (
+  url: string,
+  data: Record<string, unknown>,
+): Promise<any> => {
+  try {
+    const token = cookieStorage.getToken();
+    console.log('token : ', token);
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
 
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
 
-       // 201 상태일 때 응답 본문이 있으면 그것을 반환하고, 없으면 빈 객체 반환
-       if (response.status === 201) {
-           const text = await response.text();
-           return text ? JSON.parse(text) : {};
-       }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
 
-        return response.json();
-       
-   } catch (error) {
-       console.error("postError:", error);
-       throw new Error(error instanceof Error ? error.message : 'An unknown error occurred during the POST request.');
-   }
-}
+    if (response.status === 201) {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('postError:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'An unknown error occurred',
+    );
+  }
+};

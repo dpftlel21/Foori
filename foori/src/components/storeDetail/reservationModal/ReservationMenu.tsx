@@ -22,7 +22,6 @@ const ReservationMenu = ({
   menus,
   selectedMenus,
   setSelectedMenus,
-  setTotalAmount,
   handleBooking,
 }: ReservationMenuProps) => {
   // 스타일 정의

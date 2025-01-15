@@ -1,4 +1,4 @@
-import { cookieStorage } from './cookies';
+import { cookieStorage } from '../utils/cookies';
 
 interface BookingRequest {
   bookingDateTime: Date;

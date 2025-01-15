@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useToast } from '../contexts/ToastContext';
-import { RouteConst } from '../interface/RouteConst';
+import { useToast } from '../../contexts/ToastContext';
+import { RouteConst } from '../../interface/RouteConst';
 
 interface PaymentProps {
   amount: number;

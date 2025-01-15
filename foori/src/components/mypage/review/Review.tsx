@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useBookings } from '../../../hooks/useBooking';
+import { useBookings } from '../../../hooks/query/useBooking';
 import MenuContainer from '../../common/MenuContainer';
 import ReviewList from './ReviewList';
 import ReviewTabs from './ReviewTabs';

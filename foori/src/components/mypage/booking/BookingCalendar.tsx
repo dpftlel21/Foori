@@ -2,7 +2,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import { useMemo, useState } from 'react';
-import { useBookings } from '../../../hooks/useBooking';
+import { useBookings } from '../../../hooks/query/useBooking';
 import BookingModal from './BookingModal';
 import { BookingStatusConfig } from './BookingStatusConfig';
 

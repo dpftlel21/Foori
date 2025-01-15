@@ -1,8 +1,8 @@
-import { useAuth } from '../../../api/auth';
+import { useUserInfo } from '../../../hooks/query/useUserInfo';
 import OauthCon from './oauthCon/OauthCon';
 
 const Profile = () => {
-  const { userInfoQuery } = useAuth();
+  const userInfoQuery = useUserInfo();
   const userInfo = userInfoQuery.data;
 
   const STYLES = {

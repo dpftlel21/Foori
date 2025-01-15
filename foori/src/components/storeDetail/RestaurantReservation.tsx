@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCrawledDataDetail } from '../../api/crawledData';
+import { useCrawledDataDetail } from '../../hooks/query/useCrawledData';
 import ReservationModal from './reservationModal/ReservationModal';
 import RestaurantReview from './reviewList/RestaurantReview';
 

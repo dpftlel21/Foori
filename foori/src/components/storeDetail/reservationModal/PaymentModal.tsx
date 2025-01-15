@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useTossPay } from '../../../api/tossPayments';
+import { useTossPay } from '../../../api/endpoints/tossPayments';
 
 interface PaymentModalProps {
   isOpen: boolean;

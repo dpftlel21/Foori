@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cookieStorage } from '../../../../api/cookies';
+import { cookieStorage } from '../../../../api/utils/cookies';
 import { useToast } from '../../../../contexts/ToastContext';
 import ImageSection from './ImageSection';
 import PasswordSection from './PasswordSection';

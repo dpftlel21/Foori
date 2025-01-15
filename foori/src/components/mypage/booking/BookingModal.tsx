@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useBookings } from '../../../hooks/useBooking';
+import { useBookings } from '../../../hooks/query/useBooking';
 import { BookingStatusBadge } from './BookingStatusBadge';
 
 interface BookingModalProps {

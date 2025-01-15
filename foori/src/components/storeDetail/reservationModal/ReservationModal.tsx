@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../api/auth';
-import { handleReservation } from '../../../api/reservation';
+import { handleReservation } from '../../../api/endpoints/reservation';
 import { useToast } from '../../../contexts/ToastContext';
+import { useUserInfo } from '../../../hooks/query/useUserInfo';
+import { useReservationValidation } from '../../../hooks/reservation/useReservationValidation';
 import Calendar from './Calendar';
 import PaymentModal from './PaymentModal';
-import ReservationDetail from './ReservationDetail';
+import ReservationInfo from './ReservationInfo';
 import ReservationMenu from './ReservationMenu';
 
+/**
+ * ReservationModal Props 인터페이스
+ */
 interface ReservationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +23,7 @@ interface ReservationModalProps {
     address: string;
     openTime: string;
     closeTime: string;
+    openDays: string;
     menus: [
       {
         id: number;
@@ -29,11 +34,15 @@ interface ReservationModalProps {
   };
 }
 
+/**
+ * 예약 모달 컴포넌트
+ */
 const ReservationModal = ({
   isOpen,
   onClose,
   placeInfo,
 }: ReservationModalProps) => {
+  // 상태 관리
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<number>(1);
@@ -44,40 +53,117 @@ const ReservationModal = ({
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
   const [orderId, setOrderId] = useState<string>('');
 
-  const { userInfoQuery } = useAuth();
+  // 훅 사용
+  const userInfoQuery = useUserInfo();
+  const { validateReservation, ERROR_STYLES } = useReservationValidation();
   const { showToast } = useToast();
   const navigate = useNavigate();
+
+  // 모달이 닫혀있으면 렌더링하지 않음
   if (!isOpen) return null;
 
-  const ReservationContainer =
-    'w-[95%] md:w-[80%] h-[90%] md:h-[75.4%] flex flex-col justify-start gap-4 mt-[2%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl border-2 border-solid border-[#EE6677] z-50 p-4';
+  console.log('placeInfo', placeInfo);
 
-  const TopSection =
-    'w-full flex flex-col md:flex-row justify-between items-start md:items-center';
+  /**
+   * 스타일 정의
+   */
+  const MODAL_STYLES = {
+    // 컨테이너 스타일
+    container: `
+      fixed inset-0
+      bg-black bg-opacity-50
+      flex items-center justify-center
+      z-50
+    `,
+    // 모달 스타일
+    modal: `
+      bg-white
+      rounded-lg p-6
+      w-[90%] max-w-[1200px]
+      max-h-[90vh]
+      overflow-y-auto
+    `,
+    // 헤더 섹션 스타일
+    header: {
+      container: `
+        flex flex-col md:flex-row
+        justify-between items-start md:items-center
+        mb-6 pb-4
+        border-b border-gray-200
+      `,
+      storeInfoSection: `
+        flex flex-col md:flex-row
+        items-start md:items-center
+        gap-2 md:gap-4
+      `,
+      title: `
+        text-xl md:text-2xl
+        font-bold
+        text-gray-800
+      `,
+      rating: `
+        text-sm md:text-base
+        text-gray-600
+      `,
+      address: `
+        text-sm md:text-base
+        text-gray-500
+        mt-1 md:mt-0
+      `,
+    },
+    // 컨텐츠 섹션 스타일
+    content: `
+      space-y-6
+    `,
+    // 에러/경고 메시지 스타일
+    message: {
+      error: ERROR_STYLES.errorMessage,
+      warning: ERROR_STYLES.warningMessage,
+    },
+    // 버튼 스타일
+    button: {
+      primary: `
+        bg-[#e38994] text-white
+        px-6 py-2
+        rounded-lg
+        hover:bg-[#d27883]
+        transition-colors
+      `,
+      disabled: `
+        bg-gray-300 text-gray-500
+        px-6 py-2
+        rounded-lg
+        cursor-not-allowed
+      `,
+    },
+  } as const;
 
-  const StoreInfoSection =
-    'w-full flex flex-col md:flex-row items-start md:items-center gap-2';
-
-  const AddressSection =
-    'w-full mt-2 md:mt-4 border-b-2 border-solid border-[#e3899430] pb-4';
-
-  const CalendarSection =
-    'w-full flex flex-col md:flex-row justify-between gap-4 mt-2 border-b-2 border-solid border-[#e3899430]';
-
-  // 예약
+  /**
+   * 예약 처리 함수
+   * @param amount 결제 금액
+   */
   const handleBooking = async (amount: number) => {
-    if (!selectedDate || !selectedTime) {
-      alert('날짜와 시간을 선택해주세요.');
+    // 로그인 체크
+    if (!userInfoQuery.data) {
+      showToast('로그인이 필요한 서비스입니다.', 'warning');
+      navigate('/login');
       return;
     }
 
-    if (Object.keys(selectedMenus).length === 0) {
-      alert('메뉴를 선택해주세요.');
-      return;
-    }
+    // 예약 유효성 검사
+    const isValid = validateReservation({
+      selectedDate,
+      selectedTime,
+      openTime: placeInfo.openTime,
+      closeTime: placeInfo.closeTime,
+      openDays: placeInfo.openDays,
+      selectedMembers,
+      maxCapacity: 8, // 매장별로 다르게 설정 가능
+    });
 
-    setTotalAmount(amount);
+    if (!isValid) return;
 
+    // 예약 데이터 생성
     const bookingData = {
       bookingDateTime: new Date(
         `${selectedDate.toISOString().split('T')[0]}T${selectedTime
@@ -94,15 +180,15 @@ const ReservationModal = ({
     };
 
     try {
+      // 예약 API 호출
       const response = await handleReservation(bookingData);
+
       if (response.ok) {
         const bookingResponse = await response.json();
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
         );
 
-        // 분기 처리
-        // 결제 확인 후 예약 완료 (취소 시 마이페이지 이동 및 Toast 메시지, 결제 대기 상태)
         if (isConfirmed) {
           setOrderId(bookingResponse.orderId);
           setIsPaymentModalOpen(true);
@@ -112,7 +198,7 @@ const ReservationModal = ({
             'warning',
           );
           navigate('/mypage');
-          onClose(); // 모달 닫기
+          onClose();
         }
       }
     } catch (error) {
@@ -122,70 +208,67 @@ const ReservationModal = ({
   };
 
   return (
-    <div className={ReservationContainer}>
-      {/* 가게명, 평점 */}
-      <div className={TopSection}>
-        <div className={StoreInfoSection}>
-          <h1 className="text-lg md:text-xl font-bold border-b-2 border-solid border-[#e38994fb]">
-            {placeInfo.name}
-          </h1>
-          <span className="text-sm md:text-base md:ml-4">
-            평점 : {placeInfo.rating_avg} / 5.0
-          </span>
+    <div className={MODAL_STYLES.container}>
+      <div className={MODAL_STYLES.modal}>
+        {/* 헤더 섹션 */}
+        <div className={MODAL_STYLES.header.container}>
+          <div className={MODAL_STYLES.header.storeInfoSection}>
+            <h1 className={MODAL_STYLES.header.title}>{placeInfo.name}</h1>
+            <span className={MODAL_STYLES.header.rating}>
+              평점: {placeInfo.rating_avg} / 5.0
+            </span>
+            <span className={MODAL_STYLES.header.address}>
+              {placeInfo.address}
+            </span>
+          </div>
+          <button onClick={onClose} className={MODAL_STYLES.button.primary}>
+            닫기
+          </button>
         </div>
-        <button
-          className="w-[100px] md:w-[120px] h-[35px] md:h-[40px] bg-[#FF800B] text-white rounded-md hover:bg-[#fcb69f] transition duration-500 ease-in-out font-bold mt-4 md:mt-0"
-          onClick={onClose}
-        >
-          돌아가기
-        </button>
+
+        {/* 컨텐츠 섹션 */}
+        <div className={MODAL_STYLES.content}>
+          {/* 캘린더와 예약 정보 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Calendar
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              openDays={placeInfo.openDays}
+            />
+            <ReservationInfo
+              openTime={placeInfo.openTime}
+              closeTime={placeInfo.closeTime}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+              selectedMembers={selectedMembers}
+              setSelectedMembers={setSelectedMembers}
+            />
+          </div>
+
+          {/* 메뉴 선택 섹션 */}
+          <ReservationMenu
+            menus={placeInfo.menus}
+            selectedMenus={selectedMenus}
+            setSelectedMenus={setSelectedMenus}
+            setTotalAmount={setTotalAmount}
+            handleBooking={handleBooking}
+          />
+        </div>
+
+        {/* 결제 모달 */}
+        {isPaymentModalOpen && (
+          <PaymentModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            amount={totalAmount}
+            orderId={orderId}
+            orderName={`${placeInfo.name} 예약`}
+            customerName={userInfoQuery.data?.name}
+          />
+        )}
       </div>
-
-      {/* 가게 주소 */}
-      <div className={AddressSection}>
-        <h1 className="text-sm md:text-base">
-          가게 주소 : {placeInfo.address}
-        </h1>
-      </div>
-
-      {/* 캘린더와 예약 상세 */}
-      <div className={CalendarSection}>
-        <Calendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-        <ReservationDetail
-          openTime={placeInfo.openTime}
-          closeTime={placeInfo.closeTime}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          selectedTime={selectedTime}
-          setSelectedTime={setSelectedTime}
-          selectedMembers={selectedMembers}
-          setSelectedMembers={setSelectedMembers}
-        />
-      </div>
-
-      {/* 메뉴 컴포넌트 */}
-      <ReservationMenu
-        menus={placeInfo.menus}
-        selectedMenus={selectedMenus}
-        setSelectedMenus={setSelectedMenus}
-        setTotalAmount={setTotalAmount}
-        handleBooking={handleBooking}
-      />
-
-      {/* 결제 모달은 isPaymentModalOpen이 true일 때만 렌더링 */}
-      {isPaymentModalOpen && (
-        <PaymentModal
-          isOpen={isPaymentModalOpen}
-          onClose={() => setIsPaymentModalOpen(false)}
-          amount={totalAmount}
-          orderId={orderId}
-          orderName={`${placeInfo.name} 예약`}
-          customerName={userInfoQuery.data?.name}
-        />
-      )}
     </div>
   );
 };

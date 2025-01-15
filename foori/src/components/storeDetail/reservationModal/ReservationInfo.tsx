@@ -23,7 +23,7 @@ interface ReservationDetailProps {
   setSelectedMembers: (members: number) => void;
 }
 
-const ReservationDetail = ({
+const ReservationInfo = ({
   openTime,
   closeTime,
   selectedDate,
@@ -197,4 +197,4 @@ const ReservationDetail = ({
   );
 };
 
-export default ReservationDetail;
+export default ReservationInfo;

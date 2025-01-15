@@ -1,4 +1,4 @@
-import { cookieStorage } from './cookies';
+import { cookieStorage } from '../utils/cookies';
 
 // 비밀번호 확인
 export const passwordCheck = async (password: string) => {

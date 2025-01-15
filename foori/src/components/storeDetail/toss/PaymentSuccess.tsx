@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { cookieStorage } from '../../../api/cookies';
+import { cookieStorage } from '../../../api/utils/cookies';
 import { useToast } from '../../../contexts/ToastContext';
 
 const PaymentSuccess = () => {

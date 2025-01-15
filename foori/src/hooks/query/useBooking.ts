@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { cookieStorage } from '../api/cookies';
+import { cookieStorage } from '../../api/utils/cookies';
 
 export interface BookingListResponse {
   id: number;

@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
-import { useCrawledData } from '../../api/crawledData';
 import location from '../../assets/images/location.png';
+import { useCrawledData } from '../../hooks/query/useCrawledData';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
 import MarkerOverlay from './marker/MarkerOverlay';
 

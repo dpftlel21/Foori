@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { getData } from './api';
+import { getData } from '../../api/api';
 
 // 크롤링 데이터 전체 조회
 export const useCrawledData = () => {

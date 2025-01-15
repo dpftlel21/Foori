@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../api/auth';
 import Calendar from '../../assets/images/calendar.png';
 import Email from '../../assets/images/email.png';
 import Lock from '../../assets/images/lock.png';
 import Person from '../../assets/images/person.png';
+import { useRegister } from '../../hooks/auth/useAuth';
 //import Phone from '../../assets/images/phone.png';
 import { useToast } from '../../contexts/ToastContext';
-import { useFormValidation } from '../../hooks/useFormValidation';
+import { useFormValidation } from '../../hooks/form/useFormValidation';
 import Logo from '../common/Logo';
 
 const SignUpBox = () => {
@@ -17,7 +17,7 @@ const SignUpBox = () => {
   const [showVerificationInput, setShowVerificationInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const { registerMutation, verifyEmailMutation, verifyCodeMutation } =
-    useAuth();
+    useRegister();
 
   const { formData, handleChange, errors, validateForm } = useFormValidation(
     {
