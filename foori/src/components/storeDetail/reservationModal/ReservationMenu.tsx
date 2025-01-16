@@ -26,7 +26,8 @@ const ReservationMenu = ({
 }: ReservationMenuProps) => {
   // 스타일 정의
   const STYLES = {
-    container: 'w-full h-full flex flex-col md:flex-row bg-gray-50',
+    container:
+      'w-full h-[calc(100dvh-750px)] flex flex-col md:flex-row bg-gray-50',
     leftSection: 'w-full md:w-2/3 h-full flex flex-col p-4 space-y-4',
     paymentSection:
       'p-3 bg-white rounded-lg shadow-md border border-[#e38994fb]',
@@ -86,7 +87,7 @@ const ReservationMenu = ({
         <MenuList
           menus={menus}
           selectedMenus={selectedMenus}
-          onQuantityChange={handleQuantityChange} // 수량 변경 함수
+          onQuantityChange={handleQuantityChange}
         />
 
         {/* 결제/예약 섹션 */}

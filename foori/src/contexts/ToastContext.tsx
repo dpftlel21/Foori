@@ -1,72 +1,56 @@
-import { createContext, useContext, useState, memo } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import Toast from '../components/common/Toast';
-type ToastType = 'success' | 'error' | 'info' | 'warning';
-
-interface ToastMessage {
-  id: number;
-  type: ToastType;
-  message: string;
-  onClose: () => void;
-}
 
 interface ToastContextType {
-  toasts: ToastMessage[];
-  showToast: (message: string, type?: ToastType) => void;
-  hideToast: (id: number) => void;
+  showToast: (
+    message: string,
+    type: 'error' | 'info' | 'warning' | 'success',
+  ) => void;
 }
 
-const ToastContext = createContext<ToastContextType>({
-  toasts: [],
-  showToast: () => {},
-  hideToast: () => {},
-});
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export const ToastProvider = memo(
-  ({ children }: { children: React.ReactNode }) => {
-    const [toasts, setToasts] = useState<ToastMessage[]>([]);
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [toasts, setToasts] = useState<
+    Array<{
+      id: number;
+      message: string;
+      type: 'error' | 'info' | 'warning' | 'success';
+    }>
+  >([]);
 
-    const showToast = (message: string, type: ToastType = 'info') => {
+  const showToast = useCallback(
+    (message: string, type: 'error' | 'info' | 'warning' | 'success') => {
       const id = Date.now();
-      const timeoutId = setTimeout(() => {
-        hideToast(id);
+      setToasts((prev) => [...prev, { id, message, type }]);
+
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
       }, 3000);
+    },
+    [],
+  );
 
-      setToasts((prev) => [
-        ...prev,
-        {
-          id,
-          type,
-          message,
-          onClose: () => {
-            clearTimeout(timeoutId);
-            hideToast(id);
-          },
-        },
-      ]);
-    };
+  return (
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+      <div className="fixed top-4 right-4 z-50 space-y-4">
+        {toasts.map((toast) => (
+          <Toast
+            key={toast.id}
+            type={toast.type}
+            message={toast.message}
+            onClose={() =>
+              setToasts((prev) => prev.filter((t) => t.id !== toast.id))
+            }
+          />
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+};
 
-    const hideToast = (id: number) => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    };
-
-    return (
-      <ToastContext.Provider value={{ toasts, showToast, hideToast }}>
-        {children}
-        <div className="toast-container fixed top-4 right-4 z-50 flex flex-col gap-2">
-          {toasts.map((toast) => (
-            <Toast
-              key={toast.id}
-              message={toast.message}
-              type={toast.type}
-              onClose={toast.onClose}
-            />
-          ))}
-        </div>
-      </ToastContext.Provider>
-    );
-  },
-);
-
+// 기존 useToast 훅과 동일한 인터페이스 유지
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {

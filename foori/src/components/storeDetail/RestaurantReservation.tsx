@@ -21,9 +21,8 @@ const RestaurantReservation = () => {
     from-[#ffecd2]
     to-[#fcb69f]
   `,
-
     contentContainer: `
-    w-[calc(100vw-50px)]
+    w-full
     max-w-[400px]
     mx-auto
     p-4
@@ -36,8 +35,7 @@ const RestaurantReservation = () => {
     flex
     flex-col
     gap-4
-    md:min-w-[calc(100vw-400px)]
-    md:mx-0
+    md:max-w-[1200px]
   `,
 
     infoSection: `

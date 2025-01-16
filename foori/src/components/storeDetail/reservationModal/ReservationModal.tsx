@@ -74,14 +74,23 @@ const ReservationModal = ({
       bg-black bg-opacity-50
       flex items-center justify-center
       z-50
+      p-4
     `,
     // 모달 스타일
     modal: `
       bg-white
       rounded-lg p-6
-      w-[90%] max-w-[1200px]
-      max-h-[90vh]
+      w-full
+      max-w-[1200px]
+      h-[600px]
+      md:h-[750px]
+      mt-6
       overflow-y-auto
+      border-2
+      border-solid
+      border-[#EE6677]
+      rounded-lg
+      shadow-sm
     `,
     // 헤더 섹션 스타일
     header: {
@@ -114,6 +123,7 @@ const ReservationModal = ({
     // 컨텐츠 섹션 스타일
     content: `
       space-y-6
+      h-[calc(100dvh-600px)]
     `,
     // 에러/경고 메시지 스타일
     message: {
@@ -229,7 +239,7 @@ const ReservationModal = ({
         {/* 컨텐츠 섹션 */}
         <div className={MODAL_STYLES.content}>
           {/* 캘린더와 예약 정보 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-6">
             <Calendar
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
