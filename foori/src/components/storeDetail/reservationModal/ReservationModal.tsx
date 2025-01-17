@@ -5,6 +5,7 @@ import { useToast } from '../../../contexts/ToastContext';
 import { useUserInfo } from '../../../hooks/query/useUserInfo';
 import { useReservationValidation } from '../../../hooks/reservation/useReservationValidation';
 import Calendar from './Calendar';
+import InfoTooltip from './InfoTooltip';
 import PaymentModal from './PaymentModal';
 import ReservationInfo from './ReservationInfo';
 import ReservationMenu from './ReservationMenu';
@@ -55,7 +56,7 @@ const ReservationModal = ({
 
   // 훅 사용
   const userInfoQuery = useUserInfo();
-  const { validateReservation, ERROR_STYLES } = useReservationValidation();
+  const { validateReservation } = useReservationValidation();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -68,84 +69,78 @@ const ReservationModal = ({
    * 스타일 정의
    */
   const MODAL_STYLES = {
-    // 컨테이너 스타일
     container: `
-      fixed inset-0
-      bg-black bg-opacity-50
-      flex items-center justify-center
-      z-50
-      p-4
-    `,
-    // 모달 스타일
+    fixed inset-0
+    bg-black bg-opacity-50
+    flex items-center justify-center
+    z-50
+    p-4
+  `,
     modal: `
-      bg-white
-      rounded-lg p-6
-      w-full
-      max-w-[1200px]
-      h-[600px]
-      md:h-[750px]
-      mt-6
-      overflow-y-auto
-      border-2
-      border-solid
-      border-[#EE6677]
-      rounded-lg
-      shadow-sm
-    `,
-    // 헤더 섹션 스타일
-    header: {
-      container: `
-        flex flex-col md:flex-row
-        justify-between items-start md:items-center
-        mb-6 pb-4
-        border-b border-gray-200
-      `,
-      storeInfoSection: `
-        flex flex-col md:flex-row
-        items-start md:items-center
-        gap-2 md:gap-4
-      `,
-      title: `
-        text-xl md:text-2xl
-        font-bold
-        text-gray-800
-      `,
-      rating: `
-        text-sm md:text-base
-        text-gray-600
-      `,
-      address: `
-        text-sm md:text-base
-        text-gray-500
-        mt-1 md:mt-0
-      `,
-    },
-    // 컨텐츠 섹션 스타일
+    bg-white
+    rounded-lg
+    w-full
+    max-w-[1200px]
+    min-h-[700px]
+    max-h-[90vh]
+    flex
+    flex-col
+    border-2
+    border-solid
+    border-[#EE6677]
+  `,
+    header: `
+    flex
+    items-center
+    justify-end
+    p-6
+    border-b
+    border-solid
+    border-[#e5e0e090]
+  `,
+    closeButton: `
+    text-2xl
+    text-gray-500
+    hover:text-gray-700
+    transition-colors
+  `,
     content: `
-      space-y-6
-      h-[calc(100dvh-600px)]
-    `,
-    // 에러/경고 메시지 스타일
-    message: {
-      error: ERROR_STYLES.errorMessage,
-      warning: ERROR_STYLES.warningMessage,
-    },
-    // 버튼 스타일
-    button: {
-      primary: `
-        bg-[#e38994] text-white
-        px-6 py-2
-        rounded-lg
-        hover:bg-[#d27883]
-        transition-colors
-      `,
-      disabled: `
-        bg-gray-300 text-gray-500
-        px-6 py-2
-        rounded-lg
-        cursor-not-allowed
-      `,
-    },
+    flex-1
+    overflow-y-auto
+    p-8
+    grid
+    grid-cols-1
+    md:grid-cols-[1fr_1fr]
+    gap-12
+  `,
+    leftSection: `
+    flex
+    flex-col
+    items-center
+  `,
+    rightSection: `
+    flex
+    flex-col
+    gap-8
+    relative
+  `,
+    infoSection: `
+    absolute
+    top-0
+    right-0
+  `,
+    bookingButton: `
+    w-full
+    bg-[#e38994fb]
+    text-white
+    py-4
+    rounded-lg
+    hover:bg-[#d27883fb]
+    transition-colors
+    mt-auto
+    text-lg
+    font-medium
+  `,
   } as const;
 
   /**
@@ -220,31 +215,25 @@ const ReservationModal = ({
   return (
     <div className={MODAL_STYLES.container}>
       <div className={MODAL_STYLES.modal}>
-        {/* 헤더 섹션 */}
-        <div className={MODAL_STYLES.header.container}>
-          <div className={MODAL_STYLES.header.storeInfoSection}>
-            <h1 className={MODAL_STYLES.header.title}>{placeInfo.name}</h1>
-            <span className={MODAL_STYLES.header.rating}>
-              평점: {placeInfo.rating_avg} / 5.0
-            </span>
-            <span className={MODAL_STYLES.header.address}>
-              {placeInfo.address}
-            </span>
-          </div>
-          <button onClick={onClose} className={MODAL_STYLES.button.primary}>
-            닫기
-          </button>
+        <div className={MODAL_STYLES.header}>
+          <button onClick={onClose}>✕</button>
         </div>
-
-        {/* 컨텐츠 섹션 */}
         <div className={MODAL_STYLES.content}>
-          {/* 캘린더와 예약 정보 */}
-          <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Calendar
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              openDays={placeInfo.openDays}
-            />
+          {/* 왼쪽: 캘린더 */}
+          <Calendar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            openDays={placeInfo.openDays}
+          />
+
+          {/* 오른쪽: 예약 정보, 구성원, 메뉴판 */}
+          <div className={MODAL_STYLES.rightSection}>
+            {/* 안내사항 아이콘 */}
+            <div className={MODAL_STYLES.infoSection}>
+              <InfoTooltip />
+            </div>
+
+            {/* 예약 시간 & 구성원 */}
             <ReservationInfo
               openTime={placeInfo.openTime}
               closeTime={placeInfo.closeTime}
@@ -255,19 +244,18 @@ const ReservationModal = ({
               selectedMembers={selectedMembers}
               setSelectedMembers={setSelectedMembers}
             />
-          </div>
 
-          {/* 메뉴 선택 섹션 */}
-          <ReservationMenu
-            menus={placeInfo.menus}
-            selectedMenus={selectedMenus}
-            setSelectedMenus={setSelectedMenus}
-            setTotalAmount={setTotalAmount}
-            handleBooking={handleBooking}
-          />
+            {/* 메뉴판 */}
+            <ReservationMenu
+              menus={placeInfo.menus}
+              selectedMenus={selectedMenus}
+              setSelectedMenus={setSelectedMenus}
+              setTotalAmount={setTotalAmount}
+              handleBooking={handleBooking}
+            />
+          </div>
         </div>
 
-        {/* 결제 모달 */}
         {isPaymentModalOpen && (
           <PaymentModal
             isOpen={isPaymentModalOpen}

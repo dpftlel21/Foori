@@ -29,7 +29,7 @@ const BookingModal = ({ bookingId, isOpen, onClose }: BookingModalProps) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed top-[25%] left-[40%] -translate-x-1/2 -translate-y-1/2 z-50
+            className="fixed top-[12rem] left-[0.75rem] md:top-[16rem] md:left-[40rem] -translate-x-1/2 -translate-y-1/2 z-50
               bg-white rounded-2xl shadow-xl max-w-lg w-[95%] max-h-[90vh] overflow-auto"
           >
             {/* 모달 헤더 */}
