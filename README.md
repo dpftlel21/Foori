@@ -1,127 +1,156 @@
-## **Team. 🍔 Foori**
+# 🍔 Foori - 맛집 예약 서비스
 
-### 🖥️ 배포 및 시연 영상
+## 📝 프로젝트 소개
 
-✔️ **[배포 싸이트]()**
+Foori는 맛집 예약과 결제를 원스톱으로 처리할 수 있는 플랫폼입니다. 사용자 경험을 최우선으로 고려하여 직관적인 UI/UX를 구현했습니다.
 
----
+## 👥 팀 구성
 
-## 📝 자료
+| 분야     | 이름   | GitHub                                                      |
+| -------- | ------ | ----------------------------------------------------------- |
+| Frontend | 이인우 | [@dpftlel21](https://github.com/dpftlel21?tab=repositories) |
+| Backend  | 서재곤 | [@Jgone2](https://github.com/Jgone2)                        |
 
-#### ✔️ **[Figma](https://www.figma.com/file/RXDA1Zvfl7sjb7owNxb7VA/Sound-Oasis?type=design&node-id=0-1&mode=design&t=WUWxwmaabthRoGLn-0)**
+### 🔗 프로젝트 링크
 
-#### ✔️ **[Git Repository](https://github.com/codestates-seb/seb45_main_005/tree/feDev)**
+- **[서비스 링크](http://www-foori.com)**
+- **[백엔드 Repository](https://github.com/Jgone2/foori)**
 
----
+### 📚 프로젝트 기획 및 설계 자료
 
-## ✔️ 주요 기능
-
-### ✨
-
-<br>
-
----
-
-## **🖥️ Stack**
-
-### **✔️ 프론트엔드**
-
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white" height="21"> <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white" height="21"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=JavaScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" height="21"> <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=flat&logo=Tailwind CSS&logoColor=white"/>
-
-### **✔️ 백엔드**
-
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white" height="22"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" height="21"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white" height="21">
-
-### **✔️ 공통**
-
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white" height="21"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" height="21">
+- **[피그마](https://www.figma.com/design/K2RbAMXOjnQUoztBqQdVze/Foori?node-id=0-1&p=f&t=AnulHALlyHtMn0jj-0)**
+- **[포스트맨](https://winter-escape-178167.postman.co/workspace/41c40088-cce2-46df-86e3-5e94800f91a4/overview)**
 
 ---
 
-## ✔️ Git Commit Message Convention
+## 🛠 Technical Stack
 
-프로젝트의 커밋 메시지를 일관성 있고 명확하게 작성하기 위해 아래와 같은 구조로 커밋 메시지를 작성합니다. 이 Convention은 각각의 커밋이 어떤 작업을 수행하는지를 명확히 전달하여 협업과 버전 관리를 원활하게 합니다.
+### Frontend
 
-### 1. 구조
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=flat&logo=Tailwind CSS&logoColor=white"/> <img src="https://img.shields.io/badge/React Query-FF4154?style=for-the-badge&logo=react query&logoColor=white"> <img src="https://img.shields.io/badge/Framer Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white">
 
-- `[타입]: 제목 (필수)`
+### DevOps
 
-- `[본문]: 변경 내용 (옵션)`
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
----
+## 💡 주요 기능 및 기술적 도전
 
-### 2. 기능 구현
+### 1. 카카오맵 기반 맛집 검색 및 예약 시스템
 
-1. 회원가입 및 로그인 / 2024. 12. 04
-2. 배포 및 도커 설정 (github actions 배포 자동화) / 2024. 12. 04, 12. 09
+- 카카오맵 API를 활용한 위치 기반 서비스 구현
+  - autoload=false 옵션을 통한 초기 로딩 최적화
+  - 커스텀 오버레이를 통한 매장 정보 표시
+  - 카테고리별 필터링 및 검색 기능
+  - 크롤링 데이터와 카카오맵 데이터 매칭 로직 구현
+- 실시간 예약 시스템
+  - 날짜/시간별 예약 가능 여부 확인
+  - 메뉴 선택 및 인원 설정 기능
+  - 중복 예약 방지 및 휴무일 처리
+  - 24시간 이내 예약 차단 로직
 
-   - Vite 마이그레이션 과정 발생 한 문제
+### 2. 토스페이먼츠 결제 시스템 연동
 
-   Tailwind CSS 호환이 안돼서, `tailwind.config.js` 파일을 ES모듈 형식으로 변경하였습니다. 또한, `postcss.config.js` 파일을 추가하여 `npm install -D tailwindcss postcss autoprefixer` 명령어를 통해 호환성을 해결하였습니다. (의존성 설치) 그 이후에 `vite.config.ts` 파일에서 `postcss` 플러그인을 추가하여 호환성을 해결하였습니다.
+- 결제 프로세스 안정성 확보
+  - 결제 위젯 동적 렌더링 및 cleanup 처리
+  - 결제 실패/취소 시나리오 처리
+  - 결제 상태에 따른 예약 상태 관리
+- 결제-예약 연동 시스템
+  - 결제 완료 시 자동 예약 확정
+  - 결제 취소 시 예약 상태 롤백
+  - 결제 대기 상태 관리
 
-3. 카카오맵 마커 커스텀 오버레이 추가(예약하기), 검색 구현 / 2024. 12. 09
-4. 카카오맵 데이터 및 크롤링 데이터 매칭, 소셜 로그인 구현 / 2024. 12. 10
-5. 마이페이지 소셜 로그인 연동 구현 / 2024. 12. 11
-6. 로그인, 소셜 로그인, 소셜 연동 예외 처리 / 2024. 12. 12
+### 3. 사용자 인증 시스템
 
-   - 소셜로그인 CORS 에러 수정 필요
-
-7. 예외 처리에 따른 토스트 메시지 추가 / 2024. 12. 12
-8. 예약 모달 구현 (예약 가능 시간, 예약 인원, 가게 메뉴 조회) / 2024. 12. 16
-9. 카카오맵 및 크롤링 데이터 매칭 추가 / 2024. 12.
-10. 비밀번호 변경, 이미지 업로드 기능 추가 / 2024. 12. 23
-11. 결제 기능 추가 (토스 페이먼츠) / 2024. 12. 24
-12. 메인 페이지 추가 / 2024. 12. 24
-13. 배포 자동화 수정, 도메인 연결 / 2024. 01. 01
-
-프로젝트의 자동 배포 과정에서 GitHub Actions의 워크플로우는 성공적으로 실행되었지만, EC2 서버의 실제 서비스에는 변경사항이 반영되지 않는 문제가 발생했습니다. 이는 단순히 코드를 서버로 전송하는 것만으로는 실행 환경과 필요한 설정들이 제대로 구성되지 않기 때문이었습니다. 이 문제를 해결하기 위해 Docker와 docker-compose를 도입하여 애플리케이션을 컨테이너화했고, Nginx 서버 설정과 함께 일관된 실행 환경을 구성했습니다. 특히 Git에 포함되지 않은 환경변수들(.env 파일)을 EC2 서버에 직접 생성하여 카카오맵 API 키, 리다이렉트 URL 등 필수적인 설정을 관리했습니다. 이 경험을 통해 배포 자동화에서는 코드 전송뿐만 아니라 실행 환경 구성, 환경변수 관리, 서버 설정 등 전체적인 인프라 구성의 자동화가 중요하다는 것을 배웠습니다.
-
-14. 예약하기 추가 / 2025. 01. 02
-
-- Date 타입 (bookingDate) 의사소통 오류
-
-- menuId (post) 의사소통 오류
-
-15. 홈화면 카테고리 및 메인 카테고리별 검색 추가, 마이페이지 UI 수정 / 2025. 01. 03
-
-16. 예약 현황 캘린더 추가 / 2025. 01. 04
-
-17. 리뷰 쓰기 및 조회 추가, 회원가입시 메일 인증코드 확인 추가 / 2025. 01. 05
-
-18. 리뷰 UI 변경 및 페이지네이션을 통한 전체 조회 추가 / 2025. 01. 06
-
-19. 로그인, 회원가입, 아이디/비밀번호 찾기 반응형 수정 / 2025. 01. 09
-
-20. 마이페이지 반응형 수정 / 2025. 01. 10
-
-21. 토스페이먼츠 v2 결제 추가 / 2025. 01. 13, 01. 14(수정)
-
-- 예약 완료 후 결제 확인 후 예약 완료 (취소 시 마이페이지 이동 및 Toast 메시지, 결제 대기 상태)
-
-22. 예약 모달 반응형 수정 / 2025. 01. 14
-
-23. 예외 처리 추가 / 2025. 01. 14
-
-- 로그인 x -> 다른 페이지 접근시 차단(로그인 페이지로 이동, 로그인하면 원래 가려던 페이지로 이동)
-
-- 예약 시 예외 추가
-
-  - 24시간 전 예약 불가
-  - 휴무일 제외
-  - 중복 예약 불가
-
-24. Toast UI 수정 / 2025. 01. 16
-
-#### 📝 변경사항
-
-1. CRA -> Vite 로 마이그레이션 / 2024. 12. 04
-
-   Why?
-
-   - CRA는 빌드 속도가 느리고, 번들 크기가 크다는 단점이 있습니다.
-
-   - Vite는 빌드 속도가 CRA보다 빠르고, 번들 크기가 작습니다.
+- 다중 소셜 로그인 구현
+  - 카카오/네이버/구글 로그인 연동
+  - 소셜 계정 연동 및 해제 기능
+  - JWT 기반 인증 처리
+- 보안 강화
+  - 이메일 인증 코드 확인 프로세스
+  - Protected Routes를 통한 접근 제어
+  - 로그인 상태 유지 및 토큰 관리
 
 ---
 
-**개발기간 : 2023.08.24 ~ 2023.09.22**
+## 🎯 트러블슈팅
+
+### 1. 백엔드와의 데이터 타입 불일치 문제
+
+- 문제 1: 리뷰 작성 시 FormData와 백엔드 타입 불일치
+  - FormData는 모든 값을 문자열로 전송하나, 백엔드는 bookingId를 number 타입으로만 처리
+  - 이미지 파일과 함께 전송되어야 하는 데이터의 타입 불일치
+- 해결:
+  - 백엔드 팀과 협의하여 문자열로 받은 후 서버에서 타입 변환하는 방식으로 수정
+  - FormData 전송 전 데이터 구조 검증 로직 추가
+
+### 2. 토스페이먼츠 결제 위젯 관리
+
+- 문제: 결제 위젯 재렌더링 시 메모리 누수 발생
+- 해결:
+  - useEffect cleanup에서 위젯 인스턴스 제거
+  - 결제 상태에 따른 조건부 렌더링 적용
+  ```typescript
+  useEffect(() => {
+    const paymentWidget = /* 위젯 초기화 */
+    return () => {
+      // cleanup 로직
+      paymentMethodEl.innerHTML = '';
+    };
+  }, []);
+  ```
+
+### 3. 배포 자동화 구축
+
+- 문제: GitHub Actions 실행 후 변경사항 미반영
+- 해결:
+  - Docker를 활용한 컨테이너화
+  - EC2 환경변수 관리 체계화
+  - Nginx 설정 최적화
+
+---
+
+## 🔒 예외 처리
+
+### 1. 인증 및 인가
+
+- 휴무일 예약 불가 처리
+- 중복 예약 방지 로직
+- 사용자 피드백
+  - 커스텀 Toast 메시지 시스템
+  - 상황별 에러 메시지 분기 처리
+
+### 1. 인증 및 인가
+
+- 비로그인 사용자 접근 제어
+  - Protected Routes 구현
+  - 로그인 후 이전 페이지 리다이렉션
+- 회원가입 보안 강화
+  - 이메일 인증 코드 확인 프로세스
+  - 비밀번호 유효성 검증
+
+### 2. 예약 시스템 안정성
+
+- 예약 제한 조건 구현
+  - 24시간 이내 예약 차단
+  - 휴무일 예약 불가 처리
+  - 중복 예약 방지 로직
+- 결제 연동 안정성
+  - 결제 시도 중복 방지
+  - 결제 실패 시 예약 상태 롤백
+  - 네트워크 오류 대응
+
+### 3. UI/UX 개선
+
+- 사용자 피드백 강화
+  - 커스텀 Toast 메시지 시스템
+  - 로딩 상태 표시
+  - 에러 메시지 상황별 분기
+- 반응형 디자인
+  - 모바일 최적화
+  - 브레이크포인트별 레이아웃 조정
+
+---
+
+## ⏰ 개발 기간
+
+**2024.12 ~ 2025.01**
