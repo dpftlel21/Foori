@@ -7,7 +7,7 @@ const STYLES = {
   container:
     'w-full h-screen bg-gradient-to-b from-[#ffecd2] to-[#fcb69f] flex flex-col justify-center items-center text-2xl font-bold',
   contentContainer:
-    'w-full max-w-[400px] bg-white rounded-lg shadow-md p-8 mx-auto',
+    'w-full max-w-[350px] bg-white rounded-lg shadow-md p-8 mx-auto',
   divider: {
     container: 'flex items-center my-6',
     line: 'flex-1 h-px bg-gray-300',

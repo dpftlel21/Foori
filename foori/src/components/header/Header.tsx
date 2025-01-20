@@ -1,6 +1,5 @@
 import Logo from '../common/Logo';
 import Navigation from './Navigation';
-import UserMenu from './UserMenu';
 
 const STYLES = {
   header: `
@@ -18,7 +17,6 @@ const Header = () => {
       <div className={STYLES.container}>
         <Logo />
         <Navigation />
-        <UserMenu />
       </div>
     </header>
   );

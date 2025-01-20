@@ -10,7 +10,7 @@ const Logo = () => {
 
   return (
     <button
-      className="h-[10vh] flex justify-center items-center"
+      className="w-[80px] md:w-[100px] h-[80px] md:h-[100px] flex justify-center items-center"
       onClick={handleHome}
     >
       <img src={Icon} alt="icon" className="w-[80%] h-[7vh] cursor-pointer" />
