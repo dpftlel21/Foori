@@ -125,6 +125,41 @@ Foori는 맛집 예약과 결제를 원스톱으로 처리할 수 있는 플랫�
     - Docker 컨테이너 상태 모니터링
     - 배포 후 서비스 정상 작동 확인
 
+### 4. 페이지 이동 시 유저 정보 손실 문제
+
+- 문제 1: 상세 페이지 진입 시 유저 정보 조회 실패
+  - 메인 페이지에서는 정상 작동하나 상세 페이지에서 유저 정보 조회 실패
+  - HTML 응답으로 인한 JSON 파싱 에러 발생
+  - 토큰은 유효한 상태에서 불필요한 로그아웃 발생
+- 해결:
+  - React Query의 캐시 전략 최적화
+  ```typescript
+  const { data: userInfo } = useQuery(
+    ['userInfo'],
+    async () => {
+      try {
+        const response = await getUserProfile();
+        return response;
+      } catch (err) {
+        const previousData = queryClient.getQueryData(['userInfo']);
+        if (previousData) return previousData;
+        throw err;
+      }
+    },
+    {
+      enabled: !!token,
+      staleTime: Infinity,
+      cacheTime: 1000 * 60 * 30,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      keepPreviousData: true,
+    },
+  );
+  ```
+  - 에러 발생 시 이전 캐시된 데이터 활용
+  - 불필요한 API 호출 최소화
+  - 페이지 이동 및 새로고침 시에도 유저 정보 유지
+
 ---
 
 ## 🔒 예외 처리

@@ -17,7 +17,7 @@ export const cookieStorage = {
   },
   setRefreshToken: (token: string) => {
     Cookies.set('refreshToken', token, {
-      expires: 7, // 리프레시 토큰은 더 긴 유효기간
+      expires: 1 / 24, // 1시간
       secure: true,
       sameSite: 'strict',
     });

@@ -15,9 +15,9 @@ const STYLES = {
 
 const UserMenu = () => {
   const navigate = useNavigate();
-  const userInfoQuery = useUserInfo();
-  console.log('userInfoQuery.data', userInfoQuery);
-  const userInfo = userInfoQuery.data;
+  const { data: userInfo } = useUserInfo();
+
+  //console.log('UserMenu render:', { userInfo }); // 디버깅용
 
   // 로그아웃
   const handleLogout = () => {

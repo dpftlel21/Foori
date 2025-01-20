@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/header/Header';
@@ -19,11 +19,11 @@ import MyPage from './pages/MyPage';
 import SignUp from './pages/SignUp';
 import WriteReview from './pages/WriteReview';
 
-const queryClient = new QueryClient();
-
-function App() {
-  const location = useLocation();
+function App(): JSX.Element {
   const { mutateAsync: refreshToken } = useTokenRefresh();
+  const queryClient = useQueryClient();
+  const location = useLocation();
+
   const noHeaderRoutes = [
     RouteConst.Login,
     RouteConst.SignUp,
@@ -39,7 +39,7 @@ function App() {
   }, [refreshToken]);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       {!noHeaderRoutes.includes(location.pathname) && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -66,7 +66,7 @@ function App() {
         <Route path={RouteConst.NaverCallback} element={<OauthCallback />} />
         <Route path={RouteConst.GoogleCallback} element={<OauthCallback />} />
       </Routes>
-    </QueryClientProvider>
+    </>
   );
 }
 

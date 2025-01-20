@@ -15,7 +15,7 @@ interface BookingRequest {
 export const handleReservation = async (data: BookingRequest) => {
   const token = cookieStorage.getToken();
 
-  const response = await fetch(`${import.meta.env.VITE_BACK_URL}/api/booking`, {
+  const response = await fetch(`api/booking`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -31,7 +31,7 @@ export const createReview = async (
     formData.append('files', image);
   });
 
-  const response = await fetch(`${import.meta.env.VITE_BACK_URL}/api/reviews`, {
+  const response = await fetch(`api/reviews`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
