@@ -1,22 +1,23 @@
-# 멀티 스테이지 빌드 최적화
+# 빌드 스테이지
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# 캐시 활용을 위해 package.json 먼저 복사
+# 의존성 설치 레이어 (캐시 활용)
 COPY package*.json ./
-RUN npm ci --silent  # npm install 대신 ci 사용
+RUN npm ci --silent
 
 # 소스 코드 복사 및 빌드
 COPY . .
 RUN npm run build
 
-# 프로덕션 이미지
+# 프로덕션 스테이지
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 불필요한 파일 제거
-RUN rm -rf /var/cache/apk/* && \
+# Nginx 최적화
+RUN nginx -t && \
+    rm -rf /var/cache/apk/* && \
     rm -rf /tmp/*
 
 EXPOSE 80

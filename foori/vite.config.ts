@@ -1,26 +1,28 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig(({ mode }) => {
-  //환경 변수
-  const env = loadEnv(mode, process.cwd(), '');
-
-  return {
-    plugins: [react()],
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_BACK_URL,
-          changeOrigin: true,
-          //secure: false,
-          //credentials: "include",
-          //ws: true, // 실시간 채팅, 알림 데이터 업데이트 등,,,
-          //rewrite: (path) => path.replace(/^\/api/, ''),
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          // 자주 변경되지 않는 큰 라이브러리들 분리
+          utils: ['axios', 'lodash'],
         },
       },
     },
-    css: {
-      postcss: './postcss.config.js',
-    },
-  };
+    // 프로덕션 빌드 최적화
+    minify: 'terser',
+    sourcemap: false,
+    // 청크 크기 최적화
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096,
+  },
+  server: {
+    port: 3000,
+    host: true,
+  },
 });
