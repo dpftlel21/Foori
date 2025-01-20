@@ -1,4 +1,10 @@
-import { useMutation, useQuery, UseQueryOptions } from 'react-query';
+import axios, { AxiosError } from 'axios';
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  UseQueryOptions,
+} from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as authApi from '../../api/endpoints/auth';
 import { cookieStorage } from '../../api/utils/cookies';
@@ -59,7 +65,9 @@ export const useOauth = () => {
   const oauthLoginMutation = useMutation(
     async ({ code, provider }: { code: string; provider: string }) => {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/${provider}/callback?code=${code}`,
+        `${
+          import.meta.env.VITE_SOCIAL_LOGIN_URL
+        }/${provider}/callback?code=${code}`,
         {
           credentials: 'include',
         },
@@ -144,4 +152,69 @@ export const useFindPassword = (
     enabled: !!email && !!name && !!phoneNumber,
     ...options,
   });
+};
+
+// 리프레시 토큰 관련 타입
+interface TokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+// 토큰 리프레시 훅
+export const useTokenRefresh = () => {
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+
+  const refreshTokenMutation = useMutation<TokenResponse, AxiosError>(
+    authApi.refreshToken,
+    {
+      onSuccess: (data) => {
+        if (data.accessToken) {
+          cookieStorage.setToken(data.accessToken);
+          if (data.refreshToken) {
+            cookieStorage.setRefreshToken(data.refreshToken);
+          }
+        }
+      },
+      onError: (error) => {
+        if (error.response?.status === 401) {
+          // 리프레시 토큰도 만료된 경우
+          cookieStorage.clearTokens();
+          navigate('/login');
+          showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
+        }
+      },
+      retry: false,
+    },
+  );
+
+  return refreshTokenMutation;
+};
+
+// 자동 토큰 갱신을 위한 인터셉터 설정
+export const setupAuthInterceptor = (
+  queryClient: QueryClient,
+  refreshTokenFn: () => Promise<TokenResponse>,
+) => {
+  axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      if (error.response?.status === 401 && !error.config._retry) {
+        error.config._retry = true;
+        try {
+          const result = await refreshTokenFn();
+          if (result.accessToken) {
+            cookieStorage.setToken(result.accessToken);
+            error.config.headers[
+              'Authorization'
+            ] = `Bearer ${result.accessToken}`;
+            return axios(error.config);
+          }
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+      return Promise.reject(error);
+    },
+  );
 };

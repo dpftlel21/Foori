@@ -1,5 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import { useBookings } from '../../../hooks/query/useBooking';
+import { useUserInfo } from '../../../hooks/query/useUserInfo';
+import PaymentModal from '../../storeDetail/reservationModal/PaymentModal';
 import { BookingStatusBadge } from './BookingStatusBadge';
 
 interface BookingModalProps {
@@ -10,7 +13,9 @@ interface BookingModalProps {
 
 const BookingModal = ({ bookingId, isOpen, onClose }: BookingModalProps) => {
   const { bookingDetail, isLoading } = useBookings(bookingId);
-
+  console.log('bookingDetail', bookingDetail);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const userInfoQuery = useUserInfo();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -139,9 +144,10 @@ const BookingModal = ({ bookingId, isOpen, onClose }: BookingModalProps) => {
                         </div>
                       )}
 
-                    {/* 예약 취소 버튼 (상태가 예약 완료일 때만 표시) */}
-                    {bookingDetail.status === 1 && (
-                      <div className="pt-4">
+                    {/* 버튼 영역 */}
+                    <div className="pt-4 space-y-2">
+                      {/* 예약 취소 버튼 (상태가 예약 완료일 때만 표시) */}
+                      {bookingDetail.status === 3 && (
                         <button
                           onClick={() => {
                             // 예약 취소
@@ -151,13 +157,36 @@ const BookingModal = ({ bookingId, isOpen, onClose }: BookingModalProps) => {
                         >
                           예약 취소하기
                         </button>
-                      </div>
-                    )}
+                      )}
+
+                      {/* 결제하기 버튼 (상태가 대기일 때만 표시) */}
+                      {bookingDetail.status === 1 && (
+                        <button
+                          onClick={() => setIsPaymentModalOpen(true)}
+                          className="w-full py-3 px-4 bg-[#e38994fb] text-white rounded-lg
+                          hover:bg-[#d27883fb] transition-colors font-medium"
+                        >
+                          결제하기
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )
               )}
             </div>
           </motion.div>
+
+          {/* 결제 모달 */}
+          {isPaymentModalOpen && bookingDetail && (
+            <PaymentModal
+              isOpen={isPaymentModalOpen}
+              onClose={() => setIsPaymentModalOpen(false)}
+              amount={bookingDetail.totalPrice}
+              orderId={bookingDetail.orderId}
+              orderName={`${bookingDetail.restaurant.name} 예약`}
+              customerName={userInfoQuery.data?.name}
+            />
+          )}
         </>
       )}
     </AnimatePresence>

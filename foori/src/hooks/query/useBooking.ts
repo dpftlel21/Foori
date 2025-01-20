@@ -63,7 +63,7 @@ export const useBookings = (bookingId?: number) => {
         headers: { Authorization: `Bearer ${token}` },
       },
     );
-    console.log('response', response);
+    //console.log('response', response);
     return response.json();
   };
 
@@ -74,8 +74,10 @@ export const useBookings = (bookingId?: number) => {
 
   const detailQuery = useQuery({
     queryKey: ['booking', bookingId],
-    queryFn: () => (bookingId ? getBookingDetail(bookingId) : null),
+    queryFn: () => getBookingDetail(bookingId!),
     enabled: !!bookingId,
+    staleTime: 30000,
+    cacheTime: 5 * 60 * 1000,
   });
 
   return {

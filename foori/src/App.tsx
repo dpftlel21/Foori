@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
@@ -6,6 +7,7 @@ import OauthCallback from './components/login/oauthLogin/OauthCallback';
 import ProtectedRoute from './components/protectedRoute/protectedRoute';
 import PaymentFail from './components/storeDetail/toss/PaymentFail';
 import PaymentSuccess from './components/storeDetail/toss/PaymentSuccess';
+import { setupAuthInterceptor, useTokenRefresh } from './hooks/auth/useAuth';
 import { RouteConst } from './interface/RouteConst';
 import Detail from './pages/Detail';
 import FindID from './pages/FindID';
@@ -21,6 +23,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const location = useLocation();
+  const { mutateAsync: refreshToken } = useTokenRefresh();
   const noHeaderRoutes = [
     RouteConst.Login,
     RouteConst.SignUp,
@@ -30,6 +33,10 @@ function App() {
     RouteConst.NaverCallback,
     RouteConst.GoogleCallback,
   ];
+
+  useEffect(() => {
+    setupAuthInterceptor(queryClient, refreshToken);
+  }, [refreshToken]);
 
   return (
     <QueryClientProvider client={queryClient}>

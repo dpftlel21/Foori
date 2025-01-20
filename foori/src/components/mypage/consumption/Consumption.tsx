@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -21,27 +21,70 @@ const STYLES = {
     w-full
     max-w-[1200px]
     mx-auto
-    overflow-y-auto
-    p-6
+    p-3
+    md:p-6
   `,
   header: `
-    mb-8
+    mb-4
+    md:mb-8
   `,
-  title: `
-    text-2xl
+  headerTitle: `
+    text-lg
+    md:text-2xl
     font-bold
     text-gray-800
+  `,
+  cardSection: `
+    overflow-x-auto
     mb-4
+    md:mb-6
+    -mx-3
+    px-3
+    md:mx-0
+    md:px-0
+  `,
+  cardContainer: `
+    flex
+    md:grid
+    md:grid-cols-3
+    gap-3
+    md:gap-4
+    w-max
+    md:w-auto
+  `,
+  card: `
+    bg-white
+    p-4
+    rounded-lg
+    shadow-sm
+    min-w-[180px]
+    md:min-w-0
+  `,
+  cardTitle: `
+    text-sm
+    text-gray-500
+  `,
+  cardValue: `
+    text-lg
+    md:text-xl
+    font-bold
+    mt-1
+  `,
+  cardDescription: `
+    text-xs
+    md:text-sm
+    text-gray-600
+    mt-1
   `,
   filterSection: `
     flex
     flex-col
-    gap-4
     md:flex-row
-    md:justify-start
-    mb-8
+    gap-3
+    mb-4
     bg-white
-    p-4
+    p-3
+    md:p-4
     rounded-lg
     shadow-sm
   `,
@@ -51,41 +94,57 @@ const STYLES = {
     gap-2
   `,
   filterLabel: `
-    text-sm
+    text-xs
+    md:text-sm
     font-medium
     text-gray-600
   `,
   buttonGroup: `
-    flex
-    gap-2
-    flex-wrap
+    grid
+    grid-cols-3
+    gap-1
+    w-full
+    md:flex
+    md:gap-2
   `,
   button: (isActive: boolean) => `
-    px-4
+    px-3
     py-2
     rounded-lg
     text-sm
     transition-colors
+    w-full
+    md:w-auto
     ${
       isActive
-        ? 'bg-blue-500 text-white'
+        ? 'bg-[#e38994fb] text-white'
         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }
   `,
   chartSection: `
-    h-[300px]
+    h-[160px]
+    md:h-[300px]
     bg-white
     rounded-lg
     shadow-sm
-    p-6
-    mb-6
+    p-3
+    md:p-6
   `,
   chartContainer: `
     w-full
     h-full
-    overflow-hidden
+  `,
+  totalAmount: `
+    text-right
+    mt-3
+    text-sm
+    md:text-lg
+    font-bold
+    text-[#e38994fb]
   `,
 } as const;
+
+const COLORS = ['#4C6EF5', '#51CF66', '#FAB005', '#FF6B6B', '#845EF7'];
 
 const CONSUMPTION_DATA = {
   weekly: [
@@ -112,8 +171,6 @@ const CONSUMPTION_DATA = {
   ],
 };
 
-const COLORS = ['#4C6EF5', '#51CF66', '#FAB005', '#FF6B6B', '#845EF7'];
-
 const ADDITIONAL_ANALYSIS = {
   comparison: {
     title: '지난달 대비',
@@ -135,10 +192,28 @@ const ADDITIONAL_ANALYSIS = {
 const Consumption = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('monthly');
   const [chartType, setChartType] = useState<ChartType>('pie');
+  const [chartSize, setChartSize] = useState({
+    outerRadius: window.innerWidth < 768 ? 70 : 100,
+    innerRadius: window.innerWidth < 768 ? 15 : 40,
+  });
 
-  const data = CONSUMPTION_DATA[timeRange] || []; // 기본값 빈 배열 추가
+  const data = CONSUMPTION_DATA[timeRange] || [];
   const totalSpent = data.reduce((acc, curr) => acc + curr.value, 0);
 
+  // 화면 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setChartSize({
+        outerRadius: window.innerWidth < 768 ? 60 : 100,
+        innerRadius: window.innerWidth < 768 ? 20 : 40,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 원형 차트 렌더링
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -160,13 +235,20 @@ const Consumption = () => {
         fill="white"
         textAnchor="middle"
         dominantBaseline="central"
+        className="text-xs md:text-sm"
       >
         {`${name} ${(percent * 100).toFixed(0)}%`}
       </text>
     );
   };
 
+  // 차트 렌더링
   const renderChart = () => {
+    const commonChartConfig = {
+      margin: { top: 5, right: 5, left: 0, bottom: 5 },
+      tick: { fontSize: 10 },
+    };
+
     switch (chartType) {
       case 'pie':
         return (
@@ -177,8 +259,8 @@ const Consumption = () => {
               cy="50%"
               labelLine={false}
               label={renderCustomizedLabel}
-              outerRadius={125}
-              innerRadius={50}
+              outerRadius={chartSize.outerRadius}
+              innerRadius={chartSize.innerRadius}
               fill="#8884d8"
               dataKey="value"
               isAnimationActive={false}
@@ -198,16 +280,16 @@ const Consumption = () => {
 
       case 'line':
         return (
-          <LineChart data={data}>
-            <XAxis dataKey="name" />
-            <YAxis />
+          <LineChart data={data} {...commonChartConfig}>
+            <XAxis dataKey="name" {...commonChartConfig.tick} />
+            <YAxis {...commonChartConfig.tick} />
             <Tooltip
               formatter={(value: number) => value.toLocaleString() + '원'}
             />
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#8884d8"
+              stroke="#e38994fb"
               strokeWidth={2}
             />
           </LineChart>
@@ -215,13 +297,13 @@ const Consumption = () => {
 
       case 'bar':
         return (
-          <BarChart data={data}>
-            <XAxis dataKey="name" />
-            <YAxis />
+          <BarChart data={data} {...commonChartConfig}>
+            <XAxis dataKey="name" {...commonChartConfig.tick} />
+            <YAxis {...commonChartConfig.tick} />
             <Tooltip
               formatter={(value: number) => value.toLocaleString() + '원'}
             />
-            <Bar dataKey="value" fill="#8884d8">
+            <Bar dataKey="value">
               {data.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
@@ -237,7 +319,19 @@ const Consumption = () => {
   return (
     <div className={STYLES.container}>
       <div className={STYLES.header}>
-        <h1 className={STYLES.title}>소비 분석</h1>
+        <h1 className={STYLES.headerTitle}>소비 분석</h1>
+      </div>
+
+      <div className={STYLES.cardSection}>
+        <div className={STYLES.cardContainer}>
+          {Object.entries(ADDITIONAL_ANALYSIS).map(([key, data]) => (
+            <div key={key} className={STYLES.card}>
+              <h3 className={STYLES.cardTitle}>{data.title}</h3>
+              <p className={STYLES.cardValue}>{data.value}</p>
+              <p className={STYLES.cardDescription}>{data.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className={STYLES.filterSection}>
@@ -280,23 +374,11 @@ const Consumption = () => {
         </div>
       </div>
 
-      {/* 분석 카드 섹션 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {Object.entries(ADDITIONAL_ANALYSIS).map(([key, data]) => (
-          <div key={key} className="bg-white p-4 rounded-lg shadow-sm">
-            <h3 className="text-sm text-gray-500">{data.title}</h3>
-            <p className="text-xl font-bold mt-1">{data.value}</p>
-            <p className="text-sm text-gray-600 mt-1">{data.description}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* 차트 섹션 */}
       <div className={STYLES.chartSection}>
         <div className={STYLES.chartContainer}>
           <ResponsiveContainer>{renderChart()}</ResponsiveContainer>
         </div>
-        <div className="text-right mt-4 text-xl font-bold text-blue-600">
+        <div className={STYLES.totalAmount}>
           총 소비금액: {totalSpent.toLocaleString()}원
         </div>
       </div>
