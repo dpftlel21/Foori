@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom'],
+            // 큰 라이브러리들 분리
           },
         },
       },
