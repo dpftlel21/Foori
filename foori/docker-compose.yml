@@ -4,12 +4,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    args:
-      - VITE_KAKAO_MAP_KEY=${VITE_KAKAO_MAP_KEY}
-      - VITE_REDIRECT_URL=${VITE_REDIRECT_URL}
-      - VITE_SOCIAL_LOGIN_URL=${VITE_SOCIAL_LOGIN_URL}
-      - VITE_SOCIAL_CONNECT_URL=${VITE_SOCIAL_CONNECT_URL}
-      - VITE_BACK_URL=${VITE_BACK_URL}
+      args:
+        - VITE_KAKAO_MAP_KEY=${VITE_KAKAO_MAP_KEY}
+        - VITE_REDIRECT_URL=${VITE_REDIRECT_URL}
+        - VITE_SOCIAL_LOGIN_URL=${VITE_SOCIAL_LOGIN_URL}
+        - VITE_SOCIAL_CONNECT_URL=${VITE_SOCIAL_CONNECT_URL}
+        - VITE_BACK_URL=${VITE_BACK_URL}
     image: foori-frontend
     container_name: foori-frontend
     ports:
