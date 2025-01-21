@@ -1,18 +1,14 @@
-# 기본 제외
+# 빌드에 불필요한 파일 제외
 node_modules
 dist
 .git
 .env
 
-# npm 관련
+# 로그 파일
 npm-debug.log
 yarn-debug.log
 yarn-error.log
 
-# IDE/편집기 관련
+# 개발 도구 설정
 .idea
 .vscode
-
-# OS 관련
-.DS_Store
-Thumbs.db

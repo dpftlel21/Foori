@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      cache_from:
+        - foori-frontend:latest
     image: foori-frontend
     container_name: foori-frontend
     ports:

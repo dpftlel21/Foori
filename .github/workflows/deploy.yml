@@ -11,7 +11,16 @@ jobs:
       - name: 소스코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: EC2 소스코드 업데이트
+      # Docker 레이어 캐싱
+      - name: 캐시 설정
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: EC2 배포
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -20,6 +29,5 @@ jobs:
           script: |
             cd ~/Foori/foori
             git pull origin main
-            docker system prune -af --volumes
             docker-compose down
-            docker-compose up -d --build --force-recreate
+            docker-compose up -d --build
