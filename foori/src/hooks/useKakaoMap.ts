@@ -18,6 +18,7 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
   const kakaoMapKey = import.meta.env.VITE_KAKAO_MAP_KEY;
+  console.log('kakaoMapKey', kakaoMapKey);
 
   // 강남역 좌표 고정
   const gangnamStation = {
