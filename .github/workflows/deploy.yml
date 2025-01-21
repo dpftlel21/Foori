@@ -21,18 +21,6 @@ jobs:
             cd ~/Foori/foori
             git pull origin main
 
-      - name: Docker 빌드 준비
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export DOCKER_BUILDKIT=1
-            export COMPOSE_DOCKER_CLI_BUILD=1
-            OLD_IMAGE_ID=$(docker images -q foori-frontend)
-            echo "::set-output name=old_image::$OLD_IMAGE_ID"
-
       - name: 새 이미지 빌드
         uses: appleboy/ssh-action@master
         with:
@@ -41,8 +29,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/Foori/foori
+            export VITE_KAKAO_MAP_KEY=${{ secrets.VITE_KAKAO_MAP_KEY }}
             docker-compose build \
               --build-arg BUILDKIT_INLINE_CACHE=1 \
+              --build-arg VITE_KAKAO_MAP_KEY=${{ secrets.VITE_KAKAO_MAP_KEY }} \
               --parallel
 
       - name: 컨테이너 교체
@@ -55,15 +45,3 @@ jobs:
             cd ~/Foori/foori
             docker-compose down
             docker-compose up -d
-
-      - name: 정리 및 상태 확인
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            if [ ! -z "$OLD_IMAGE_ID" ]; then
-              docker rmi $OLD_IMAGE_ID
-            fi
-            docker ps | grep foori-frontend
