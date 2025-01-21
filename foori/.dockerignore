@@ -1,5 +1,36 @@
+# 기본 제외
 node_modules
 dist
 .git
 .env
 .env.local
+
+# npm 관련
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.npm
+.yarn
+
+# IDE/편집기 관련
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# 테스트/문서 관련
+coverage
+*.test.js
+*.spec.js
+README.md
+docs
+
+# 기타 설정 파일
+.gitignore
+.prettierrc
+.eslintrc
+.editorconfig
