@@ -24,6 +24,7 @@ const OauthLogin = ({ actionType }: { actionType: ActionType }) => {
 
   const handleOauthLogin = (provider: 'kakao' | 'google' | 'naver') => {
     const baseUrl = import.meta.env.VITE_REDIRECT_URL;
+    console.log('baseUrl', baseUrl);
     sessionStorage.setItem('oauth_action_type', String(actionType));
     window.location.href = `${baseUrl}/${provider}`;
   };
