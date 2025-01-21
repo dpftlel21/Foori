@@ -42,6 +42,26 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/Foori/foori
+            # 1. 기존 컨테이너 중지 및 제거
+            echo "🛑 기존 컨테이너 중지 중..."
             docker-compose down
+
+            # 2. 새 컨테이너 시작
+            echo "🚀 새 컨테이너 시작 중..."
             docker-compose up -d
+
+            # 3. 빌드 캐시 정리
+            echo "🧹 빌드 캐시 정리 중..."
+            docker builder prune -f
+
+            # 4. 사용하지 않는 이미지 정리
+            echo "🗑️ 미사용 이미지 정리 중..."
+            docker image prune -f
+
+            # 5. 시스템 상태 확인
+            echo "📊 Docker 시스템 상태:"
+            docker system df
+
+            # 6. 컨테이너 상태 확인
+            echo "✅ 실행 중인 컨테이너:"
+            docker ps | grep foori-frontend
