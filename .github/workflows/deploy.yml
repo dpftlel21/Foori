@@ -21,7 +21,7 @@ jobs:
             cd ~/Foori/foori
             git pull origin main
 
-      - name: 새 이미지 빌드
+      - name: 새 이미지 빌드 및 실행
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -29,39 +29,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/Foori/foori
-            export VITE_KAKAO_MAP_KEY=${{ secrets.VITE_KAKAO_MAP_KEY }}
-            docker-compose build \
-              --build-arg BUILDKIT_INLINE_CACHE=1 \
-              --build-arg VITE_KAKAO_MAP_KEY=${{ secrets.VITE_KAKAO_MAP_KEY }} \
-              --parallel
-
-      - name: 컨테이너 교체
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 1. 기존 컨테이너 중지 및 제거
-            echo "🛑 기존 컨테이너 중지 중..."
             docker-compose down
-
-            # 2. 새 컨테이너 시작
-            echo "🚀 새 컨테이너 시작 중..."
             docker-compose up -d
-
-            # 3. 빌드 캐시 정리
-            echo "🧹 빌드 캐시 정리 중..."
-            docker builder prune -f
-
-            # 4. 사용하지 않는 이미지 정리
-            echo "🗑️ 미사용 이미지 정리 중..."
-            docker image prune -f
-
-            # 5. 시스템 상태 확인
-            echo "📊 Docker 시스템 상태:"
-            docker system df
-
-            # 6. 컨테이너 상태 확인
-            echo "✅ 실행 중인 컨테이너:"
-            docker ps | grep foori-frontend
