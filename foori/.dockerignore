@@ -2,7 +2,6 @@
 node_modules
 dist
 .git
-.env
 
 # 로그 파일
 npm-debug.log

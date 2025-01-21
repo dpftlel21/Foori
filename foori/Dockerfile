@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+# 환경변수 파일 복사
+COPY .env .env
+
 # 소스 코드 복사 및 빌드 레이어
 COPY . .
 RUN npm run build
