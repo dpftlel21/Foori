@@ -6,7 +6,9 @@ services:
       dockerfile: Dockerfile
       cache_from:
         - foori-frontend:latest
-    image: foori-frontend
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    image: foori-frontend:latest
     container_name: foori-frontend
     ports:
       - '80:80'
