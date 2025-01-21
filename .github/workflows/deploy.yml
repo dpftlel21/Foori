@@ -19,6 +19,20 @@ jobs:
           script: |
             cd ~/Foori/foori
             git pull origin main
-            docker-compose down
-            docker system prune -f
-            docker-compose up -d --build
+
+            # 이전 이미지 ID 저장
+            OLD_IMAGE_ID=$(docker images -q foori-frontend)
+
+            # BuildKit 활성화하고 빌드
+            DOCKER_BUILDKIT=1 docker-compose build --parallel
+
+            # 컨테이너 재시작
+            docker-compose up -d
+
+            # 이전 이미지 정리
+            if [ ! -z "$OLD_IMAGE_ID" ]; then
+              docker rmi $OLD_IMAGE_ID
+            fi
+
+            # 불필요한 빌드 캐시만 정리
+            docker builder prune -f --filter until=24h
