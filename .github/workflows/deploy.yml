@@ -20,14 +20,6 @@ jobs:
           script: |
             cd ~/Foori/foori
             git pull origin main
-
-      - name: 새 이미지 빌드 및 실행
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/Foori/foori
+            docker system prune -af --volumes
             docker-compose down
-            docker-compose up -d
+            docker-compose up -d --build --force-recreate
