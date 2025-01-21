@@ -4,12 +4,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env
     image: foori-frontend
     container_name: foori-frontend
     ports:
       - '80:80'
+    environment:
+      - VITE_KAKAO_MAP_KEY=${VITE_KAKAO_MAP_KEY}
+      - VITE_BACK_URL=${VITE_BACK_URL}
+      - VITE_REDIRECT_URL=${VITE_REDIRECT_URL}
+      - VITE_SOCIAL_LOGIN_URL=${VITE_SOCIAL_LOGIN_URL}
+      - VITE_SOCIAL_CONNECT_URL=${VITE_SOCIAL_CONNECT_URL}
     restart: unless-stopped # 변경
     deploy:
       resources:
