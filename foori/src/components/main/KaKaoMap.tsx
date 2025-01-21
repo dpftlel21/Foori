@@ -28,7 +28,7 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
   // 카카오맵 데이터
   const { places, selectedPlace, setSelectedPlace, center, moveCurrent } =
     useKakaoMap({ keyword, category });
-
+  console.log('places', places);
   // 크롤링 한 데이터
   const { data } = useCrawledData();
 
@@ -42,7 +42,7 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
     ),
   );
 
-  //console.log('matchedPlaces', matchedPlaces);
+  console.log('matchedPlaces', matchedPlaces);
 
   const navigate = useNavigate();
 

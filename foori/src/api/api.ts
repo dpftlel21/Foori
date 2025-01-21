@@ -3,7 +3,7 @@ import { cookieStorage } from './utils/cookies';
 // GET 요청 함수
 export const getData = async (url: string) => {
   const token = cookieStorage.getToken();
-
+  //const fullUrl = `${import.meta.env.VITE_BACK_URL}/${url}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: {

@@ -1,4 +1,5 @@
 interface ImportMetaEnv {
+  VITE_KAKAO_MAP_KEY: string;
   VITE_REDIRECT_URL: string;
   VITE_SOCIAL_LOGIN_URL: string;
   VITE_SOCIAL_CONNECT_URL: string;

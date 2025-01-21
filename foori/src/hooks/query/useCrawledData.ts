@@ -5,7 +5,7 @@ import { getData } from '../../api/api';
 export const useCrawledData = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['crawledData'],
-    queryFn: () => getData(`${import.meta.env.VITE_BACK_URL}/api/place`),
+    queryFn: () => getData(`api/place`),
   });
   return { data, isLoading, error };
 };
@@ -14,7 +14,7 @@ export const useCrawledData = () => {
 export const useCrawledDataDetail = (id: string) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['crawledDataDetail', id],
-    queryFn: () => getData(`${import.meta.env.VITE_BACK_URL}/api/place/${id}`),
+    queryFn: () => getData(`api/place/${id}`),
   });
 
   return { data, isLoading, error };
