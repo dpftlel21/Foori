@@ -4,12 +4,7 @@ import { cookieStorage } from './utils/cookies';
 export const getData = async (url: string) => {
   const token = cookieStorage.getToken();
 
-  // URL이 이미 http://로 시작하는지 확인
-  const fullUrl = url.startsWith('http')
-    ? url
-    : `${import.meta.env.VITE_BACK_URL}/${url}`;
-
-  const response = await fetch(fullUrl, {
+  const response = await fetch(url, {
     method: 'GET',
     headers: {
       Authorization: token ? `Bearer ${token}` : '',
