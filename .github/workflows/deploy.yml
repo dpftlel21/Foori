@@ -22,6 +22,7 @@ jobs:
           cd foori
           npm install
           npm run build
+          ls -la dist  # 빌드된 파일 확인
         env:
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
           VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
