@@ -3,6 +3,11 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/Foori/foori
+permissions:
+  - object: /home/ec2-user/Foori/foori
+    pattern: '**'
+    owner: ec2-user
+    group: ec2-user
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
