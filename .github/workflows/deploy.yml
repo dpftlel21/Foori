@@ -10,6 +10,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node.js 설정 추가
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 의존성 설치 및 빌드
+      - name: Install dependencies and build
+        run: |
+          cd foori
+          npm install
+          npm run build
+        env:
+          VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
+          VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
+          VITE_BACK_URL: ${{ secrets.VITE_BACK_URL }}
+          VITE_REDIRECT_URL: ${{ secrets.VITE_REDIRECT_URL }}
+          VITE_SOCIAL_LOGIN_URL: ${{ secrets.VITE_SOCIAL_LOGIN_URL }}
+          VITE_SOCIAL_CONNECT_URL: ${{ secrets.VITE_SOCIAL_CONNECT_URL }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -18,13 +38,6 @@ jobs:
           aws-region: us-east-2
 
       - name: Create CodeDeploy Deployment
-        env:
-          VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
-          VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
-          VITE_BACK_URL: ${{ secrets.VITE_BACK_URL }}
-          VITE_REDIRECT_URL: ${{ secrets.VITE_REDIRECT_URL }}
-          VITE_SOCIAL_LOGIN_URL: ${{ secrets.VITE_SOCIAL_LOGIN_URL }}
-          VITE_SOCIAL_CONNECT_URL: ${{ secrets.VITE_SOCIAL_CONNECT_URL }}
         run: |
           aws deploy create-deployment \
             --application-name foori \
