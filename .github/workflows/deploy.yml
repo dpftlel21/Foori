@@ -27,6 +27,6 @@ jobs:
           VITE_SOCIAL_CONNECT_URL: ${{ secrets.VITE_SOCIAL_CONNECT_URL }}
         run: |
           aws deploy create-deployment \
-            --application-name foori-app \
+            --application-name foori \
             --deployment-group-name foori-group \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
