@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/ec2-user/Foori
+cd /home/ec2-user/Foori/foori
 
 # 기존 파일 정리
 rm -rf *
