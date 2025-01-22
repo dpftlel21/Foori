@@ -11,20 +11,14 @@ jobs:
       - name: 소스코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: 캐시 설정
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: EC2 배포
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 60s # SSH 연결 타임아웃 설정
+          command_timeout: 30m # 명령어 실행 타임아웃 설정
           script: |
             cd ~/Foori/foori
             git pull origin main
