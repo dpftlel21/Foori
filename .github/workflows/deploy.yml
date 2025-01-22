@@ -20,8 +20,6 @@ jobs:
           cd foori
           npm install
           npm run build
-          ls -la dist  # 빌드된 파일 확인
-          pwd         # 현재 작업 디렉토리 확인
         env:
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
           VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
@@ -37,9 +35,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Create CodeDeploy Deployment
+      # ZIP 파일 생성
+      - name: Make zip file
+        run: |
+          zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      # S3에 업로드
+      - name: Upload to S3
+        run: |
+          aws s3 cp ./$GITHUB_SHA.zip s3://foori-deploy/$GITHUB_SHA.zip
+
+      # CodeDeploy 배포 생성
+      - name: Deploy to EC2
         run: |
           aws deploy create-deployment \
             --application-name foori \
             --deployment-group-name foori-group \
-            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+            --s3-location bucket=foori-deploy,key=$GITHUB_SHA.zip,bundleType=zip
