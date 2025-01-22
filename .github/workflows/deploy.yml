@@ -50,6 +50,4 @@ jobs:
       - name: Deploy to EC2
         run: |
           aws deploy create-deployment \
-            --application-name foori \
-            --deployment-group-name foori-group \
-            --s3-location bucket=foori-deploy,key=$GITHUB_SHA.zip,bundleType=zip
+            --application-name foori --deployment-group-name foori-group --s3-location bucket=foori-deploy,key=$GITHUB_SHA.zip,bundleType=zip
