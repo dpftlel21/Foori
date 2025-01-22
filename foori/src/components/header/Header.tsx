@@ -1,6 +1,7 @@
 import Logo from '../common/Logo';
 import Navigation from './Navigation';
 
+// 헤더 스타일
 const STYLES = {
   header: `
     w-full h-20 md:h-20
