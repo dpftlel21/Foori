@@ -31,7 +31,7 @@ jobs:
       # ZIP 파일 생성할 때 전체 경로 포함
       - name: Make zip file
         run: |
-          zip -r ./$GITHUB_SHA.zip ./foori/dist ./foori/nginx.conf ./foori/scripts
+          zip -r ./$GITHUB_SHA.zip ./foori/dist ./foori/nginx.conf ./foori/scripts ./appspec.yml
         shell: bash
 
       - name: Configure AWS credentials
