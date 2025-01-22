@@ -1,5 +1,8 @@
 #!/bin/bash
-cd /home/ec2-user/Foori/foori
+cd /home/ec2-user/Foori
+
+# 기존 파일 정리
+rm -rf *
 
 # 환경변수 파일 생성
 cat << EOF > .env
