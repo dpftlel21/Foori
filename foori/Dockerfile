@@ -1,19 +1,26 @@
-# 빌드 스테이지
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# 의존성 설치 레이어
+# 빌드 시 환경변수 설정
+ARG VITE_KAKAO_MAP_KEY
+ARG VITE_TOSS_CLIENT_KEY
+ARG VITE_BACK_URL
+ARG VITE_REDIRECT_URL
+ARG VITE_SOCIAL_LOGIN_URL
+ARG VITE_SOCIAL_CONNECT_URL
+
+ENV VITE_KAKAO_MAP_KEY=$VITE_KAKAO_MAP_KEY
+ENV VITE_TOSS_CLIENT_KEY=$VITE_TOSS_CLIENT_KEY
+ENV VITE_BACK_URL=$VITE_BACK_URL
+ENV VITE_REDIRECT_URL=$VITE_REDIRECT_URL
+ENV VITE_SOCIAL_LOGIN_URL=$VITE_SOCIAL_LOGIN_URL
+ENV VITE_SOCIAL_CONNECT_URL=$VITE_SOCIAL_CONNECT_URL
+
 COPY package*.json ./
 RUN npm ci
-
-# 환경변수 파일 복사
-COPY .env .env
-
-# 소스 코드 복사 및 빌드 레이어
 COPY . .
 RUN npm run build
 
-# 실행 스테이지
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
