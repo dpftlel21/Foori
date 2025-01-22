@@ -20,7 +20,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000, // 청크 크기 경고 제한
   },
   server: {
-    port: 5173,
+    port: 5173, // 포트 번호 변경
     host: true, // 외부 접속 허용
   },
 });
