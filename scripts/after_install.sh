@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/ec2-user/Foori/foori
-npm run build
+cd /home/ec2-user/Foori
+npm install
