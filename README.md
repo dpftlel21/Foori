@@ -16,7 +16,6 @@ Foori는 맛집 예약과 결제를 원스톱으로 처리할 수 있는 플랫�
 - **[서비스 링크](http://www-foori.com)**
 - **[백엔드 Repository](https://github.com/Jgone2/foori)**
 - **[노드 Repository (Oauth)](https://github.com/dpftlel21/Foori_Node)**
-  .
 
 ### 📚 프로젝트 기획 및 설계 자료
 
