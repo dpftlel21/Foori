@@ -21,6 +21,7 @@ Foori는 맛집 예약과 결제를 원스톱으로 처리할 수 있는 플랫�
 
 - **[피그마](https://www.figma.com/design/K2RbAMXOjnQUoztBqQdVze/Foori?node-id=0-1&p=f&t=AnulHALlyHtMn0jj-0)**
 - **[포스트맨](https://winter-escape-178167.postman.co/workspace/41c40088-cce2-46df-86e3-5e94800f91a4/overview)**
+  ..
 
 ---
 
