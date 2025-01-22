@@ -17,14 +17,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      # 이전 배포 중지 단계 추가
-      - name: Stop previous deployment
-        run: |
-          DEPLOYMENT_ID=$(aws deploy list-deployments --application-name foori --deployment-group-name foori-group --include-only-statuses "InProgress" --query 'deployments[0]' --output text)
-          if [ ! -z "$DEPLOYMENT_ID" ]; then
-            aws deploy stop-deployment --deployment-id $DEPLOYMENT_ID
-          fi
-
       - name: Create CodeDeploy Deployment
         env:
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
