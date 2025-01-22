@@ -28,6 +28,12 @@ jobs:
           VITE_SOCIAL_LOGIN_URL: ${{ secrets.VITE_SOCIAL_LOGIN_URL }}
           VITE_SOCIAL_CONNECT_URL: ${{ secrets.VITE_SOCIAL_CONNECT_URL }}
 
+      # ZIP 파일 생성할 때 전체 경로 포함
+      - name: Make zip file
+        run: |
+          zip -r ./$GITHUB_SHA.zip ./foori/dist ./foori/nginx.conf ./foori/scripts
+        shell: bash
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -35,19 +41,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      # ZIP 파일 생성
-      - name: Make zip file
-        run: |
-          zip -r ./$GITHUB_SHA.zip .
-        shell: bash
-
-      # S3에 업로드
       - name: Upload to S3
         run: |
           aws s3 cp ./$GITHUB_SHA.zip s3://foori-deploy/$GITHUB_SHA.zip
 
-      # CodeDeploy 배포 생성
       - name: Deploy to EC2
         run: |
           aws deploy create-deployment \
-            --application-name foori --deployment-group-name foori-group --s3-location bucket=foori-deploy,key=$GITHUB_SHA.zip,bundleType=zip
+            --application-name foori \
+            --deployment-group-name foori-group \
+            --s3-location bucket=foori-deploy,key=$GITHUB_SHA.zip,bundleType=zip
