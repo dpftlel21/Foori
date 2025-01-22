@@ -4,7 +4,7 @@ files:
   - source: /foori
     destination: /home/ec2-user/Foori/foori
 permissions:
-  - object: /home/ec2-user/Foori/foori
+  - object: /home/ec2-user/Foori/foori/dist
     owner: ec2-user
     group: ec2-user
     mode: 755
