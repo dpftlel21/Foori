@@ -10,21 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node.js 설정 추가
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 프로젝트 디렉토리로 이동
-      - name: Change to project directory
-        run: cd foori
-
-      # 의존성 설치 및 빌드
+      # working-directory 사용
       - name: Install dependencies
+        working-directory: ./foori
         run: npm install
 
       - name: Build
+        working-directory: ./foori
         run: npm run build
         env:
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
