@@ -1,8 +1,6 @@
 #!/bin/bash
-# nginx 설정 적용
-sudo cp /etc/nginx/conf.d/nginx.conf /etc/nginx/conf.d/default.conf
-sudo chown root:root /etc/nginx/conf.d/default.conf
-sudo chmod 644 /etc/nginx/conf.d/default.conf
+cd /home/ec2-user/Foori/foori
 
-# nginx 재시작
+# nginx 설정 복사 및 재시작
+sudo cp nginx.conf /etc/nginx/conf.d/default.conf
 sudo systemctl restart nginx

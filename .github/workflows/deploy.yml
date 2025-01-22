@@ -10,13 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node.js 설정 추가
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 의존성 설치 및 빌드
       - name: Install dependencies and build
         run: |
           cd foori

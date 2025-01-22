@@ -1,5 +1,8 @@
 #!/bin/bash
-# 기존 dist 폴더 정리
-sudo rm -rf /home/ec2-user/Foori/foori/dist
-sudo mkdir -p /home/ec2-user/Foori/foori/dist
-sudo chown -R ec2-user:ec2-user /home/ec2-user/Foori/foori/dist
+# 기존 파일 정리
+if [ -d /home/ec2-user/Foori/foori ]; then
+    rm -rf /home/ec2-user/Foori/foori/*
+fi
+
+# 디렉토리 생성
+mkdir -p /home/ec2-user/Foori/foori
