@@ -1,4 +1,4 @@
-import { cookieStorage } from '../utils/cookies';
+import { postData } from '../api';
 
 interface BookingRequest {
   bookingDateTime: Date;
@@ -13,16 +13,6 @@ interface BookingRequest {
 }
 
 export const handleReservation = async (data: BookingRequest) => {
-  const token = cookieStorage.getToken();
-
-  const response = await fetch(`api/booking`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-
+  const response = await postData<BookingRequest>('api/booking', data);
   return response;
 };

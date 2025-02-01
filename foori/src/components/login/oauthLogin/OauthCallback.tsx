@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useOauth } from '../../../hooks/auth/useAuth';
 
 const OauthCallback = () => {
-  const { oauthLoginMutation } = useOauth();
+  const { oauthMutation } = useOauth();
   const [isLoading, setIsLoading] = useState(true);
-  const [type, setType] = useState<string | null>(null);
 
   // URL 파싱을 useMemo로 최적화
   const { code, provider } = useMemo(() => {
@@ -18,34 +17,20 @@ const OauthCallback = () => {
   // 메인 로직을 처리하는 useEffect
   useEffect(() => {
     const storedType = sessionStorage.getItem('oauth_action_type');
-    if (!storedType) {
-      setIsLoading(false);
-      console.error('No stored type found');
-      return;
-    }
-
-    setType(storedType);
-
-    if (!code || !provider) {
-      console.error('Missing code or provider');
+    if (!storedType || !code || !provider) {
       setIsLoading(false);
       return;
     }
 
-    const mutation = oauthLoginMutation;
+    const type = storedType === 'connect' ? 'connect' : 'login';
 
-    // 한 번만 실행되도록 보장
-    mutation.mutate(
-      { code, provider },
+    oauthMutation.mutate(
+      { code, provider, type },
       {
-        onSuccess: () => setIsLoading(false),
-        onError: (error) => {
-          console.error('Mutation error:', error);
-          setIsLoading(false);
-        },
+        onSettled: () => setIsLoading(false),
       },
     );
-  }, []);
+  }, [code, provider]);
 
   return (
     <div className="flex justify-center items-center h-screen">

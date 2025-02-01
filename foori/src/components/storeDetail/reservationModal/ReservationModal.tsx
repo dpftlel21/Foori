@@ -148,13 +148,6 @@ const ReservationModal = ({
    * @param amount 결제 금액
    */
   const handleBooking = async (amount: number) => {
-    // 로그인 체크
-    if (!userInfoQuery.data) {
-      showToast('로그인이 필요한 서비스입니다.', 'warning');
-      navigate('/login');
-      return;
-    }
-
     // 예약 유효성 검사
     const isValid = validateReservation({
       selectedDate,
@@ -187,15 +180,14 @@ const ReservationModal = ({
     try {
       // 예약 API 호출
       const response = await handleReservation(bookingData);
-
-      if (response.ok) {
-        const bookingResponse = await response.json();
+      console.log('예약 response', response);
+      if (response.status === 1) {
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
         );
 
         if (isConfirmed) {
-          setOrderId(bookingResponse.orderId);
+          setOrderId(response.orderId);
           setIsPaymentModalOpen(true);
         } else {
           showToast(

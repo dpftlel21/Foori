@@ -28,12 +28,13 @@
   },
   "include": [
     //컴파일할 폴더 입력. src의 모든파일 확인함
-    "src"
+    "src",
+    "env.d.ts"
   ],
   "types": [
     // 다른 타입들...
     "@types/react-scroll",
-    "vite/client",
+    "vite/client"
   ],
   "exclude": ["node_modules"]
 }

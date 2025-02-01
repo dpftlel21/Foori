@@ -58,33 +58,66 @@ export const useRegister = () => {
   };
 };
 
-// 소셜 로그인
+// 소셜 로그인/연동 통합 훅
 export const useOauth = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
-  const oauthLoginMutation = useMutation(
-    async ({ code, provider }: { code: string; provider: string }) => {
+  const oauthMutation = useMutation(
+    async ({
+      code,
+      provider,
+      type,
+    }: {
+      code: string;
+      provider: string;
+      type: 'login' | 'connect';
+    }) => {
+      const baseUrl =
+        type === 'login'
+          ? import.meta.env.VITE_SOCIAL_LOGIN_URL
+          : import.meta.env.VITE_SOCIAL_CONNECT_URL;
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+
+      // 연동시에만 토큰 추가
+      if (type === 'connect') {
+        const token = cookieStorage.getToken();
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+      }
+
       const response = await fetch(
-        `${
-          import.meta.env.VITE_SOCIAL_LOGIN_URL
-        }/${provider}/callback?code=${code}`,
+        `${baseUrl}/${provider}/callback?code=${code}`,
         {
+          method: 'GET',
+          headers,
           credentials: 'include',
         },
       );
       return response.json();
     },
     {
-      onSuccess: (data) => {
-        if (data.accessToken) {
+      onSuccess: (data, variables) => {
+        if (variables.type === 'login' && data.accessToken) {
           cookieStorage.setToken(data.accessToken);
           navigate('/');
+        } else if (variables.type === 'connect') {
+          showToast('계정 연동이 완료되었습니다.', 'success');
+          navigate('/mypage');
         }
+      },
+      onError: (error, variables) => {
+        const action = variables.type === 'login' ? '로그인' : '계정 연동';
+        showToast(`${action}에 실패했습니다.`, 'error');
       },
     },
   );
 
-  return { oauthLoginMutation };
+  return { oauthMutation };
 };
 
 // 아이디 찾기

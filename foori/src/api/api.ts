@@ -3,8 +3,8 @@ import { cookieStorage } from './utils/cookies';
 // GET 요청 함수
 export const getData = async (url: string) => {
   const token = cookieStorage.getToken();
-  //const fullUrl = `${import.meta.env.VITE_BACK_URL}/${url}`;
-  const response = await fetch(url, {
+  const fullUrl = `${import.meta.env.VITE_BACK_URL}/${url}`;
+  const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
       Authorization: token ? `Bearer ${token}` : '',
@@ -22,13 +22,9 @@ export const getData = async (url: string) => {
 };
 
 // POST 요청 함수
-export const postData = async (
-  url: string,
-  data: Record<string, unknown>,
-): Promise<any> => {
+export const postData = async <T>(url: string, data: T): Promise<any> => {
   try {
     const token = cookieStorage.getToken();
-    //console.log('token : ', token);
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -36,8 +32,8 @@ export const postData = async (
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-
-    const response = await fetch(url, {
+    const fullUrl = `${import.meta.env.VITE_BACK_URL}/${url}`;
+    const response = await fetch(fullUrl, {
       method: 'POST',
       headers,
       credentials: 'include',
@@ -46,7 +42,7 @@ export const postData = async (
 
     if (response.status === 201) {
       const text = await response.text();
-      return text ? JSON.parse(text) : {};
+      return text ? JSON.parse(text) : response;
     }
 
     return response.json();
