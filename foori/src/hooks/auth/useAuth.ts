@@ -60,6 +60,8 @@ export const useRegister = () => {
 
 // 소셜 로그인/연동 통합 훅
 export const useOauth = () => {
+  const token = cookieStorage.getToken();
+  console.log('token', token);
   const navigate = useNavigate();
   const { showToast } = useToast();
 
@@ -84,11 +86,7 @@ export const useOauth = () => {
 
       // 연동시에만 토큰 추가
       if (type === 'connect') {
-        const token = cookieStorage.getToken();
-        console.log('token', token);
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
       const response = await fetch(
