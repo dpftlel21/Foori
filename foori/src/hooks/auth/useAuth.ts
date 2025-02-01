@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import * as authApi from '../../api/endpoints/auth';
 import { cookieStorage } from '../../api/utils/cookies';
 import { useToast } from '../../contexts/ToastContext';
+import { useUserInfo } from '../query/useUserInfo';
 
 // 로그인
 export const useLogin = () => {
@@ -62,6 +63,7 @@ export const useRegister = () => {
 export const useOauth = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { data: userInfo } = useUserInfo();
 
   const oauthMutation = useMutation(
     async ({
@@ -82,7 +84,6 @@ export const useOauth = () => {
         'Content-Type': 'application/json',
       };
 
-      // 연동시에만 토큰 추가
       if (type === 'connect') {
         const token = cookieStorage.getToken();
         if (token) {
@@ -90,14 +91,17 @@ export const useOauth = () => {
         }
       }
 
-      const response = await fetch(
-        `${baseUrl}/${provider}/callback?code=${code}`,
-        {
-          method: 'GET',
-          headers,
-          credentials: 'include',
-        },
-      );
+      // userInfo가 있고 connect인 경우 id 쿼리 추가
+      const url =
+        type === 'connect' && userInfo
+          ? `${baseUrl}/${provider}/callback?code=${code}&id=${userInfo.id}`
+          : `${baseUrl}/${provider}/callback?code=${code}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers,
+        credentials: 'include',
+      });
       return response.json();
     },
     {
