@@ -25,13 +25,26 @@ interface CrawledData {
 }
 
 const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
-  // 카카오맵 데이터
-  const { places, selectedPlace, setSelectedPlace, center, moveCurrent } =
-    useKakaoMap({ keyword, category });
-  // 크롤링 한 데이터
+  const {
+    places,
+    selectedPlace,
+    setSelectedPlace,
+    center,
+    moveCurrent,
+    isLoaded,
+  } = useKakaoMap({ keyword, category });
   const { data } = useCrawledData();
-  //console.log('places', places);
-  //console.log('data', data);
+
+  const navigate = useNavigate();
+
+  // 로딩 상태 처리
+  if (!isLoaded) {
+    return (
+      <div className="w-full h-[50vh] flex items-center justify-center">
+        <div>카카오맵을 불러오는 중입니다...</div>
+      </div>
+    );
+  }
 
   // 크롤링 데이터와 카카오맵 데이터 매칭
   const matchedPlaces = places.filter((place) =>
@@ -39,20 +52,13 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
       (crawledData: CrawledData) => crawledData.name === place.place_name,
     ),
   );
-  //console.log('matchedPlaces', matchedPlaces);
-
-  const navigate = useNavigate();
 
   const handleReservation = (placeId: string) => {
-    // 카카오맵 place 데이터 찾기
     const kakaoPlace = matchedPlaces.find((p) => p.id === placeId);
-
     if (kakaoPlace) {
-      // 매칭되는 크롤링 데이터 찾기
       const crawledPlace = data?.find(
         (item: CrawledData) => item.name === kakaoPlace.place_name,
       );
-
       if (crawledPlace) {
         navigate(`/detail/${crawledPlace.id}`);
       }
@@ -72,7 +78,6 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
         transition={{ duration: 0.5 }}
         className="relative w-full h-full max-w-5xl mx-auto"
       >
-        {/* 지도 컨테이너 */}
         <div className="w-full h-full rounded-lg overflow-hidden shadow-lg border-2 border-[#fcb69f]">
           <Map
             center={center}
@@ -98,7 +103,6 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
           </Map>
         </div>
 
-        {/* 현재 위치 버튼 */}
         <motion.button
           whileHover={{ scale: 1.1, rotate: 360 }}
           whileTap={{ scale: 0.9 }}
@@ -117,7 +121,6 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
           />
         </motion.button>
 
-        {/* 로딩 인디케이터 */}
         {places.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
