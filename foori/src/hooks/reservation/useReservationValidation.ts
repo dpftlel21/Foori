@@ -122,10 +122,10 @@ export const useReservationValidation = () => {
       return false;
     }
 
-    // 9. 특정 시간대 예약 제한 (마감 1시간 전까지만 예약 가능)
-    const lastBookingHour = closeHour - 1;
+    // 9. 특정 시간대 예약 제한 (마감 3시간 전까지만 예약 가능)
+    const lastBookingHour = closeHour - 3;
     if (selectedHour >= lastBookingHour) {
-      showToast('마감 1시간 전까지만 예약 가능합니다.', 'warning');
+      showToast('마감 3시간 전까지만 예약 가능합니다.', 'warning');
       return false;
     }
 

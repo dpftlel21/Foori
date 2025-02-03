@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { memo, useCallback, useMemo } from 'react';
 import { FiZoomIn, FiZoomOut } from 'react-icons/fi';
 import { Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
-import location from '../../assets/images/location.png';
 import { useCrawledData } from '../../hooks/query/useCrawledData';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
 import MarkerOverlay from './marker/MarkerOverlay';
@@ -25,7 +25,66 @@ interface CrawledData {
   y: string;
 }
 
-const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
+// 인터페이스 정의
+interface KaKaoMapProps {
+  keyword: string;
+  category: string | null;
+}
+
+// 메모이제이션된 컨트롤 버튼 컴포넌트
+const MapControls = memo(
+  ({
+    zoomIn,
+    zoomOut,
+    moveCurrent,
+  }: {
+    zoomIn: () => void;
+    zoomOut: () => void;
+    moveCurrent: () => void;
+  }) => (
+    <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={zoomIn}
+        className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                flex items-center justify-center hover:shadow-xl"
+        aria-label="지도 확대"
+      >
+        <FiZoomIn className="w-5 h-5 md:w-6 md:h-6" />
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={zoomOut}
+        className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                flex items-center justify-center hover:shadow-xl"
+        aria-label="지도 축소"
+      >
+        <FiZoomOut className="w-5 h-5 md:w-6 md:h-6" />
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={moveCurrent}
+        className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                flex items-center justify-center hover:shadow-xl"
+        aria-label="현재 위치로 이동"
+      >
+        <img
+          src="/assets/images/location.png"
+          alt="현재 위치"
+          className="w-6 h-6 md:w-8 md:h-8"
+          loading="lazy"
+        />
+      </motion.button>
+    </div>
+  ),
+);
+
+MapControls.displayName = 'MapControls';
+
+const KaKaoMap = memo(({ keyword, category }: KaKaoMapProps) => {
   const {
     places,
     selectedPlace,
@@ -37,52 +96,57 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
     zoomIn,
     zoomOut,
   } = useKakaoMap({ keyword, category });
+
   const { data } = useCrawledData();
   const navigate = useNavigate();
+
+  // 매칭된 장소 메모이제이션
+  const matchedPlaces = useMemo(
+    () =>
+      places.filter((place) =>
+        data?.some(
+          (crawledData: CrawledData) => crawledData.name === place.place_name,
+        ),
+      ),
+    [places, data],
+  );
+
+  // 예약 핸들러 메모이제이션
+  const handleReservation = useCallback(
+    (placeId: string) => {
+      const kakaoPlace = matchedPlaces.find((p) => p.id === placeId);
+      if (kakaoPlace) {
+        const crawledPlace = data?.find(
+          (item: CrawledData) => item.name === kakaoPlace.place_name,
+        );
+        if (crawledPlace) {
+          navigate(`/detail/${crawledPlace.id}`);
+        }
+      }
+    },
+    [matchedPlaces, data, navigate],
+  );
 
   // 로딩 상태 처리
   if (!isLoaded) {
     return (
-      <div className="w-full h-[50vh] flex items-center justify-center">
+      <div
+        className="w-full h-[50vh] flex items-center justify-center"
+        role="status"
+      >
         <div>카카오맵을 불러오는 중입니다...</div>
       </div>
     );
   }
 
-  // 크롤링 데이터와 카카오맵 데이터 매칭
-  const matchedPlaces = places.filter((place) =>
-    data?.some(
-      (crawledData: CrawledData) => crawledData.name === place.place_name,
-    ),
-  );
-
-  const handleReservation = (placeId: string) => {
-    // 카카오 맵 데이터 찾기
-    const kakaoPlace = matchedPlaces.find((p) => p.id === placeId);
-    if (kakaoPlace) {
-      // 매칭된 데이터 찾기
-      const crawledPlace = data?.find(
-        (item: CrawledData) => item.name === kakaoPlace.place_name,
-      );
-      if (crawledPlace) {
-        navigate(`/detail/${crawledPlace.id}`);
-      }
-    }
-  };
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.6 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className="w-full min-h-[400px] h-[50vh] md:h-[60vh] px-4 md:px-8 lg:px-16"
     >
-      <motion.div
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative w-full h-full max-w-5xl mx-auto"
-      >
+      <div className="relative w-full h-full max-w-5xl mx-auto">
         <div className="w-full h-full rounded-lg overflow-hidden shadow-lg border-2 border-[#fcb69f]">
           <Map
             center={center}
@@ -91,76 +155,46 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
             className="rounded-lg"
             onClick={() => setSelectedPlace(null)}
           >
-            {matchedPlaces.map((place) => (
-              <motion.div
-                key={place.id}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
+            <AnimatePresence>
+              {matchedPlaces.map((place) => (
                 <MarkerOverlay
+                  key={place.id}
                   place={place}
                   selectedPlace={selectedPlace}
                   onSelect={setSelectedPlace}
                   onReservation={handleReservation}
                 />
-              </motion.div>
-            ))}
+              ))}
+            </AnimatePresence>
           </Map>
         </div>
 
-        {/* 줌 컨트롤 버튼 */}
-        <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={zoomIn}
-            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
-                     flex items-center justify-center hover:shadow-xl"
-          >
-            <FiZoomIn className="w-5 h-5 md:w-6 md:h-6" />
-          </motion.button>
+        <MapControls
+          zoomIn={zoomIn}
+          zoomOut={zoomOut}
+          moveCurrent={moveCurrent}
+        />
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={zoomOut}
-            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
-                     flex items-center justify-center hover:shadow-xl"
-          >
-            <FiZoomOut className="w-5 h-5 md:w-6 md:h-6" />
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 360 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            onClick={moveCurrent}
-            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
-                     flex items-center justify-center hover:shadow-xl"
-          >
-            <img
-              src={location}
-              alt="current location"
-              className="w-6 h-6 md:w-8 md:h-8"
-            />
-          </motion.button>
-        </div>
-
-        {places.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
-          >
-            <div className="text-lg text-gray-600">
-              {keyword || category ? '검색 중...' : '장소를 검색해주세요'}
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
+        <AnimatePresence>
+          {places.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
+              role="status"
+            >
+              <div className="text-lg text-gray-600">
+                {keyword || category ? '검색 중...' : '장소를 검색해주세요'}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
-};
+});
+
+KaKaoMap.displayName = 'KaKaoMap';
 
 export default KaKaoMap;

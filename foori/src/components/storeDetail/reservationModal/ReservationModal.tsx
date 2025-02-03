@@ -166,13 +166,30 @@ const ReservationModal = ({
 
     if (!isValid) return;
 
+    // 한국 시간으로 예약 시간 생성
+    if (!selectedDate || !selectedTime) return;
+
+    // 선택된 날짜와 시간을 결합하여 새로운 Date 객체 생성
+    const bookingDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      selectedTime.getHours(),
+      0, // 분
+      0, // 초
+      0, // 밀리초
+    );
+
+    // UTC+9 오프셋 적용
+    const koreanOffset = 9 * 60; // 9시간을 분으로 변환
+    const userOffset = bookingDateTime.getTimezoneOffset(); // 현재 시스템의 오프셋
+    const offsetDiff = koreanOffset + userOffset; // 보정해야 할 시간 차이
+    bookingDateTime.setMinutes(bookingDateTime.getMinutes() + offsetDiff);
+
+    //console.log('bookingDateTime', bookingDateTime);
+
     const bookingData = {
-      bookingDateTime: new Date(
-        `${selectedDate?.toISOString().split('T')[0]}T${selectedTime
-          ?.getHours()
-          .toString()
-          .padStart(2, '0')}:00:00+09:00`,
-      ),
+      bookingDateTime,
       numOfPeople: selectedMembers,
       restaurant: { restaurantId: placeInfo.id },
       bookingMenus: Object.entries(selectedMenus).map(([menuId, quantity]) => ({
