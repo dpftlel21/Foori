@@ -1,152 +1,74 @@
-@keyframes popIn {
-  0% {
-    transform: translateX(-50%) scale(0.8);
-    opacity: 0;
-  }
-  70% {
-    transform: translateX(-50%) scale(1.1);
-  }
-  100% {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 .overlay-content {
   position: absolute;
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -10px);
   background: white;
   padding: 1rem;
   border-radius: 0.3125rem;
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15);
   min-width: 12.5rem;
-  margin-bottom: 0.625rem;
   z-index: 100;
-  animation: popIn 0.4s ease-out;
-  transition: all 0.3s ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-.overlay-content:hover {
-  transform: translateX(-50%) translateY(-3px);
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
-}
-
-.overlay-content.hidden {
-  display: none;
-  opacity: 0;
-  transform: translateX(-50%) scale(0.8);
-}
-
-.overlay-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-weight: bold;
-  font-size: 1rem;
-  color: #333;
-  transition: color 0.3s ease;
-}
-
-.overlay-content:hover h3 {
-  color: #ff800b;
-}
-
-.overlay-content p {
-  margin: 0 0 0.75rem 0;
-  font-size: 0.875rem;
-  color: #666;
+.marker-wrapper {
+  transform: translateZ(0);
+  will-change: transform;
   transition: transform 0.3s ease;
 }
 
-.overlay-content:hover p {
-  transform: translateX(3px);
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-5px) translateZ(0);
+  }
+}
+
+.overlay-content h3 {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+}
+
+.overlay-content p {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #666;
 }
 
 .reservation-btn {
+  width: 100%;
+  padding: 0.5rem 1rem;
   background: #ff800b;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
-  cursor: pointer;
-  width: 100%;
   font-size: 0.875rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.reservation-btn:hover {
-  background: #fcb69f;
-  transform: translateY(-2px);
-  box-shadow: 0 0.25rem 0.5rem rgba(252, 182, 159, 0.4);
-}
-
-.reservation-btn:active {
-  transform: translateY(0);
+  cursor: pointer;
+  transform: translateZ(0);
 }
 
 .close-btn {
   position: absolute;
-  top: 0.1rem;
-  right: 0.1rem;
+  top: 0.5rem;
+  right: 0.5rem;
   background: transparent;
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: opacity 0.2s ease;
   opacity: 0.6;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  line-height: 1;
+  transform: translateZ(0);
 }
 
-.close-btn:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.marker-wrapper {
-  animation: bounce 1s ease-in-out infinite;
-  cursor: pointer;
-}
-
-.marker-wrapper:hover {
-  animation-play-state: paused;
-}
-
-/* 모바일 대응 */
 @media (max-width: 768px) {
   .overlay-content {
     min-width: 10rem;
     padding: 0.75rem;
-  }
-
-  .overlay-content h3 {
-    font-size: 0.9rem;
-  }
-
-  .overlay-content p {
-    font-size: 0.8rem;
-  }
-
-  .reservation-btn {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .close-btn {
-    font-size: 1rem;
-    padding: 0.25rem 0.4rem;
   }
 }

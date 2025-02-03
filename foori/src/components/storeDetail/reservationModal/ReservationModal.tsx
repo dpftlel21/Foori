@@ -190,6 +190,7 @@ const ReservationModal = ({
 
         if (isConfirmed) {
           setOrderId(response.orderId);
+          setTotalAmount(amount);
           setIsPaymentModalOpen(true);
         } else {
           showToast(

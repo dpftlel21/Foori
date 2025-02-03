@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTossPay } from '../../../api/endpoints/tossPayments';
 
 interface PaymentModalProps {
@@ -11,6 +11,10 @@ interface PaymentModalProps {
   customerName: string;
 }
 
+interface PaymentHandler {
+  (): Promise<void>;
+}
+
 const PaymentModal = ({
   isOpen,
   onClose,
@@ -20,9 +24,43 @@ const PaymentModal = ({
   customerName,
 }: PaymentModalProps) => {
   const { tossPay } = useTossPay();
-  const [paymentHandler, setPaymentHandler] = useState<
-    (() => Promise<void>) | null
-  >(null);
+  const [paymentHandler, setPaymentHandler] = useState<PaymentHandler | null>(
+    null,
+  );
+
+  const initializePayment = useCallback(async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const handler = await tossPay({
+        amount,
+        orderId,
+        orderName,
+        customerName,
+      });
+
+      if (handler) {
+        setPaymentHandler(() => handler);
+      }
+    } catch (error) {
+      console.error('Payment initialization error:', error);
+    }
+  }, [amount, orderId, orderName, customerName, tossPay]);
+
+  useEffect(() => {
+    if (isOpen && amount > 0) {
+      initializePayment();
+    }
+
+    return () => {
+      // cleanup
+      const paymentMethodEl = document.getElementById('payment-method');
+      const agreementEl = document.getElementById('agreement');
+      if (paymentMethodEl) paymentMethodEl.innerHTML = '';
+      if (agreementEl) agreementEl.innerHTML = '';
+      setPaymentHandler(null);
+    };
+  }, [isOpen, amount, initializePayment]);
 
   const modalVariants = {
     hidden: { opacity: 0 },
@@ -59,22 +97,6 @@ const PaymentModal = ({
       transition: { duration: 0.2 },
     },
   };
-
-  useEffect(() => {
-    const initPayment = async () => {
-      if (isOpen && document.getElementById('payment-method')) {
-        const handler = await tossPay({
-          amount,
-          orderId,
-          orderName,
-          customerName,
-        });
-        setPaymentHandler(handler as () => Promise<void>);
-      }
-    };
-
-    initPayment();
-  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -118,13 +140,19 @@ const PaymentModal = ({
             </motion.div>
 
             <motion.button
-              onClick={() => paymentHandler && paymentHandler()}
-              className="w-full mt-4 bg-[#e38994] text-white py-2 rounded-lg"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              onClick={() => paymentHandler?.()}
+              className={`w-full mt-4 py-3 rounded-lg font-medium transition-all
+                ${
+                  paymentHandler
+                    ? 'bg-[#3662c8] text-white hover:bg-[#2d52a9]'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                }`}
+              whileHover={paymentHandler ? { scale: 1.02 } : {}}
+              whileTap={paymentHandler ? { scale: 0.98 } : {}}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
+              disabled={!paymentHandler}
             >
               결제하기
             </motion.button>

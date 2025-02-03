@@ -9,64 +9,95 @@ interface PaymentProps {
   customerName: string;
 }
 
+interface PaymentHandler {
+  (): Promise<void>;
+}
+
 declare const TossPayments: any;
 
 export const useTossPay = () => {
   const { showToast } = useToast();
 
   const tossPay = useCallback(
-    async ({ amount, orderId, orderName, customerName }: PaymentProps) => {
+    async ({
+      amount,
+      orderId,
+      orderName,
+      customerName,
+    }: PaymentProps): Promise<PaymentHandler | undefined> => {
       try {
         // 기존 위젯 cleanup
         const paymentMethodEl = document.getElementById('payment-method');
         const agreementEl = document.getElementById('agreement');
-        if (paymentMethodEl) paymentMethodEl.innerHTML = '';
-        if (agreementEl) agreementEl.innerHTML = '';
+        if (!paymentMethodEl || !agreementEl) {
+          console.error('Payment elements not found');
+          return undefined;
+        }
 
-        const tossPayments = TossPayments(import.meta.env.VITE_TOSS_CLIENT_KEY);
-        const widgets = tossPayments.widgets({
-          customerKey: 'ANONYMOUS',
-        });
+        paymentMethodEl.innerHTML = '';
+        agreementEl.innerHTML = '';
 
-        await widgets.setAmount({
-          value: amount,
-          currency: 'KRW',
-        });
+        // DOM이 준비될 때까지 대기
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-        await Promise.all([
-          widgets.renderPaymentMethods({
+        try {
+          const tossPayments = TossPayments(
+            import.meta.env.VITE_TOSS_CLIENT_KEY,
+          );
+          console.log('TossPayments initialized'); // 디버깅
+
+          const widgets = tossPayments.widgets({
+            customerKey: 'ANONYMOUS',
+          });
+
+          // 순차적으로 실행
+          await widgets.setAmount({
+            value: amount,
+            currency: 'KRW',
+          });
+
+          // 결제 수단 렌더링
+          await widgets.renderPaymentMethods({
             selector: '#payment-method',
             variantKey: 'DEFAULT',
-          }),
-          widgets.renderAgreement({
+          });
+
+          // 약관 렌더링
+          await widgets.renderAgreement({
             selector: '#agreement',
             variantKey: 'AGREEMENT',
-          }),
-        ]);
+          });
 
-        // 결제하기 버튼 클릭 시 호출될 함수
-        const handlePaymentClick = async () => {
-          try {
-            await widgets.requestPayment({
-              orderId,
-              orderName,
-              customerName,
-              successUrl: `${window.location.origin}${RouteConst.PaymentSuccess}`,
-              failUrl: `${window.location.origin}${RouteConst.PaymentFail}`,
-            });
-          } catch (error) {
-            if (error === '카드 결제 정보를 선택해주세요.') {
-              showToast('결제 수단을 선택해주세요.', 'error');
-            } else {
-              throw error;
+          const handlePaymentClick = async () => {
+            try {
+              await widgets.requestPayment({
+                orderId,
+                orderName,
+                customerName,
+                successUrl: `${window.location.origin}${RouteConst.PaymentSuccess}`,
+                failUrl: `${window.location.origin}${RouteConst.PaymentFail}`,
+              });
+            } catch (error) {
+              if (error === '카드 결제 정보를 선택해주세요.') {
+                showToast('결제 수단을 선택해주세요.', 'error');
+              } else {
+                console.error('Payment request error:', error);
+                showToast('결제 요청 중 오류가 발생했습니다.', 'error');
+                throw error;
+              }
             }
-          }
-        };
+          };
 
-        return handlePaymentClick;
+          return handlePaymentClick;
+        } catch (error) {
+          console.error('TossPayments initialization error:', error);
+          showToast('결제 초기화 중 오류가 발생했습니다.', 'error');
+          return undefined;
+        }
       } catch (error) {
-        showToast('결제 중 오류가 발생했습니다.', 'error');
-        console.error('Payment Error:', error);
+        console.error('Payment setup error:', error);
+        showToast('결제 설정 중 오류가 발생했습니다.', 'error');
+        return undefined;
       }
     },
     [showToast],
