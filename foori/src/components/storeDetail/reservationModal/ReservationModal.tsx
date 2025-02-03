@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleReservation } from '../../../api/endpoints/reservation';
@@ -10,9 +11,6 @@ import PaymentModal from './PaymentModal';
 import ReservationInfo from './ReservationInfo';
 import ReservationMenu from './ReservationMenu';
 
-/**
- * ReservationModal Props 인터페이스
- */
 interface ReservationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -35,15 +33,60 @@ interface ReservationModalProps {
   };
 }
 
-/**
- * 예약 모달 컴포넌트
- */
+const MODAL_STYLES = {
+  container: `
+    fixed inset-0
+    bg-black bg-opacity-50
+    z-50
+    flex
+    justify-center
+    items-center
+  `,
+  modal: `
+    bg-white
+    rounded-lg
+    w-full
+    max-w-[1200px]
+    md:min-h-[700px]
+    max-h-[820px]
+    flex
+    flex-col
+    md:mt-20
+    border-2
+    border-solid
+    border-[#EE6677]
+  `,
+  header: `
+    flex
+    items-center
+    justify-end
+    p-6
+    border-b
+    border-solid
+    border-[#e5e0e090]
+  `,
+  closeButton: `
+    text-2xl
+    text-gray-500
+    hover:text-gray-700
+    transition-colors
+  `,
+  content: `
+    flex-1
+    overflow-y-auto
+    p-8
+    grid
+    grid-cols-1
+    md:grid-cols-[1fr_1fr]
+    gap-12
+  `,
+} as const;
+
 const ReservationModal = ({
   isOpen,
   onClose,
   placeInfo,
 }: ReservationModalProps) => {
-  // 상태 관리
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<number>(1);
@@ -54,101 +97,63 @@ const ReservationModal = ({
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
   const [orderId, setOrderId] = useState<string>('');
 
-  // 훅 사용
   const userInfoQuery = useUserInfo();
   const { validateReservation } = useReservationValidation();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // 모달이 닫혀있으면 렌더링하지 않음
-  if (!isOpen) return null;
+  // 애니메이션 variants
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.3 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.3 },
+    },
+  };
 
-  console.log('placeInfo', placeInfo);
+  const modalVariants = {
+    hidden: {
+      scale: 0.8,
+      opacity: 0,
+      y: 50,
+    },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+      },
+    },
+    exit: {
+      scale: 0.8,
+      opacity: 0,
+      y: 50,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
 
-  /**
-   * 스타일 정의
-   */
-  const MODAL_STYLES = {
-    container: `
-    fixed inset-0
-    bg-black bg-opacity-50
-    flex items-center justify-center
-    z-50
-    p-4
-  `,
-    modal: `
-    bg-white
-    rounded-lg
-    w-full
-    max-w-[1200px]
-    min-h-[700px]
-    max-h-[90vh]
-    flex
-    flex-col
-    border-2
-    border-solid
-    border-[#EE6677]
-  `,
-    header: `
-    flex
-    items-center
-    justify-end
-    p-6
-    border-b
-    border-solid
-    border-[#e5e0e090]
-  `,
-    closeButton: `
-    text-2xl
-    text-gray-500
-    hover:text-gray-700
-    transition-colors
-  `,
-    content: `
-    flex-1
-    overflow-y-auto
-    p-8
-    grid
-    grid-cols-1
-    md:grid-cols-[1fr_1fr]
-    gap-12
-  `,
-    leftSection: `
-    flex
-    flex-col
-    items-center
-  `,
-    rightSection: `
-    flex
-    flex-col
-    gap-8
-    relative
-  `,
-    infoSection: `
-    absolute
-    top-0
-    right-0
-  `,
-    bookingButton: `
-    w-full
-    bg-[#e38994fb]
-    text-white
-    py-4
-    rounded-lg
-    hover:bg-[#d27883fb]
-    transition-colors
-    mt-auto
-    text-lg
-    font-medium
-  `,
-  } as const;
+  const contentVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: 0.2,
+        duration: 0.3,
+      },
+    },
+  };
 
-  /**
-   * 예약 처리 함수
-   * @param amount 결제 금액
-   */
   const handleBooking = async (amount: number) => {
-    // 예약 유효성 검사
     const isValid = validateReservation({
       selectedDate,
       selectedTime,
@@ -156,16 +161,15 @@ const ReservationModal = ({
       closeTime: placeInfo.closeTime,
       openDays: placeInfo.openDays,
       selectedMembers,
-      maxCapacity: 8, // 매장별로 다르게 설정 가능
+      maxCapacity: 8,
     });
 
     if (!isValid) return;
 
-    // 예약 데이터 생성
     const bookingData = {
       bookingDateTime: new Date(
-        `${selectedDate.toISOString().split('T')[0]}T${selectedTime
-          .getHours()
+        `${selectedDate?.toISOString().split('T')[0]}T${selectedTime
+          ?.getHours()
           .toString()
           .padStart(2, '0')}:00:00+09:00`,
       ),
@@ -178,9 +182,7 @@ const ReservationModal = ({
     };
 
     try {
-      // 예약 API 호출
       const response = await handleReservation(bookingData);
-      console.log('예약 response', response);
       if (response.status === 1) {
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
@@ -204,49 +206,88 @@ const ReservationModal = ({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className={MODAL_STYLES.container}>
-      <div className={MODAL_STYLES.modal}>
-        <div className={MODAL_STYLES.header}>
-          <button onClick={onClose}>✕</button>
-        </div>
-        <div className={MODAL_STYLES.content}>
-          {/* 왼쪽: 캘린더 */}
-          <Calendar
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            openDays={placeInfo.openDays}
-          />
+    <AnimatePresence>
+      <motion.div
+        className={MODAL_STYLES.container}
+        variants={overlayVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onClick={onClose}
+      >
+        <motion.div
+          className={MODAL_STYLES.modal}
+          variants={modalVariants}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <motion.div
+            className={MODAL_STYLES.header}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <motion.button
+              onClick={onClose}
+              className={MODAL_STYLES.closeButton}
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              ✕
+            </motion.button>
+          </motion.div>
 
-          {/* 오른쪽: 예약 정보, 구성원, 메뉴판 */}
-          <div className={MODAL_STYLES.rightSection}>
-            {/* 안내사항 아이콘 */}
-            <div className={MODAL_STYLES.infoSection}>
-              <InfoTooltip />
-            </div>
+          <motion.div
+            className={MODAL_STYLES.content}
+            variants={contentVariants}
+          >
+            {/* 왼쪽: 캘린더 */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Calendar
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                openDays={placeInfo.openDays}
+              />
+            </motion.div>
 
-            {/* 예약 시간 & 구성원 */}
-            <ReservationInfo
-              openTime={placeInfo.openTime}
-              closeTime={placeInfo.closeTime}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-              selectedMembers={selectedMembers}
-              setSelectedMembers={setSelectedMembers}
-            />
+            {/* 오른쪽: 예약 정보, 구성원, 메뉴판 */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-col gap-8 relative"
+            >
+              <div className="absolute top-0 right-0">
+                <InfoTooltip />
+              </div>
 
-            {/* 메뉴판 */}
-            <ReservationMenu
-              menus={placeInfo.menus}
-              selectedMenus={selectedMenus}
-              setSelectedMenus={setSelectedMenus}
-              setTotalAmount={setTotalAmount}
-              handleBooking={handleBooking}
-            />
-          </div>
-        </div>
+              <ReservationInfo
+                openTime={placeInfo.openTime}
+                closeTime={placeInfo.closeTime}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+                selectedMembers={selectedMembers}
+                setSelectedMembers={setSelectedMembers}
+              />
+
+              <ReservationMenu
+                menus={placeInfo.menus}
+                selectedMenus={selectedMenus}
+                setSelectedMenus={setSelectedMenus}
+                setTotalAmount={setTotalAmount}
+                handleBooking={handleBooking}
+              />
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
         {isPaymentModalOpen && (
           <PaymentModal
@@ -258,8 +299,8 @@ const ReservationModal = ({
             customerName={userInfoQuery.data?.name}
           />
         )}
-      </div>
-    </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

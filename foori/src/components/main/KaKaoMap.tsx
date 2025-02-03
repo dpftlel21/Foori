@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { FiZoomIn, FiZoomOut } from 'react-icons/fi';
 import { Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 import location from '../../assets/images/location.png';
@@ -32,9 +33,11 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
     center,
     moveCurrent,
     isLoaded,
+    zoomLevel,
+    zoomIn,
+    zoomOut,
   } = useKakaoMap({ keyword, category });
   const { data } = useCrawledData();
-
   const navigate = useNavigate();
 
   // 로딩 상태 처리
@@ -54,8 +57,10 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
   );
 
   const handleReservation = (placeId: string) => {
+    // 카카오 맵 데이터 찾기
     const kakaoPlace = matchedPlaces.find((p) => p.id === placeId);
     if (kakaoPlace) {
+      // 매칭된 데이터 찾기
       const crawledPlace = data?.find(
         (item: CrawledData) => item.name === kakaoPlace.place_name,
       );
@@ -82,8 +87,9 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
           <Map
             center={center}
             style={{ width: '100%', height: '100%' }}
-            level={3}
+            level={zoomLevel}
             className="rounded-lg"
+            onClick={() => setSelectedPlace(null)}
           >
             {matchedPlaces.map((place) => (
               <motion.div
@@ -103,23 +109,43 @@ const KaKaoMap = ({ keyword, category }: KaKaoMapProps) => {
           </Map>
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.1, rotate: 360 }}
-          whileTap={{ scale: 0.9 }}
-          transition={{ duration: 0.3 }}
-          onClick={moveCurrent}
-          className="absolute bottom-4 right-4 md:bottom-8 md:right-8
-                     w-10 h-10 md:w-12 md:h-12
-                     bg-white rounded-full shadow-lg
-                     flex items-center justify-center
-                     hover:shadow-xl z-10"
-        >
-          <img
-            src={location}
-            alt="current location"
-            className="w-6 h-6 md:w-8 md:h-8"
-          />
-        </motion.button>
+        {/* 줌 컨트롤 버튼 */}
+        <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={zoomIn}
+            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                     flex items-center justify-center hover:shadow-xl"
+          >
+            <FiZoomIn className="w-5 h-5 md:w-6 md:h-6" />
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={zoomOut}
+            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                     flex items-center justify-center hover:shadow-xl"
+          >
+            <FiZoomOut className="w-5 h-5 md:w-6 md:h-6" />
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 360 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            onClick={moveCurrent}
+            className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-lg
+                     flex items-center justify-center hover:shadow-xl"
+          >
+            <img
+              src={location}
+              alt="current location"
+              className="w-6 h-6 md:w-8 md:h-8"
+            />
+          </motion.button>
+        </div>
 
         {places.length === 0 && (
           <motion.div

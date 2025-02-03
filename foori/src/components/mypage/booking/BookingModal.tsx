@@ -6,14 +6,14 @@ import PaymentModal from '../../storeDetail/reservationModal/PaymentModal';
 import { BookingStatusBadge } from './BookingStatusBadge';
 
 interface BookingModalProps {
-  bookingId: number | null;
+  bookingId: number;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const BookingModal = ({ bookingId, isOpen, onClose }: BookingModalProps) => {
   const { bookingDetail, isLoading } = useBookings(bookingId);
-  console.log('bookingDetail', bookingDetail);
+  //console.log('bookingDetail', bookingDetail);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const userInfoQuery = useUserInfo();
   return (

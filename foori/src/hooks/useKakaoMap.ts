@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 interface Place {
   id: string;
@@ -30,19 +31,24 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
   const [center, setCenter] = useState<Coordinates>(gangnamStation);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [zoomLevel, setZoomLevel] = useState<number>(3);
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const defaultZoomLevel = isMobile ? 4 : 3;
 
   // 카카오맵 SDK 로드 체크
   useEffect(() => {
     const checkKakaoMap = () => {
       if (window.kakao && window.kakao.maps) {
         setIsLoaded(true);
+        setZoomLevel(defaultZoomLevel);
       } else {
         setTimeout(checkKakaoMap, 300);
       }
     };
 
     checkKakaoMap();
-  }, []);
+  }, [defaultZoomLevel]);
 
   // 장소 검색
   useEffect(() => {
@@ -121,6 +127,14 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
     );
   };
 
+  const zoomIn = () => {
+    setZoomLevel((prev) => Math.max(1, prev - 1));
+  };
+
+  const zoomOut = () => {
+    setZoomLevel((prev) => Math.min(8, prev + 1));
+  };
+
   return {
     places,
     selectedPlace,
@@ -128,5 +142,8 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
     center,
     moveCurrent,
     isLoaded,
+    zoomLevel,
+    zoomIn,
+    zoomOut,
   };
 };

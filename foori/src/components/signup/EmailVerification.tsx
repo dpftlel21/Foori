@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Email from '../../assets/images/email.png';
+import { COMMON_INPUT_STYLES } from '../../styles/commonStyles';
 
 interface EmailVerificationProps {
   email: string;
@@ -29,19 +30,15 @@ const EmailVerification = ({
   };
 
   return (
-    <div className="w-full flex flex-col items-center space-y-2">
-      <div className="w-[45%] flex justify-start items-center mb-[1%]">
-        <img src={Email} alt="" className="w-[12%]" />
-        <label htmlFor="email" className="ml-[1%]">
-          이메일
-        </label>
+    <div className={COMMON_INPUT_STYLES.container}>
+      <div className={COMMON_INPUT_STYLES.labelContainer}>
+        <img src={Email} alt="" className={COMMON_INPUT_STYLES.labelIcon} />
+        <label className={COMMON_INPUT_STYLES.label}>이메일</label>
       </div>
 
-      <div className="w-[45%] flex gap-2">
+      <div className={COMMON_INPUT_STYLES.inputContainer}>
         <input
-          className={`flex-1 h-[3vh] p-[1%] rounded-md ${
-            error ? 'border-red-500' : ''
-          }`}
+          className={COMMON_INPUT_STYLES.input(error)}
           type="email"
           name="email"
           value={email}
@@ -50,7 +47,7 @@ const EmailVerification = ({
         />
         <button
           type="button"
-          className="w-[25%] bg-[#FF800B] text-white text-sm rounded-md hover:bg-[#fcb69f] transition duration-300 disabled:opacity-50"
+          className={COMMON_INPUT_STYLES.button}
           onClick={handleVerifyClick}
           disabled={!email}
         >
@@ -59,9 +56,9 @@ const EmailVerification = ({
       </div>
 
       {showCodeInput && (
-        <div className="w-[45%] flex gap-2 mt-2">
+        <div className={COMMON_INPUT_STYLES.verificationContainer}>
           <input
-            className="flex-1 h-[3vh] p-[1%] rounded-md border"
+            className={COMMON_INPUT_STYLES.input()}
             type="text"
             placeholder="인증번호를 입력하세요"
             value={verificationCode}
@@ -69,7 +66,7 @@ const EmailVerification = ({
           />
           <button
             type="button"
-            className="w-[25%] bg-[#FF800B] text-white text-sm rounded-md hover:bg-[#fcb69f] transition duration-300"
+            className={COMMON_INPUT_STYLES.button}
             onClick={handleCodeSubmit}
           >
             확인
@@ -77,7 +74,7 @@ const EmailVerification = ({
         </div>
       )}
 
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && <p className={COMMON_INPUT_STYLES.errorText}>{error}</p>}
     </div>
   );
 };

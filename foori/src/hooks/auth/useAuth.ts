@@ -204,7 +204,7 @@ export const useTokenRefresh = () => {
         if (data.accessToken) {
           cookieStorage.setToken(data.accessToken);
           if (data.refreshToken) {
-            console.log('refreshToken', data.refreshToken);
+            //console.log('refreshToken', data.refreshToken);
             cookieStorage.setRefreshToken(data.refreshToken);
           }
         }

@@ -1,10 +1,7 @@
 import { useState } from 'react';
 
-const InfoTooltip = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const STYLES = {
-    infoIcon: `
+const STYLES = {
+  infoIcon: `
     w-8
     h-8
     flex
@@ -18,7 +15,7 @@ const InfoTooltip = () => {
     hover:bg-gray-100
     transition-colors
   `,
-    infoTooltip: `
+  infoTooltip: `
     absolute
     top-full
     right-0
@@ -34,13 +31,16 @@ const InfoTooltip = () => {
     backdrop-blur-sm
     bg-white/95
   `,
-    tooltipList: `
+  tooltipList: `
     space-y-4
     text-gray-700
     text-sm
     leading-relaxed
   `,
-  };
+};
+
+const InfoTooltip = () => {
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
     <>

@@ -23,36 +23,16 @@ interface ReservationDetailProps {
   setSelectedMembers: (members: number) => void;
 }
 
-const ReservationInfo = ({
-  openTime,
-  closeTime,
-  selectedDate,
-  selectedTime,
-  setSelectedTime,
-  selectedMembers,
-  setSelectedMembers,
-}: ReservationDetailProps) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('오전');
-
-  // 구성원 옵션
-  const MEMBER_OPTIONS = [
-    { display: '2명', value: 2 },
-    { display: '3명', value: 3 },
-    { display: '4명', value: 4 },
-    { display: '5~6명', value: 6 },
-    { display: '6명 이상', value: 8 },
-  ] as const;
-
-  // 스타일 정의
-  const STYLES = {
-    container: 'w-full max-w-[400px]',
-    title: 'text-lg font-bold mb-2',
-    subtitle: 'text-sm text-gray-500',
-    sectionContainer: 'mb-3',
-    periodButtonContainer: 'grid grid-cols-3 gap-3 mb-6',
-    timeButtonContainer: 'grid grid-cols-4 gap-1.5 mb-6',
-    memberButtonContainer: 'flex flex-wrap gap-2',
-    periodButton: (isSelected: boolean) => `
+// 스타일 정의
+const STYLES = {
+  container: 'w-full max-w-[400px]',
+  title: 'text-lg font-bold mb-2',
+  subtitle: 'text-sm text-gray-500',
+  sectionContainer: 'mb-3',
+  periodButtonContainer: 'grid grid-cols-3 gap-3 mb-6',
+  timeButtonContainer: 'grid grid-cols-4 gap-1.5 mb-6',
+  memberButtonContainer: 'flex flex-wrap gap-2',
+  periodButton: (isSelected: boolean) => `
       py-2
       text-center
       transition-colors
@@ -64,7 +44,7 @@ const ReservationInfo = ({
       }
       hover:text-[#e38994fb]
     `,
-    timeButton: (isBreakTime: boolean, isSelected: boolean) => `
+  timeButton: (isBreakTime: boolean, isSelected: boolean) => `
       py-1.5
       rounded-lg
       text-center
@@ -78,7 +58,7 @@ const ReservationInfo = ({
           : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
-    memberButton: (isSelected: boolean) => `
+  memberButton: (isSelected: boolean) => `
       px-3
       py-1.5
       text-sm
@@ -90,7 +70,27 @@ const ReservationInfo = ({
           : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
       }
     `,
-  } as const;
+} as const;
+
+const ReservationInfo = ({
+  openTime,
+  closeTime,
+  selectedDate,
+  selectedTime,
+  setSelectedTime,
+  selectedMembers,
+  setSelectedMembers,
+}: ReservationDetailProps) => {
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('오전');
+
+  // 구성원 옵션
+  const MemberOptions = [
+    { display: '혼자', value: 1 },
+    { display: '2명', value: 2 },
+    { display: '3명', value: 3 },
+    { display: '4명', value: 4 },
+    { display: '5명 이상', value: 5 },
+  ] as const;
 
   // 시간 슬롯 생성 함수
   const generateTimeSlots = (): TimeSlot[] => {
@@ -102,7 +102,7 @@ const ReservationInfo = ({
       let period: TimePeriod;
       if (hour < 12) {
         period = '오전';
-      } else if (hour >= 12 && hour < 14) {
+      } else if (hour >= 12 && hour <= 14) {
         period = '점심';
       } else {
         period = '오후';
@@ -182,7 +182,7 @@ const ReservationInfo = ({
       <div className={STYLES.sectionContainer}>
         <h2 className={STYLES.title}>구성원</h2>
         <div className={STYLES.memberButtonContainer}>
-          {MEMBER_OPTIONS.map((option) => (
+          {MemberOptions.map((option) => (
             <button
               key={option.value}
               className={STYLES.memberButton(selectedMembers === option.value)}

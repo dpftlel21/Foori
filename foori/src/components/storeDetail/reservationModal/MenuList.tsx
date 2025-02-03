@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 interface MenuListProps {
@@ -78,11 +79,65 @@ const MenuList = ({
 }: MenuListProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  //console.log('menus', menus);
-  //console.log('selectedMenus', selectedMenus);
+  const menuButtonVariants = {
+    hover: { scale: 1.02, transition: { duration: 0.2 } },
+    tap: { scale: 0.98 },
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.2 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  const contentVariants = {
+    hidden: { scale: 0.9, y: 20, opacity: 0 },
+    visible: {
+      scale: 1,
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+      },
+    },
+    exit: {
+      scale: 0.9,
+      y: 20,
+      opacity: 0,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  const menuItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  };
+
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className={STYLES.menuButton}>
+      <motion.button
+        onClick={() => setIsOpen(true)}
+        className={STYLES.menuButton}
+        variants={menuButtonVariants}
+        whileHover="hover"
+        whileTap="tap"
+      >
         <div className="flex items-center gap-2">
           <h2 className="font-medium text-gray-800">메뉴판</h2>
           <span className="text-sm text-gray-500">
@@ -90,11 +145,13 @@ const MenuList = ({
               `${Object.keys(selectedMenus).length}개 선택`}
           </span>
         </div>
-        <svg
+        <motion.svg
           className="w-5 h-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          animate={{ rotate: isOpen ? 90 : 0 }}
+          transition={{ duration: 0.2 }}
         >
           <path
             strokeLinecap="round"
@@ -102,77 +159,110 @@ const MenuList = ({
             strokeWidth={2}
             d="M9 5l7 7-7 7"
           />
-        </svg>
-      </button>
+        </motion.svg>
+      </motion.button>
 
-      {isOpen && (
-        <div className={STYLES.modal}>
-          <div className={STYLES.modalContent}>
-            <div className={STYLES.modalHeader}>
-              <h2 className={STYLES.modalTitle}>메뉴 선택</h2>
-              <button
-                onClick={() => setIsOpen(false)}
-                className={STYLES.closeButton}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className={STYLES.modal}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <motion.div
+              className={STYLES.modalContent}
+              variants={contentVariants}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <motion.div className={STYLES.modalHeader}>
+                <h2 className={STYLES.modalTitle}>메뉴 선택</h2>
+                <motion.button
+                  onClick={() => setIsOpen(false)}
+                  className={STYLES.closeButton}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </motion.button>
+              </motion.div>
 
-            <div className={STYLES.menuListContainer}>
-              <div className={STYLES.menuList}>
-                {menus.map((menu) => (
-                  <div key={menu.id} className={STYLES.menuItem}>
-                    <div className={STYLES.menuInfo}>
-                      <span className={STYLES.menuName}>{menu.name}</span>
-                      <span className={STYLES.menuPrice}>
-                        {menu.price.toLocaleString()}원
-                      </span>
-                    </div>
-                    <div className={STYLES.quantityControl}>
-                      <button
-                        onClick={() => onQuantityChange(menu.id, -1)}
-                        className={STYLES.quantityButton}
-                      >
-                        -
-                      </button>
-                      <span className={STYLES.quantityText}>
-                        {selectedMenus[menu.id] || 0}
-                      </span>
-                      <button
-                        onClick={() => onQuantityChange(menu.id, 1)}
-                        className={STYLES.quantityButton}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div className={STYLES.menuListContainer}>
+                <motion.div className={STYLES.menuList}>
+                  {menus.map((menu, index) => (
+                    <motion.div
+                      key={menu.id}
+                      className={STYLES.menuItem}
+                      variants={menuItemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <div className={STYLES.menuInfo}>
+                        <span className={STYLES.menuName}>{menu.name}</span>
+                        <span className={STYLES.menuPrice}>
+                          {menu.price.toLocaleString()}원
+                        </span>
+                      </div>
+                      <div className={STYLES.quantityControl}>
+                        <motion.button
+                          onClick={() => onQuantityChange(menu.id, -1)}
+                          className={STYLES.quantityButton}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          -
+                        </motion.button>
+                        <motion.span
+                          className={STYLES.quantityText}
+                          key={selectedMenus[menu.id]}
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {selectedMenus[menu.id] || 0}
+                        </motion.span>
+                        <motion.button
+                          onClick={() => onQuantityChange(menu.id, 1)}
+                          className={STYLES.quantityButton}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          +
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
-            </div>
 
-            <div className={STYLES.modalFooter}>
-              <button
-                onClick={() => setIsOpen(false)}
-                className={STYLES.completeButton}
-              >
-                선택 완료
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              <div className={STYLES.modalFooter}>
+                <motion.button
+                  onClick={() => setIsOpen(false)}
+                  className={STYLES.completeButton}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  선택 완료
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

@@ -67,6 +67,7 @@ const Navigation = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // 로그아웃
   const handleLogout = () => {
     cookieStorage.removeToken();
     navigate(RouteConst.Login);

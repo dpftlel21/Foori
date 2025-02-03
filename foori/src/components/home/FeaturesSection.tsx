@@ -29,7 +29,7 @@ const FeaturesSection = () => {
 
   const handleFeatureClick = (feature: (typeof features)[0]) => {
     if ('path' in feature) {
-      navigate(feature.path);
+      navigate(feature.path as string);
     } else if ('tab' in feature) {
       setCurrentTab(feature.tab);
       navigate('/mypage', { state: { from: 'features' } }); // state 추가

@@ -6,32 +6,26 @@ interface CalendarProps {
   openDays: string;
 }
 
-const Calendar = ({
-  selectedDate,
-  setSelectedDate,
-  openDays,
-}: CalendarProps) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  const STYLES = {
-    container: `
+// 스타일링
+const STYLES = {
+  container: `
       w-full
       bg-white
       rounded-lg
       p-6
     `,
-    header: `
+  header: `
       flex
       items-center
       justify-between
       mb-6
     `,
-    monthText: `
+  monthText: `
       text-xl
       font-bold
       text-gray-800
     `,
-    navigationButton: `
+  navigationButton: `
       w-4
       h-4
       flex
@@ -42,12 +36,12 @@ const Calendar = ({
       rounded-full
       transition-colors
     `,
-    weekdays: `
+  weekdays: `
       grid
       grid-cols-7
       mb-4
     `,
-    weekday: (dayIndex: number) => `
+  weekday: (dayIndex: number) => `
       text-center
       text-sm
       font-medium
@@ -60,17 +54,17 @@ const Calendar = ({
       }
       py-2
     `,
-    days: `
+  days: `
       grid
       grid-cols-7
     `,
-    day: (
-      isSelected: boolean,
-      isToday: boolean,
-      isAvailable: boolean,
-      dayIndex: number,
-      isCurrentMonth: boolean,
-    ) => `
+  day: (
+    isSelected: boolean,
+    isToday: boolean,
+    isAvailable: boolean,
+    dayIndex: number,
+    isCurrentMonth: boolean,
+  ) => `
       aspect-[1.3/1]
       relative
       ${
@@ -98,7 +92,14 @@ const Calendar = ({
       transition-colors
       ${isAvailable && isCurrentMonth ? 'cursor-pointer' : ''}
     `,
-  };
+};
+
+const Calendar = ({
+  selectedDate,
+  setSelectedDate,
+  openDays,
+}: CalendarProps) => {
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
