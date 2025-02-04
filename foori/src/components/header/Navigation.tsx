@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { cookieStorage } from '../../api/utils/cookies';
-import { useUserInfo } from '../../hooks/query/useUserInfo';
+import { useUserInfo } from '../../hooks/query/useGetUserInfo';
 import { RouteConst } from '../../interface/RouteConst';
 
 const STYLES = {

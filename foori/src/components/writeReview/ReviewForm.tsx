@@ -7,10 +7,113 @@ import StarRating from './StarRating';
 
 interface ReviewFormProps {
   bookingId: number;
-  onCancel: () => void;
 }
 
-const ReviewForm = ({ bookingId, onCancel }: ReviewFormProps) => {
+const STYLES = {
+  pageContainer: `
+    w-full
+    h-full
+    min-h-[calc(768px-8px)]
+    md:min-h-[calc(100vh-5rem)]
+    flex
+    justify-center
+    items-center
+    md:bg-gradient-to-b
+    md:from-[#ffecd2]
+    md:to-[#fcb69f]
+    md:p-4
+  `,
+  formContainer: `
+    w-full
+    md:max-w-[600px]
+    bg-white
+    rounded-xl
+    md:border-2
+    md:border-solid
+    md:border-[#EE6677]
+    overflow-hidden
+  `,
+  form: `
+    p-8
+    space-y-6
+  `,
+  title: `
+    text-2xl
+    font-bold
+    text-center
+    mb-8
+    text-gray-800
+  `,
+  section: `
+    space-y-2
+  `,
+  label: `
+    block
+    text-gray-700
+    text-sm
+    font-medium
+  `,
+  textarea: `
+    w-full
+    h-32
+    p-3
+    border
+    rounded-lg
+    resize-none
+    focus:ring-2
+    focus:ring-[#FF800B]
+    focus:outline-none
+    transition-all
+  `,
+  buttonContainer: `
+    flex
+    gap-4
+    mt-8
+  `,
+  submitButton: `
+    flex-1
+    py-3
+    bg-[#FF800B]
+    text-white
+    rounded-lg
+    font-medium
+    hover:bg-[#fcb69f]
+    transition-all
+    duration-300
+    disabled:opacity-50
+    hover:-translate-y-0.5
+    hover:shadow-lg
+    hover:shadow-[#FF800B]/30
+  `,
+  cancelButton: `
+    flex-1
+    py-3
+    bg-gray-100
+    text-gray-700
+    rounded-lg
+    font-medium
+    hover:bg-gray-200
+    transition-all
+    duration-300
+  `,
+  characterCount: `
+    text-right
+    text-sm
+    text-gray-500
+  `,
+  ratingContainer: `
+    flex
+    items-center
+    gap-3
+  `,
+  ratingLabel: `
+    text-gray-700
+    text-sm
+    font-medium
+  `,
+} as const;
+
+const ReviewForm = ({ bookingId }: ReviewFormProps) => {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -18,33 +121,12 @@ const ReviewForm = ({ bookingId, onCancel }: ReviewFormProps) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const STYLES = {
-    container: 'w-full max-w-[600px] mx-auto p-6 bg-white rounded-lg shadow-md',
-    title: 'text-2xl font-bold text-center mb-6',
-    form: 'space-y-6',
-    label: 'block text-gray-700 text-sm font-medium mb-2',
-    textarea: `w-full h-32 p-3 border rounded-lg resize-none
-               focus:ring-2 focus:ring-[#FF800B] focus:outline-none`,
-    button: `w-full py-3 bg-[#FF800B] text-white rounded-lg
-             hover:bg-[#fcb69f] transition-all duration-300
-             disabled:opacity-50 hover:-translate-y-0.5
-             hover:shadow-lg hover:shadow-[#FF800B]/30`,
-    error: 'text-red-500 text-sm mt-1',
-    ratingContainer: 'flex items-center gap-2',
-    ratingLabel: 'text-gray-700 text-sm font-medium',
-    characterCount: 'text-right text-sm text-gray-500',
-    imageSection: 'space-y-2',
-  } as const;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // 별점 유효성 검사 추가
     if (rating < 1 || rating > 5) {
       showToast('별점은 1점에서 5점 사이여야 합니다.', 'error');
       return;
     }
-
     if (content.trim() === '') {
       showToast('리뷰 내용을 입력해주세요.', 'error');
       return;
@@ -52,14 +134,7 @@ const ReviewForm = ({ bookingId, onCancel }: ReviewFormProps) => {
 
     try {
       setIsLoading(true);
-      const reviewData = {
-        rating,
-        content,
-        bookingId,
-        images,
-      };
-
-      await createReview(reviewData);
+      await createReview({ rating, content, bookingId, images });
       showToast('리뷰가 성공적으로 등록되었습니다.', 'success');
       navigate('/mypage');
     } catch (error) {
@@ -83,48 +158,62 @@ const ReviewForm = ({ bookingId, onCancel }: ReviewFormProps) => {
   };
 
   return (
-    <div className={STYLES.container}>
-      <h2 className={STYLES.title}>리뷰 작성</h2>
-      <form onSubmit={handleSubmit} className={STYLES.form}>
-        {/* 별점 선택 */}
-        <div className={STYLES.ratingContainer}>
-          <label className={STYLES.ratingLabel}>별점</label>
-          <StarRating rating={rating} setRating={setRating} />
-          <span className="text-sm text-gray-500">({rating}/5)</span>
-        </div>
+    <div className={STYLES.pageContainer}>
+      <div className={STYLES.formContainer}>
+        <form onSubmit={handleSubmit} className={STYLES.form}>
+          <h2 className={STYLES.title}>리뷰 작성</h2>
 
-        {/* 리뷰 내용 */}
-        <div>
-          <label htmlFor="content" className={STYLES.label}>
-            리뷰 내용
-          </label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="리뷰를 작성해주세요"
-            className={STYLES.textarea}
-            maxLength={500}
-          />
-          <div className={STYLES.characterCount}>{content.length}/500</div>
-        </div>
+          <div className={STYLES.section}>
+            <div className={STYLES.ratingContainer}>
+              <label className={STYLES.ratingLabel}>별점</label>
+              <StarRating rating={rating} setRating={setRating} />
+              <span className="text-sm text-gray-500">({rating}/5)</span>
+            </div>
+          </div>
 
-        {/* 이미지 업로드 */}
-        <div className={STYLES.imageSection}>
-          <label className={STYLES.label}>사진 첨부 (최대 3장)</label>
-          <ImageUpload
-            images={images}
-            onImageChange={handleImageChange}
-            onImageRemove={handleImageRemove}
-            maxImages={3}
-          />
-        </div>
+          <div className={STYLES.section}>
+            <label htmlFor="content" className={STYLES.label}>
+              리뷰 내용
+            </label>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="리뷰를 작성해주세요"
+              className={STYLES.textarea}
+              maxLength={500}
+            />
+            <div className={STYLES.characterCount}>{content.length}/500</div>
+          </div>
 
-        {/* 제출 버튼 */}
-        <button type="submit" className={STYLES.button} disabled={isLoading}>
-          {isLoading ? '등록 중...' : '리뷰 등록하기'}
-        </button>
-      </form>
+          <div className={STYLES.section}>
+            <label className={STYLES.label}>사진 첨부 (최대 3장)</label>
+            <ImageUpload
+              images={images}
+              onImageChange={handleImageChange}
+              onImageRemove={handleImageRemove}
+              maxImages={3}
+            />
+          </div>
+
+          <div className={STYLES.buttonContainer}>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className={STYLES.cancelButton}
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className={STYLES.submitButton}
+              disabled={isLoading}
+            >
+              {isLoading ? '등록 중...' : '리뷰 등록하기'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

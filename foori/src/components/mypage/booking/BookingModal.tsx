@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { useBookings } from '../../../hooks/query/useBooking';
-import { useUserInfo } from '../../../hooks/query/useUserInfo';
+import { useBookings } from '../../../hooks/query/useGetBooking';
+import { useUserInfo } from '../../../hooks/query/useGetUserInfo';
 import PaymentModal from '../../storeDetail/reservationModal/PaymentModal';
 import { BookingStatusBadge } from './BookingStatusBadge';
 

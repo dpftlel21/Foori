@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCrawledDataDetail } from '../../hooks/query/useCrawledData';
+import { useCrawledDataDetail } from '../../hooks/query/useGetCrawledData';
 import ReservationModal from './reservationModal/ReservationModal';
 import RestaurantReview from './reviewList/RestaurantReview';
 

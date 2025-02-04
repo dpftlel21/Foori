@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleReservation } from '../../../api/endpoints/reservation';
 import { useToast } from '../../../contexts/ToastContext';
-import { useUserInfo } from '../../../hooks/query/useUserInfo';
+import { useUserInfo } from '../../../hooks/query/useGetUserInfo';
 import { useReservationValidation } from '../../../hooks/reservation/useReservationValidation';
 import Calendar from './Calendar';
 import InfoTooltip from './InfoTooltip';
@@ -186,8 +186,6 @@ const ReservationModal = ({
     const offsetDiff = koreanOffset + userOffset; // 보정해야 할 시간 차이
     bookingDateTime.setMinutes(bookingDateTime.getMinutes() + offsetDiff);
 
-    //console.log('bookingDateTime', bookingDateTime);
-
     const bookingData = {
       bookingDateTime,
       numOfPeople: selectedMembers,
@@ -210,10 +208,6 @@ const ReservationModal = ({
           setTotalAmount(amount);
           setIsPaymentModalOpen(true);
         } else {
-          showToast(
-            '예약 마감 하루 전까지 미결제시 자동 취소됩니다.',
-            'warning',
-          );
           navigate('/mypage');
           onClose();
         }

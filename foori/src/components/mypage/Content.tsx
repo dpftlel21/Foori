@@ -4,7 +4,7 @@ import Profile from './profile/Profile';
 const Content = () => {
   const STYLES = {
     wrapper:
-      'w-[calc(100vw-2rem)] h-[calc(100vh-8rem)] md:max-w-[calc(100vw-10rem)] flex flex-col md:mx-auto bg-white border-solid border-2 border-[#EE6677] rounded-xl',
+      'w-full h-[calc(768px-5px)] md:h-[calc(100vh-8rem)] md:max-w-[calc(100vw-10rem)] flex flex-col md:mx-auto bg-white md:border-solid md:border-2 md:border-[#EE6677] md:rounded-xl',
   } as const;
 
   return (

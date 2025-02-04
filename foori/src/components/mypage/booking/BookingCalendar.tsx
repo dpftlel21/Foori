@@ -1,18 +1,10 @@
 import { useState } from 'react';
-import { useBookings } from '../../../hooks/query/useBooking';
+import { useBookings } from '../../../hooks/query/useGetBooking';
 import BookingModal from './BookingModal';
 import { BookingStatusConfig } from './BookingStatusConfig';
 
-const BookingCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
-    null,
-  );
-  const { bookings } = useBookings();
-
-  const STYLES = {
-    container: `
+const STYLES = {
+  container: `
     w-full
     max-w-[1200px]
     mx-auto
@@ -21,7 +13,7 @@ const BookingCalendar = () => {
     gap-6
     p-4
   `,
-    legend: `
+  legend: `
     flex
     flex-wrap
     gap-3
@@ -29,12 +21,8 @@ const BookingCalendar = () => {
     bg-white
     rounded-lg
     shadow-sm
-    border
-    border-[#e38994]
-    md:w-fit
-    md:ml-auto
   `,
-    calendar: `
+  calendar: `
     h-[350px]
     md:h-[600px]
     overflow-y-auto
@@ -45,18 +33,18 @@ const BookingCalendar = () => {
     border
     border-gray-100
   `,
-    header: `
+  header: `
     flex
     items-center
     justify-between
     mb-6
   `,
-    monthTitle: `
+  monthTitle: `
     text-xl
     font-bold
     text-gray-800
   `,
-    navButton: `
+  navButton: `
     w-8
     h-8
     flex
@@ -67,12 +55,12 @@ const BookingCalendar = () => {
     rounded-full
     transition-colors
   `,
-    weekdays: `
+  weekdays: `
     grid
     grid-cols-7
     mb-4
   `,
-    weekday: (dayIndex: number) => `
+  weekday: (dayIndex: number) => `
     text-center
     text-sm
     font-medium
@@ -85,27 +73,27 @@ const BookingCalendar = () => {
     }
     py-2
   `,
-    days: `
+  days: `
     grid
     grid-cols-7
     gap-2
   `,
-    day: (
-      isSelected: boolean,
-      isToday: boolean,
-      hasBooking: boolean,
-      dayIndex: number,
-      isCurrentMonth: boolean,
-    ) => `
-    aspect-[3/1]
+  day: (
+    isSelected: boolean,
+    isToday: boolean,
+    hasBooking: boolean,
+    dayIndex: number,
+    isCurrentMonth: boolean,
+  ) => `
+    aspect-[5/2]
     relative
-    p-2
+    p-1.5
     flex
     flex-col
-    gap-1
+    gap-0.5
     ${
       isSelected
-        ? 'bg-[#e38994fb] text-white '
+        ? 'bg-[#e38994fb] text-white'
         : isToday
         ? 'bg-[#e3899420]'
         : 'bg-transparent'
@@ -123,31 +111,28 @@ const BookingCalendar = () => {
     transition-colors
     ${hasBooking && isCurrentMonth ? 'cursor-pointer' : ''}
   `,
-    dayNumber: `
+  dayNumber: `
     text-sm
     font-medium
   `,
-    bookingInfo: `
+  bookingInfo: `
+    flex
+    flex-wrap
+    gap-1
+    mt-auto
+    justify-center
+    md:justify-start
+    md:flex-col
+  `,
+  bookingItem: `
     flex
     flex-col
-    gap-0.5
-    mt-auto
-    text-xs
-  `,
-    bookingItem: (status: number) => `
-    truncate
-    flex
     items-center
-    gap-1
-    ${
-      status === 3
-        ? 'text-green-600'
-        : status === 1
-        ? 'text-yellow-600'
-        : 'text-red-600'
-    }
+    md:flex-row
+    md:items-center
+    md:gap-1
   `,
-    bookingDot: (status: number) => `
+  bookingDot: (status: number) => `
     w-2
     h-2
     rounded-full
@@ -159,9 +144,32 @@ const BookingCalendar = () => {
         : 'bg-red-400'
     }
   `,
-  } as const;
+  restaurantName: (status: number) => `
+    text-xs
+    truncate
+    hidden
+    md:block
+    md:max-w-[80px]
+    ${
+      status === 3
+        ? 'text-green-400'
+        : status === 1
+        ? 'text-yellow-400'
+        : 'text-red-400'
+    }
+  `,
+} as const;
 
-  const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+const BookingCalendar = () => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+    null,
+  );
+
+  const { bookings } = useBookings();
+
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
   const getDaysInMonth = () => {
     const year = currentDate.getFullYear();
@@ -172,16 +180,19 @@ const BookingCalendar = () => {
     const days = [];
     const startPadding = firstDay.getDay();
 
+    // 이전 달 날짜
     for (let i = 0; i < startPadding; i++) {
       const date = new Date(year, month, -startPadding + i + 1);
       days.push({ date, isCurrentMonth: false });
     }
 
+    // 이번 달 날짜
     for (let i = 1; i <= lastDay.getDate(); i++) {
       const date = new Date(year, month, i);
       days.push({ date, isCurrentMonth: true });
     }
 
+    // 다음 달 날짜
     const endPadding = 42 - days.length;
     for (let i = 1; i <= endPadding; i++) {
       const date = new Date(year, month + 1, i);
@@ -191,6 +202,7 @@ const BookingCalendar = () => {
     return days;
   };
 
+  // 날짜별 예약 정보 조회
   const getBookingsForDay = (date: Date) => {
     return (
       bookings?.filter((booking) => {
@@ -253,7 +265,7 @@ const BookingCalendar = () => {
         </div>
 
         <div className={STYLES.weekdays}>
-          {WEEKDAYS.map((day, index) => (
+          {weekdays.map((day, index) => (
             <div key={day} className={STYLES.weekday(index)}>
               {day}
             </div>
@@ -287,12 +299,14 @@ const BookingCalendar = () => {
                 {dayBookings.length > 0 && (
                   <div className={STYLES.bookingInfo}>
                     {dayBookings.map((booking) => (
-                      <div
-                        key={booking.id}
-                        className={STYLES.bookingItem(Number(booking.status))}
-                      >
-                        <span className={STYLES.bookingDot(booking.status)} />
-                        <span>{booking.restaurant.name}</span>
+                      <div key={booking.id} className={STYLES.bookingItem}>
+                        <div
+                          className={STYLES.bookingDot(booking.status)}
+                          title={booking.restaurant.name}
+                        />
+                        <span className={STYLES.restaurantName(booking.status)}>
+                          {booking.restaurant.name}
+                        </span>
                       </div>
                     ))}
                   </div>

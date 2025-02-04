@@ -18,26 +18,25 @@ interface ReservationMenuProps {
   handleBooking: (amount: number) => void;
 }
 
+// 스타일 정의
+const STYLES = {
+  container: 'w-full flex flex-col md:flex-row bg-gray-50',
+  leftSection: 'w-full h-full flex flex-col p-4 space-y-4',
+  paymentSection: 'p-3 bg-white rounded-lg shadow-md border border-[#e38994fb]',
+  totalAmount: 'font-bold text-lg text-gray-800',
+  totalAmountValue: 'ml-2 text-[#e38994fb]',
+  button:
+    'bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
+  fullWidthButton:
+    'w-full bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
+} as const;
+
 const ReservationMenu = ({
   menus,
   selectedMenus,
   setSelectedMenus,
   handleBooking,
 }: ReservationMenuProps) => {
-  // 스타일 정의
-  const STYLES = {
-    container: 'w-full flex flex-col md:flex-row bg-gray-50',
-    leftSection: 'w-full h-full flex flex-col p-4 space-y-4',
-    paymentSection:
-      'p-3 bg-white rounded-lg shadow-md border border-[#e38994fb]',
-    totalAmount: 'font-bold text-lg text-gray-800',
-    totalAmountValue: 'ml-2 text-[#e38994fb]',
-    button:
-      'bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
-    fullWidthButton:
-      'w-full bg-[#e38994fb] text-white px-6 py-2 rounded-lg hover:bg-[#d27883fb] transition-all duration-200 font-medium shadow-sm hover:shadow-md',
-  } as const;
-
   // 메뉴 수량 변경 핸들러
   const handleQuantityChange = (menuId: number, change: number) => {
     setSelectedMenus((prev) => {

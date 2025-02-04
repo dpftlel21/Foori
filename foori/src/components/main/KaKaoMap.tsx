@@ -3,7 +3,7 @@ import { memo, useCallback, useMemo } from 'react';
 import { FiZoomIn, FiZoomOut } from 'react-icons/fi';
 import { Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
-import { useCrawledData } from '../../hooks/query/useCrawledData';
+import { useCrawledData } from '../../hooks/query/useGetCrawledData';
 import { useKakaoMap } from '../../hooks/useKakaoMap';
 import MarkerOverlay from './marker/MarkerOverlay';
 

@@ -1,4 +1,4 @@
-import { useUserInfo } from '../../../hooks/query/useUserInfo';
+import { useUserInfo } from '../../../hooks/query/useGetUserInfo';
 import OauthCon from './oauthCon/OauthCon';
 
 const Profile = () => {
