@@ -25,7 +25,6 @@ interface CrawledData {
   y: string;
 }
 
-// 인터페이스 정의
 interface KaKaoMapProps {
   keyword: string;
   category: string | null;

@@ -39,12 +39,8 @@ const Main = () => {
     setKeyword('');
   };
 
-  // 디버깅용 로그
-  //console.log('Current category:', selectedCategory);
-  //console.log('Current location state:', location.state);
-
   return (
-    <main className="w-full h-[calc(100vh-5rem)] md:h-[calc(100vh-5rem)] flex flex-col  gap-8 items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
+    <main className="w-full h-[calc(100dvh-5rem)] md:h-[calc(100vh-5rem)] flex flex-col gap-12 items-center bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]">
       <SearchPlace onSearch={handleSearch} />
       <FoodFilter onCategorySelect={handleCategorySelect} />
       <KaKaoMap keyword={keyword} category={selectedCategory} />

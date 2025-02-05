@@ -12,7 +12,7 @@ interface ReviewData {
   bookingId: number;
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const FILTER_OPTIONS = [
   { value: 'all', label: '전체' },

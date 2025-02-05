@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import bookingInfo from '../assets/images/bookingInfo.png';
 import consumption from '../assets/images/consumption.png';
@@ -84,6 +85,8 @@ const STYLES = {
     hidden
     md:block
     z-10
+    xl:scale-90
+    2xl:scale-100
   `,
   isometricWrapper: `
     absolute
@@ -95,7 +98,6 @@ const STYLES = {
   `,
   card: `
     absolute
-    bg-white
     rounded-2xl
     shadow-2xl
     overflow-hidden
@@ -154,70 +156,129 @@ const Home = () => {
     navigate('/main');
   };
 
+  // 텍스트 애니메이션 variants
+  const textVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  // 카드 애니메이션 variants
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.2 * i,
+        duration: 0.8,
+        ease: 'easeOut',
+      },
+    }),
+  };
+
   return (
     <div className={STYLES.container}>
       <section className={STYLES.heroSection}>
         <div className={STYLES.contentWrapper}>
           <div className="flex flex-col lg:flex-row items-center justify-between w-full">
             {/* 왼쪽 텍스트 영역 */}
-            <div className={STYLES.textContent}>
-              <h1 className={STYLES.heading}>
+            <motion.div
+              className={STYLES.textContent}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={textVariants}
+            >
+              <motion.h1 className={STYLES.heading} variants={textVariants}>
                 맛있는 발견,
                 <br />
                 <span className={STYLES.brandText}>Foori</span>와 함께
-              </h1>
-              <p className={STYLES.description}>
+              </motion.h1>
+              <motion.p className={STYLES.description} variants={textVariants}>
                 맛집 예약부터 리뷰까지,
                 <br />
                 당신의 미식 여정을 더 특별하게
-              </p>
-              <button className={STYLES.ctaButton} onClick={handleStart}>
+              </motion.p>
+              <motion.button
+                className={STYLES.ctaButton}
+                onClick={handleStart}
+                variants={textVariants}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 지금 시작하기
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* 오른쪽 3D 아이소메트릭 UI 영역 */}
             <div className={STYLES.isometricContainer}>
               <div className={STYLES.isometricWrapper}>
-                {/* 예약 정보 카드 */}
-                <div
-                  className={`${STYLES.card} left-[5%] top-[5%] w-[450px] h-[320px] -rotate-12`}
-                  style={{ zIndex: 1 }}
-                >
-                  <img
-                    src={bookingInfo}
-                    alt="예약 정보"
-                    className={STYLES.cardImage}
-                  />
-                </div>
-
-                {/* 소비 분석 카드 */}
-                <div
-                  className={`${STYLES.card} left-[25%] top-[20%] w-[420px] h-[300px] rotate-6`}
-                  style={{ zIndex: 2 }}
-                >
-                  <img
-                    src={consumption}
-                    alt="소비 분석"
-                    className={STYLES.cardImage}
-                  />
-                </div>
-
-                {/* 리뷰 카드 */}
-                <div
-                  className={`${STYLES.card} left-[10%] top-[40%] w-[440px] h-[310px] -rotate-6`}
-                  style={{ zIndex: 3 }}
-                >
-                  <img src={review} alt="리뷰" className={STYLES.cardImage} />
-                </div>
-
-                {/* 검색 카드 */}
-                <div
-                  className={`${STYLES.card} left-[35%] top-[50%] w-[400px] h-[280px] rotate-12`}
-                  style={{ zIndex: 4 }}
-                >
-                  <img src={search} alt="검색" className={STYLES.cardImage} />
-                </div>
+                {[
+                  {
+                    src: bookingInfo,
+                    alt: '예약 정보',
+                    className:
+                      'left-[5%] top-[5%] w-[400px] h-[300px] -rotate-12',
+                    zIndex: 1,
+                  },
+                  {
+                    src: consumption,
+                    alt: '소비 분석',
+                    className:
+                      'left-[25%] top-[20%] w-[380px] h-[285px] rotate-6',
+                    zIndex: 2,
+                  },
+                  {
+                    src: review,
+                    alt: '리뷰',
+                    className:
+                      'left-[10%] top-[40%] w-[390px] h-[292px] -rotate-6',
+                    zIndex: 3,
+                  },
+                  {
+                    src: search,
+                    alt: '검색',
+                    className:
+                      'left-[35%] top-[50%] w-[360px] h-[270px] rotate-12',
+                    zIndex: 4,
+                  },
+                ].map((card, index) => (
+                  <motion.div
+                    key={card.alt}
+                    className={`${STYLES.card} ${card.className}`}
+                    style={{
+                      zIndex: card.zIndex,
+                      backdropFilter: 'blur(8px)',
+                      WebkitBackdropFilter: 'blur(8px)',
+                    }}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    custom={index}
+                    variants={cardVariants}
+                  >
+                    <img
+                      src={card.src}
+                      alt={card.alt}
+                      className={STYLES.cardImage}
+                      loading="lazy"
+                      draggable="false"
+                    />
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>

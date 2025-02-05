@@ -6,11 +6,10 @@ import { BookingStatusConfig } from './BookingStatusConfig';
 const STYLES = {
   container: `
     w-full
-    max-w-[1200px]
-    mx-auto
+    max-w-[1400px]
     flex
     flex-col
-    gap-6
+    gap-4
     p-4
   `,
   legend: `
@@ -24,8 +23,10 @@ const STYLES = {
   `,
   calendar: `
     h-[350px]
-    md:h-[600px]
+    md:h-[calc(100dvh-34rem)]
+    lg:h-[calc(100dvh-20rem)]
     overflow-y-auto
+    md:overflow-y-hidden
     bg-white
     rounded-lg
     shadow-sm
@@ -86,11 +87,13 @@ const STYLES = {
     isCurrentMonth: boolean,
   ) => `
     aspect-[5/2]
+    md:aspect-[2/3]
+    lg:aspect-[5/2]
     relative
-    p-1.5
+    p-2
     flex
     flex-col
-    gap-0.5
+    gap-1
     ${
       isSelected
         ? 'bg-[#e38994fb] text-white'
@@ -148,7 +151,8 @@ const STYLES = {
     text-xs
     truncate
     hidden
-    md:block
+    md:hidden
+    lg:block
     md:max-w-[80px]
     ${
       status === 3

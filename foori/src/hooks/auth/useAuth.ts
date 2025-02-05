@@ -1,4 +1,3 @@
-import axios, { AxiosError } from 'axios';
 import {
   QueryClient,
   useMutation,
@@ -56,67 +55,6 @@ export const useRegister = () => {
     verifyEmailMutation,
     verifyCodeMutation,
   };
-};
-
-// 소셜 로그인/연동 통합 훅
-export const useOauth = () => {
-  const token = cookieStorage.getToken();
-  console.log('token', token);
-  const navigate = useNavigate();
-  const { showToast } = useToast();
-
-  const oauthMutation = useMutation(
-    async ({
-      code,
-      provider,
-      type,
-    }: {
-      code: string;
-      provider: string;
-      type: 'login' | 'connect';
-    }) => {
-      const baseUrl =
-        type === 'login'
-          ? import.meta.env.VITE_SOCIAL_LOGIN_URL
-          : import.meta.env.VITE_SOCIAL_CONNECT_URL;
-
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
-
-      // 연동시에만 토큰 추가
-      if (type === 'connect') {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(
-        `${baseUrl}/${provider}/callback?code=${code}`,
-        {
-          method: 'GET',
-          headers,
-          credentials: 'include',
-        },
-      );
-      return response.json();
-    },
-    {
-      onSuccess: (data, variables) => {
-        if (variables.type === 'login' && data.accessToken) {
-          cookieStorage.setToken(data.accessToken);
-          navigate('/');
-        } else if (variables.type === 'connect') {
-          showToast('계정 연동이 완료되었습니다.', 'success');
-          navigate('/mypage');
-        }
-      },
-      onError: (error, variables) => {
-        const action = variables.type === 'login' ? '로그인' : '계정 연동';
-        showToast(`${action}에 실패했습니다.`, 'error');
-      },
-    },
-  );
-
-  return { oauthMutation };
 };
 
 // 아이디 찾기
@@ -186,10 +124,9 @@ export const useFindPassword = (
   });
 };
 
-// 리프레시 토큰 관련 타입
 interface TokenResponse {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 }
 
 // 토큰 리프레시 훅
@@ -197,21 +134,19 @@ export const useTokenRefresh = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const refreshTokenMutation = useMutation<TokenResponse, AxiosError>(
+  const refreshTokenMutation = useMutation<TokenResponse, Error>(
     authApi.refreshToken,
     {
       onSuccess: (data) => {
         if (data.accessToken) {
           cookieStorage.setToken(data.accessToken);
           if (data.refreshToken) {
-            //console.log('refreshToken', data.refreshToken);
             cookieStorage.setRefreshToken(data.refreshToken);
           }
         }
       },
       onError: (error) => {
-        if (error.response?.status === 401) {
-          // 리프레시 토큰도 만료된 경우
+        if (error.message === '401') {
           cookieStorage.clearTokens();
           navigate('/login');
           showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
@@ -224,30 +159,17 @@ export const useTokenRefresh = () => {
   return refreshTokenMutation;
 };
 
-// 자동 토큰 갱신을 위한 인터셉터 설정
+// 인터셉터 설정
 export const setupAuthInterceptor = (
   queryClient: QueryClient,
   refreshTokenFn: () => Promise<TokenResponse>,
 ) => {
-  axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401 && !error.config._retry) {
-        error.config._retry = true;
-        try {
-          const result = await refreshTokenFn();
-          if (result.accessToken) {
-            cookieStorage.setToken(result.accessToken);
-            error.config.headers[
-              'Authorization'
-            ] = `Bearer ${result.accessToken}`;
-            return axios(error.config);
-          }
-        } catch (refreshError) {
-          return Promise.reject(refreshError);
-        }
-      }
-      return Promise.reject(error);
+  // 401 에러 발생 시 토큰 갱신 및 쿼리 재시도
+  queryClient.setDefaultOptions({
+    queries: {
+      retry: (failureCount, error: any) =>
+        error?.status === 401 && failureCount === 1,
+      retryDelay: (failureCount) => Math.min(1000 * 2 ** failureCount, 30000),
     },
-  );
+  });
 };

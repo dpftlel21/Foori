@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useOauth } from '../../../hooks/auth/useAuth';
+import {
+  useGoogleConnect,
+  useKakaoConnect,
+  useNaverConnect,
+  useOAuthLogin,
+} from '../../../hooks/auth/useOauth';
 
 const OauthCallback = () => {
-  const { oauthMutation } = useOauth();
+  const { oauthLoginMutation } = useOAuthLogin();
+  const kakaoConnectMutation = useKakaoConnect().kakaoConnectMutation;
+  const naverConnectMutation = useNaverConnect().naverConnectMutation;
+  const googleConnectMutation = useGoogleConnect().googleConnectMutation;
   const [isLoading, setIsLoading] = useState(true);
 
   // URL 파싱을 useMemo로 최적화
@@ -16,31 +24,47 @@ const OauthCallback = () => {
 
   // 메인 로직을 처리하는 useEffect
   useEffect(() => {
-    const storedType = sessionStorage.getItem('oauth_action_type');
-    if (!storedType || !code || !provider) {
+    const actionType = sessionStorage.getItem('oauth_action_type');
+    if (!actionType || !code || !provider) {
       setIsLoading(false);
       return;
     }
 
-    const type = storedType === 'connect' ? 'connect' : 'login';
+    const processOAuth = async () => {
+      try {
+        if (actionType === 'login') {
+          await oauthLoginMutation.mutateAsync({ code, provider });
+        } else if (actionType === 'connect') {
+          switch (provider) {
+            case 'kakao':
+              await kakaoConnectMutation.mutateAsync(code);
+              break;
+            case 'naver':
+              await naverConnectMutation.mutateAsync(code);
+              break;
+            case 'google':
+              await googleConnectMutation.mutateAsync(code);
+              break;
+          }
+        }
+      } finally {
+        setIsLoading(false);
+        sessionStorage.removeItem('oauth_action_type');
+      }
+    };
 
-    oauthMutation.mutate(
-      { code, provider, type },
-      {
-        onSettled: () => setIsLoading(false),
-      },
-    );
+    processOAuth();
   }, [code, provider]);
 
   return (
     <div className="flex justify-center items-center h-screen">
       {isLoading ? (
         <div className="text-center">
-          <div className="mb-4">로그인 처리 중입니다...</div>
+          <div className="mb-4">처리 중입니다...</div>
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
         </div>
       ) : (
-        <div>로그인 콜백 처리 중료</div>
+        <div>처리가 완료되었습니다</div>
       )}
     </div>
   );
