@@ -5,10 +5,6 @@ import { useToast } from '../../contexts/ToastContext';
 import ImageUpload from './ImageUpload';
 import StarRating from './StarRating';
 
-interface ReviewFormProps {
-  bookingId: number;
-}
-
 const STYLES = {
   pageContainer: `
     w-full
@@ -113,7 +109,7 @@ const STYLES = {
   `,
 } as const;
 
-const ReviewForm = ({ bookingId }: ReviewFormProps) => {
+const ReviewForm = ({ bookingId }: { bookingId: number }) => {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -123,6 +119,7 @@ const ReviewForm = ({ bookingId }: ReviewFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (rating < 1 || rating > 5) {
       showToast('별점은 1점에서 5점 사이여야 합니다.', 'error');
       return;
@@ -134,7 +131,9 @@ const ReviewForm = ({ bookingId }: ReviewFormProps) => {
 
     try {
       setIsLoading(true);
-      await createReview({ rating, content, bookingId, images });
+      const reviewData = { rating, content, bookingId, images };
+      console.log('Review data:', reviewData); // 디버깅용
+      await createReview(reviewData);
       showToast('리뷰가 성공적으로 등록되었습니다.', 'success');
       navigate('/mypage');
     } catch (error) {

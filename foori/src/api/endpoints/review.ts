@@ -22,7 +22,6 @@ export const createReview = async (
   const token = cookieStorage.getToken();
   const formData = new FormData();
 
-  // 숫자 타입임을 명시하는 추가 필드
   formData.append('rating', String(reviewData.rating));
   formData.append('bookingId', String(reviewData.bookingId));
   formData.append('content', reviewData.content);
