@@ -196,6 +196,8 @@ const ReservationModal = ({
       })),
     };
 
+    console.log(bookingData);
+
     try {
       const response = await handleReservation(bookingData);
       if (response.status === 1) {

@@ -94,25 +94,18 @@ const STYLES = {
     flex
     flex-col
     gap-1
-    ${
-      isSelected
-        ? 'bg-[#e38994fb] text-white'
-        : isToday
-        ? 'bg-[#e3899420]'
-        : 'bg-transparent'
-    }
+    ${isSelected ? 'bg-[#e3899420]' : isToday ? 'bg-gray-50' : 'bg-transparent'}
     ${
       !hasBooking || !isCurrentMonth
         ? 'text-gray-300 cursor-not-allowed'
         : dayIndex === 0
-        ? 'text-red-500 hover:bg-gray-50'
+        ? 'text-red-500'
         : dayIndex === 6
-        ? 'text-blue-500 hover:bg-gray-50'
-        : 'hover:bg-gray-50'
+        ? 'text-blue-500'
+        : 'text-gray-600'
     }
     rounded-lg
     transition-colors
-    ${hasBooking && isCurrentMonth ? 'cursor-pointer' : ''}
   `,
   dayNumber: `
     text-sm
@@ -129,31 +122,29 @@ const STYLES = {
   `,
   bookingItem: `
     flex
-    flex-col
     items-center
-    md:flex-row
-    md:items-center
-    md:gap-1
+    gap-2
+    p-1.5
+    rounded-md
+    transition-all
+    hover:bg-white/50
+    cursor-pointer
+    group
   `,
   bookingDot: (status: number) => `
     w-2
     h-2
     rounded-full
-    ${
-      status === 3
-        ? 'bg-green-400'
-        : status === 1
-        ? 'bg-yellow-400'
-        : 'bg-red-400'
+    ${BookingStatusConfig[status as keyof typeof BookingStatusConfig].color}
+    group-hover:ring-2
+    group-hover:ring-offset-1
+    group-hover:ring-${
+      BookingStatusConfig[status as keyof typeof BookingStatusConfig].color
     }
   `,
   restaurantName: (status: number) => `
     text-xs
     truncate
-    hidden
-    md:hidden
-    lg:block
-    md:max-w-[80px]
     ${
       status === 3
         ? 'text-green-400'
@@ -161,8 +152,11 @@ const STYLES = {
         ? 'text-yellow-400'
         : 'text-red-400'
     }
+    group-hover:font-medium
   `,
 } as const;
+
+const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
 const BookingCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -173,25 +167,22 @@ const BookingCalendar = () => {
 
   const { bookings } = useBookings();
 
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-
+  // 해당 월의 모든 날짜 가져오기
   const getDaysInMonth = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-
     const days = [];
-    const startPadding = firstDay.getDay();
 
     // 이전 달 날짜
-    for (let i = 0; i < startPadding; i++) {
-      const date = new Date(year, month, -startPadding + i + 1);
+    const firstDay = new Date(year, month, 1).getDay();
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const date = new Date(year, month, -i);
       days.push({ date, isCurrentMonth: false });
     }
 
-    // 이번 달 날짜
-    for (let i = 1; i <= lastDay.getDate(); i++) {
+    // 현재 달 날짜
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    for (let i = 1; i <= lastDay; i++) {
       const date = new Date(year, month, i);
       days.push({ date, isCurrentMonth: true });
     }
@@ -282,7 +273,7 @@ const BookingCalendar = () => {
             const dayBookings = getBookingsForDay(date);
 
             return (
-              <button
+              <div
                 key={i}
                 className={STYLES.day(
                   isSameDay(selectedDate, date),
@@ -291,23 +282,22 @@ const BookingCalendar = () => {
                   dayIndex,
                   isCurrentMonth,
                 )}
-                onClick={() => {
-                  if (dayBookings.length > 0) {
-                    setSelectedDate(date);
-                    setSelectedBookingId(dayBookings[0].id);
-                  }
-                }}
-                disabled={!isCurrentMonth || dayBookings.length === 0}
               >
                 <span className={STYLES.dayNumber}>{date.getDate()}</span>
-                {dayBookings.length > 0 && (
+                {dayBookings.length > 0 && isCurrentMonth && (
                   <div className={STYLES.bookingInfo}>
                     {dayBookings.map((booking) => (
-                      <div key={booking.id} className={STYLES.bookingItem}>
-                        <div
-                          className={STYLES.bookingDot(booking.status)}
-                          title={booking.restaurant.name}
-                        />
+                      <div
+                        key={booking.id}
+                        className={STYLES.bookingItem}
+                        onClick={() => {
+                          setSelectedDate(date);
+                          setSelectedBookingId(booking.id);
+                        }}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <div className={STYLES.bookingDot(booking.status)} />
                         <span className={STYLES.restaurantName(booking.status)}>
                           {booking.restaurant.name}
                         </span>
@@ -315,7 +305,7 @@ const BookingCalendar = () => {
                     ))}
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
