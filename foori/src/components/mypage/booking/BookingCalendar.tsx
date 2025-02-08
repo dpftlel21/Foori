@@ -25,8 +25,7 @@ const STYLES = {
     h-[350px]
     md:h-[calc(100dvh-34rem)]
     lg:h-[calc(100dvh-20rem)]
-    overflow-y-auto
-    md:overflow-y-hidden
+    overflow-y-scroll
     bg-white
     rounded-lg
     shadow-sm
@@ -145,6 +144,9 @@ const STYLES = {
   restaurantName: (status: number) => `
     text-xs
     truncate
+    hidden
+    md:hidden
+    lg:block
     ${
       status === 3
         ? 'text-green-400'
