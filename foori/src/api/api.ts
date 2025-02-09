@@ -33,6 +33,9 @@ export const postData = async <T>(url: string, data: T): Promise<any> => {
       headers['Authorization'] = `Bearer ${token}`;
     }
     const fullUrl = `${import.meta.env.VITE_BACK_URL}/${url}`;
+
+    console.log('POST 호출 전 데이터', data);
+
     const response = await fetch(fullUrl, {
       method: 'POST',
       headers,
