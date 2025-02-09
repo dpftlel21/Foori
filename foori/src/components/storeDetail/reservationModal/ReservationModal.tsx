@@ -166,30 +166,32 @@ const ReservationModal = ({
 
     if (!isValid) return;
 
-    // 한국 시간으로 예약 시간 생성
     if (!selectedDate || !selectedTime) return;
 
-    // 선택된 날짜와 시간을 결합하여 새로운 Date 객체 생성
+    // 선택된 날짜와 시간을 결합하여 문자열로 변환
     const bookingDateTime = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate(),
       selectedTime.getHours(),
-      0, // 분
-      0, // 초
-      0, // 밀리초
+      0,
+      0,
     );
 
     // UTC+9 오프셋 적용
-    const koreanOffset = 9 * 60; // 9시간을 분으로 변환
-    const userOffset = bookingDateTime.getTimezoneOffset(); // 현재 시스템의 오프셋
-    const offsetDiff = koreanOffset + userOffset; // 보정해야 할 시간 차이
+    const koreanOffset = 9 * 60;
+    const userOffset = bookingDateTime.getTimezoneOffset();
+    const offsetDiff = koreanOffset + userOffset;
     bookingDateTime.setMinutes(bookingDateTime.getMinutes() + offsetDiff);
 
-    console.log('bookingDateTime', bookingDateTime);
+    // ISO 문자열로 변환 (YYYY-MM-DD HH:mm:ss 형식)
+    const bookingDateTimeString = bookingDateTime
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
 
     const bookingData = {
-      bookingDateTime,
+      bookingDateTime: bookingDateTimeString,
       numOfPeople: selectedMembers,
       restaurant: { restaurantId: placeInfo.id },
       bookingMenus: Object.entries(selectedMenus).map(([menuId, quantity]) => ({
@@ -197,11 +199,9 @@ const ReservationModal = ({
         quantity,
       })),
     };
-    console.log('bookingData 1', bookingData);
 
     try {
       const response = await handleReservation(bookingData);
-      console.log('bookingData 2', response);
       if (response.status === 1) {
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',

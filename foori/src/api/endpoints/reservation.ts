@@ -1,7 +1,7 @@
 import { postData } from '../api';
 
 interface BookingRequest {
-  bookingDateTime: Date;
+  bookingDateTime: string;
   numOfPeople: number;
   restaurant: {
     restaurantId: number;
