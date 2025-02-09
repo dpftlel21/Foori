@@ -186,6 +186,8 @@ const ReservationModal = ({
     const offsetDiff = koreanOffset + userOffset; // 보정해야 할 시간 차이
     bookingDateTime.setMinutes(bookingDateTime.getMinutes() + offsetDiff);
 
+    console.log('bookingDateTime', bookingDateTime);
+
     const bookingData = {
       bookingDateTime,
       numOfPeople: selectedMembers,
@@ -195,10 +197,11 @@ const ReservationModal = ({
         quantity,
       })),
     };
+    console.log('bookingData 1', bookingData);
 
     try {
       const response = await handleReservation(bookingData);
-      console.log('bookingData', response);
+      console.log('bookingData 2', response);
       if (response.status === 1) {
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
