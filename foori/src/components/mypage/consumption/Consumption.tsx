@@ -19,8 +19,6 @@ type TimeRange = 'weekly' | 'monthly' | 'yearly';
 const STYLES = {
   container: `
     w-full
-    max-w-[1200px]
-    mx-auto
     p-3
     md:p-6
   `,

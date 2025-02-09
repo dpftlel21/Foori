@@ -6,7 +6,7 @@ import { BookingStatusConfig } from './BookingStatusConfig';
 const STYLES = {
   container: `
     w-full
-    max-w-[1400px]
+    h-full
     flex
     flex-col
     gap-4
@@ -22,9 +22,9 @@ const STYLES = {
     shadow-sm
   `,
   calendar: `
-    h-[350px]
+    h-[calc(100dvh-40rem)]
     md:h-[calc(100dvh-34rem)]
-    lg:h-[calc(100dvh-20rem)]
+    lg:h-[calc(100dvh-25rem)]
     overflow-y-scroll
     bg-white
     rounded-lg
@@ -169,6 +169,8 @@ const BookingCalendar = () => {
 
   const { bookings } = useBookings();
 
+  console.log('bookings', bookings);
+
   // 해당 월의 모든 날짜 가져오기
   const getDaysInMonth = () => {
     const year = currentDate.getFullYear();
@@ -273,6 +275,8 @@ const BookingCalendar = () => {
           {getDaysInMonth().map(({ date, isCurrentMonth }, i) => {
             const dayIndex = date.getDay();
             const dayBookings = getBookingsForDay(date);
+
+            console.log('dayBookings', dayBookings);
 
             return (
               <div

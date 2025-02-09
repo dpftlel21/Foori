@@ -8,11 +8,10 @@ import search from '../assets/images/search.png';
 const STYLES = {
   container: `
     w-full
-    min-h-[768px]
+    min-h-[calc(100dvh-5rem)]
     flex
     justify-center
     items-center
-    md:h-[calc(100dvh-80px)]
     bg-[#FFE4D6]
   `,
   heroSection: `

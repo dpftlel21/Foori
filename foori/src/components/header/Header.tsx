@@ -5,8 +5,7 @@ import Navigation from './Navigation';
 const STYLES = {
   header: `
     w-full
-    h-[70px]
-    lg:h-[80px]
+    h-[5rem]
     transition-all duration-300
     fixed bottom-0 md:relative
     bg-gradient-to-r from-[#FFD4BC] to-[#FFBEA3]
