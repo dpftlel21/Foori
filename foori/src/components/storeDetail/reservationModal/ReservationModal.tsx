@@ -196,10 +196,9 @@ const ReservationModal = ({
       })),
     };
 
-    console.log(bookingData);
-
     try {
       const response = await handleReservation(bookingData);
+      console.log('bookingData', response);
       if (response.status === 1) {
         const isConfirmed = window.confirm(
           '예약 마감 하루 전까지 미결제시 자동 취소됩니다. 지금 결제하시겠습니까?',
