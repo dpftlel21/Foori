@@ -40,6 +40,8 @@ export const postData = async <T>(url: string, data: T): Promise<any> => {
       body: JSON.stringify(data),
     });
 
+    console.log('POST 호출 후 응답', response);
+
     if (response.status === 201) {
       const text = await response.text();
       return text ? JSON.parse(text) : response;
