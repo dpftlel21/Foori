@@ -190,6 +190,8 @@ const ReservationModal = ({
       .slice(0, 19)
       .replace('T', ' ');
 
+    console.log('bookingDateTimeString', bookingDateTimeString);
+
     const bookingData = {
       bookingDateTime: bookingDateTimeString,
       numOfPeople: selectedMembers,
@@ -199,6 +201,8 @@ const ReservationModal = ({
         quantity,
       })),
     };
+
+    console.log('요청 전 데이터', bookingData);
 
     try {
       const response = await handleReservation(bookingData);

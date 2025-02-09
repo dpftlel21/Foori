@@ -108,10 +108,11 @@ const ReservationInfo = ({
         period = '오후';
       }
 
+      // 표시용 시간은 12시간제로
       const displayHour = hour > 12 ? hour - 12 : hour;
       const isBreakTime = hour >= 15 && hour < 17;
 
-      // 현재 날짜로 Date 객체 생성
+      // 실제 저장되는 시간은 24시간제로
       const timeDate = selectedDate ? new Date(selectedDate) : new Date();
       timeDate.setHours(hour, 0, 0, 0);
 
