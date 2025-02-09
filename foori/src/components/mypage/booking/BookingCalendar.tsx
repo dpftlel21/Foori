@@ -205,22 +205,28 @@ const BookingCalendar = () => {
   const getBookingsForDay = (date: Date) => {
     return (
       bookings?.filter((booking) => {
-        const bookingDate = new Date(booking.bookingDate);
+        // booking.bookingDate를 KST로 변환
+        const bookingDate = new Date(booking.bookingDate + ' UTC');
+        const koreanDate = new Date(bookingDate.getTime());
+
         return (
-          bookingDate.getDate() === date.getDate() &&
-          bookingDate.getMonth() === date.getMonth() &&
-          bookingDate.getFullYear() === date.getFullYear()
+          koreanDate.getDate() === date.getDate() &&
+          koreanDate.getMonth() === date.getMonth() &&
+          koreanDate.getFullYear() === date.getFullYear()
         );
       }) || []
     );
   };
 
+  // 오늘 날짜 비교도 같은 방식으로 수정
   const isToday = (date: Date) => {
     const today = new Date();
+    const koreanToday = new Date(today.getTime());
+
     return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
+      date.getDate() === koreanToday.getDate() &&
+      date.getMonth() === koreanToday.getMonth() &&
+      date.getFullYear() === koreanToday.getFullYear()
     );
   };
 
