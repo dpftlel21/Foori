@@ -100,13 +100,8 @@ const ReservationInfo = ({
 
     for (let hour = start; hour < end; hour++) {
       let period: TimePeriod;
-      let actualHour = hour; // 실제 24시간제 시간
 
-      // 오후 시간대는 12를 더해서 24시간제로 변환
-      if (hour >= 12 && hour <= 24) {
-        actualHour = hour + 12;
-      }
-
+      // period 결정
       if (hour < 12) {
         period = '오전';
       } else if (hour >= 12 && hour <= 14) {
@@ -119,9 +114,9 @@ const ReservationInfo = ({
       const displayHour = hour > 12 ? hour - 12 : hour;
       const isBreakTime = hour >= 15 && hour < 17;
 
-      // 실제 저장되는 시간은 24시간제로
       const timeDate = selectedDate ? new Date(selectedDate) : new Date();
-      timeDate.setHours(actualHour, 0, 0, 0);
+      // 24시간제 시간을 그대로 설정 (변환 없이)
+      timeDate.setHours(hour, 0, 0, 0);
 
       slots.push({
         displayTime: `${displayHour}:00`,

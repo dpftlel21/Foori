@@ -276,8 +276,6 @@ const BookingCalendar = () => {
             const dayIndex = date.getDay();
             const dayBookings = getBookingsForDay(date);
 
-            console.log('dayBookings', dayBookings);
-
             return (
               <div
                 key={i}

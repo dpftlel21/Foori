@@ -170,25 +170,23 @@ const ReservationModal = ({
 
     // 선택된 날짜와 시간을 결합하여 문자열로 변환
     const bookingDateTime = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      selectedDate.getDate(),
+      selectedTime.getFullYear(),
+      selectedTime.getMonth(),
+      selectedTime.getDate(),
       selectedTime.getHours(),
       0,
       0,
     );
 
-    // UTC+9 오프셋 적용
-    const koreanOffset = 9 * 60;
-    const userOffset = bookingDateTime.getTimezoneOffset();
-    const offsetDiff = koreanOffset + userOffset;
-    bookingDateTime.setMinutes(bookingDateTime.getMinutes() + offsetDiff);
+    console.log('bookingDateTime', bookingDateTime);
 
-    // ISO 문자열로 변환 (YYYY-MM-DD HH:mm:ss 형식)
-    const bookingDateTimeString = bookingDateTime
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
+    // ISO 문자열 대신 직접 포맷팅
+    const bookingDateTimeString = `${bookingDateTime.getFullYear()}-${String(
+      bookingDateTime.getMonth() + 1,
+    ).padStart(2, '0')}-${String(bookingDateTime.getDate()).padStart(
+      2,
+      '0',
+    )} ${String(bookingDateTime.getHours()).padStart(2, '0')}:00:00`;
 
     console.log('bookingDateTimeString', bookingDateTimeString);
 
