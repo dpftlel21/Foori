@@ -22,9 +22,7 @@ const STYLES = {
     shadow-sm
   `,
   calendar: `
-    h-[calc(100dvh-40rem)]
-    md:h-[calc(100dvh-34rem)]
-    lg:h-[calc(100dvh-25rem)]
+    h-[calc(100dvh-25rem)]
     overflow-y-scroll
     bg-white
     rounded-lg
@@ -134,11 +132,17 @@ const STYLES = {
     w-2
     h-2
     rounded-full
-    ${BookingStatusConfig[status as keyof typeof BookingStatusConfig].color}
+    ${
+      status === 1
+        ? 'bg-yellow-500'
+        : status === 3
+        ? 'bg-green-500'
+        : 'bg-red-500'
+    }
     group-hover:ring-2
     group-hover:ring-offset-1
     group-hover:ring-${
-      BookingStatusConfig[status as keyof typeof BookingStatusConfig].color
+      status === 1 ? 'yellow-500' : status === 3 ? 'green-500' : 'red-500'
     }
   `,
   restaurantName: (status: number) => `
@@ -168,7 +172,6 @@ const BookingCalendar = () => {
   );
 
   const { bookings } = useBookings();
-
   console.log('bookings', bookings);
 
   // 해당 월의 모든 날짜 가져오기
@@ -205,28 +208,22 @@ const BookingCalendar = () => {
   const getBookingsForDay = (date: Date) => {
     return (
       bookings?.filter((booking) => {
-        // booking.bookingDate를 KST로 변환
-        const bookingDate = new Date(booking.bookingDate + ' UTC');
-        const koreanDate = new Date(bookingDate.getTime());
-
+        const bookingDate = new Date(booking.bookingDate);
         return (
-          koreanDate.getDate() === date.getDate() &&
-          koreanDate.getMonth() === date.getMonth() &&
-          koreanDate.getFullYear() === date.getFullYear()
+          bookingDate.getDate() === date.getDate() &&
+          bookingDate.getMonth() === date.getMonth() &&
+          bookingDate.getFullYear() === date.getFullYear()
         );
       }) || []
     );
   };
 
-  // 오늘 날짜 비교도 같은 방식으로 수정
   const isToday = (date: Date) => {
     const today = new Date();
-    const koreanToday = new Date(today.getTime());
-
     return (
-      date.getDate() === koreanToday.getDate() &&
-      date.getMonth() === koreanToday.getMonth() &&
-      date.getFullYear() === koreanToday.getFullYear()
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
     );
   };
 

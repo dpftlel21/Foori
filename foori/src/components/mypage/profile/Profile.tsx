@@ -4,13 +4,20 @@ import OauthCon from './oauthCon/OauthCon';
 const STYLES = {
   wrapper: 'p-4 md:p-6 border-solid border-b-2 border-[#EE6677]',
   container: 'flex flex-col md:flex-row justify-between items-center gap-4',
-  userSection:
-    'flex items-center gap-4 md:gap-6 border-b-2 border-solid border-[#f4f2f2eb]',
-  imageWrapper: 'w-12 h-12 md:w-14 md:h-14',
+  userSection: 'flex items-center gap-4 w-full',
+  imageWrapper: `
+    w-12 h-12 md:w-14 md:h-14
+    shrink-0
+    rounded-full
+    border-2 border-[#EE6677]/20
+    shadow-md
+    overflow-hidden
+  `,
   userImage: 'w-full h-full rounded-full object-cover',
-  userName: 'text-lg font-medium',
-  userEmail: 'text-sm text-gray-600',
-  oauthSection: 'flex justify-center md:justify-end',
+  userInfo: 'flex flex-row items-center justify-between w-full',
+  nameSection: 'flex flex-col justify-center',
+  userName: 'text-lg font-medium leading-tight',
+  oauthSection: 'flex items-center gap-1.5 scale-90 origin-right',
 } as const;
 
 const Profile = () => {
@@ -28,10 +35,14 @@ const Profile = () => {
               className={STYLES.userImage}
             />
           </div>
-          <h1 className={STYLES.userName}>{userInfo?.name}</h1>
-        </div>
-        <div className={STYLES.oauthSection}>
-          <OauthCon actionType="connect" />
+          <div className={STYLES.userInfo}>
+            <div className={STYLES.nameSection}>
+              <h1 className={STYLES.userName}>{userInfo?.name}</h1>
+            </div>
+            <div className={STYLES.oauthSection}>
+              <OauthCon actionType="connect" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

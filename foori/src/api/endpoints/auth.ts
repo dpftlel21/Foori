@@ -22,11 +22,8 @@ export const getUserProfile = () => getData('api/users/user-profile');
 // 토큰 관련
 export const refreshToken = async () => {
   const accessToken = cookieStorage.getToken();
-  const refreshToken = cookieStorage.getRefreshToken();
-  if (!refreshToken) throw new Error('No refresh token found');
 
   return postData('api/auth/token/refresh', {
-    refreshToken,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

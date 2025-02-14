@@ -36,8 +36,10 @@ const STYLES = {
     md:p-6
   `,
   content: `
-    max-w-7xl
-    mx-auto
+    max-w-[calc(100dvw-2rem)]
+    h-[calc(100dvh-20rem)]
+    md:h-[calc(100dvh-22rem)]
+    lg:h-[calc(100dvh-20rem)]
     bg-white
     rounded-xl
     shadow-xl
@@ -47,9 +49,9 @@ const STYLES = {
   header: `
     flex
     flex-col
-    md:flex-row
-    md:justify-between
-    md:items-center
+    lg:flex-row
+    lg:justify-between
+    lg:items-center
     gap-4
     mb-8
   `,
@@ -91,7 +93,8 @@ const STYLES = {
     flex
     justify-center
     gap-2
-    mt-8
+    mt-12
+    min-h-[4.5dvh]
   `,
   pageButton: `
     px-3
@@ -104,10 +107,10 @@ const STYLES = {
     transition-colors
   `,
   activePageButton: `
-    bg-blue-500
+    bg-[#EE6677]
     text-white
-    border-blue-500
-    hover:bg-blue-600
+    border-[#EE6677]
+    hover:bg-[#eb949e]
   `,
 } as const;
 
@@ -233,21 +236,20 @@ const Review = () => {
           emptyMessage="리뷰 내역이 없습니다."
         />
 
-        {totalPages > 1 && (
-          <div className={STYLES.pagination}>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                className={`${STYLES.pageButton} ${
-                  currentPage === i + 1 ? STYLES.activePageButton : ''
-                }`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* 페이지네이션 */}
+        <div className={STYLES.pagination}>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`${STYLES.pageButton} ${
+                currentPage === i + 1 ? STYLES.activePageButton : ''
+              }`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
