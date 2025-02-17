@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useBookings } from '../../../hooks/query/useGetBooking';
 
 // 시간대 타입 정의
 type TimePeriod = '오전' | '점심' | '오후';
@@ -9,6 +10,7 @@ interface TimeSlot {
   actualTime: Date; // 실제 Date 객체
   period: TimePeriod;
   isBreakTime: boolean;
+  isBooked: boolean;
 }
 
 // Props 인터페이스
@@ -33,43 +35,47 @@ const STYLES = {
   timeButtonContainer: 'grid grid-cols-4 gap-1.5 mb-6',
   memberButtonContainer: 'flex flex-wrap gap-2',
   periodButton: (isSelected: boolean) => `
-      py-2
-      text-center
-      transition-colors
-      border-b-2
-      ${
-        isSelected
-          ? 'border-[#e38994fb] text-[#e38994fb] font-bold'
-          : 'border-transparent text-gray-600'
-      }
-      hover:text-[#e38994fb]
-    `,
-  timeButton: (isBreakTime: boolean, isSelected: boolean) => `
-      py-1.5
-      rounded-lg
-      text-center
-      text-sm
-      transition-colors
-      ${
-        isBreakTime
-          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-          : isSelected
-          ? 'bg-[#e38994fb] text-white'
-          : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
-      }
-    `,
+    py-2
+    text-center
+    transition-colors
+    border-b-2
+    ${
+      isSelected
+        ? 'border-[#e38994fb] text-[#e38994fb] font-bold'
+        : 'border-transparent text-gray-600'
+    }
+    hover:text-[#e38994fb]
+  `,
+  timeButton: (
+    isBreakTime: boolean,
+    isBooked: boolean,
+    isSelected: boolean,
+  ) => `
+    py-1.5
+    rounded-lg
+    text-center
+    text-sm
+    transition-colors
+    ${
+      isBreakTime || isBooked
+        ? 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
+        : isSelected
+          ? 'bg-[#e38994fb] text-white cursor-pointer'
+          : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white cursor-pointer'
+    }
+  `,
   memberButton: (isSelected: boolean) => `
-      px-3
-      py-1.5
-      text-sm
-      rounded-full
-      transition-colors
-      ${
-        isSelected
-          ? 'bg-[#e38994fb] text-white'
-          : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
-      }
-    `,
+    px-3
+    py-1.5
+    text-sm
+    rounded-full
+    transition-colors
+    ${
+      isSelected
+        ? 'bg-[#e38994fb] text-white'
+        : 'bg-gray-100 text-gray-600 hover:bg-[#fcb69f] hover:text-white'
+    }
+  `,
 } as const;
 
 const ReservationInfo = ({
@@ -82,6 +88,30 @@ const ReservationInfo = ({
   setSelectedMembers,
 }: ReservationDetailProps) => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('오전');
+  const { bookings } = useBookings();
+  console.log('bookings', bookings);
+
+  // 선택된 날짜의 예약된 시간들을 확인
+  const getBookedTimes = useMemo(() => {
+    if (!selectedDate || !bookings) return new Set();
+
+    return new Set(
+      bookings
+        .filter((booking) => {
+          const bookingDate = new Date(booking.bookingDate);
+          console.log('bookingDate', bookingDate);
+          return (
+            bookingDate.getFullYear() === selectedDate.getFullYear() &&
+            bookingDate.getMonth() === selectedDate.getMonth() &&
+            bookingDate.getDate() === selectedDate.getDate()
+          );
+        })
+        .map((booking) => {
+          // bookingTime은 "HH:MM:SS" 형식
+          return parseInt(booking.bookingTime.split(':')[0]);
+        }),
+    );
+  }, [selectedDate, bookings]);
 
   // 구성원 옵션
   const MemberOptions = [
@@ -97,6 +127,7 @@ const ReservationInfo = ({
     const slots: TimeSlot[] = [];
     const start = parseInt(openTime.split(':')[0]);
     const end = parseInt(closeTime.split(':')[0]);
+    const bookedTimes = getBookedTimes;
 
     for (let hour = start; hour < end; hour++) {
       let period: TimePeriod;
@@ -113,9 +144,9 @@ const ReservationInfo = ({
       // 표시용 시간은 12시간제로
       const displayHour = hour > 12 ? hour - 12 : hour;
       const isBreakTime = hour >= 15 && hour < 17;
+      const isBooked = bookedTimes.has(hour);
 
       const timeDate = selectedDate ? new Date(selectedDate) : new Date();
-      // 24시간제 시간을 그대로 설정 (변환 없이)
       timeDate.setHours(hour, 0, 0, 0);
 
       slots.push({
@@ -123,6 +154,7 @@ const ReservationInfo = ({
         actualTime: timeDate,
         period,
         isBreakTime,
+        isBooked,
       });
     }
     return slots;
@@ -171,10 +203,22 @@ const ReservationInfo = ({
             key={index}
             className={STYLES.timeButton(
               slot.isBreakTime,
+              slot.isBooked,
               isSameTime(selectedTime, slot.actualTime),
             )}
-            disabled={slot.isBreakTime}
-            onClick={() => setSelectedTime(slot.actualTime)}
+            disabled={slot.isBreakTime || slot.isBooked}
+            onClick={() => {
+              if (!slot.isBreakTime && !slot.isBooked) {
+                setSelectedTime(slot.actualTime);
+              }
+            }}
+            title={
+              slot.isBooked
+                ? '이미 예약된 시간입니다'
+                : slot.isBreakTime
+                  ? '브레이크 타임입니다'
+                  : undefined
+            }
           >
             {slot.displayTime}
           </button>

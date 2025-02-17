@@ -31,6 +31,7 @@ const STYLES = {
   container: `
     w-full
     h-full
+    min-h-[620px]
     bg-gray-50
     p-4
     md:p-6

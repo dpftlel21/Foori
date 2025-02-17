@@ -23,7 +23,7 @@ const SearchPlace = memo(({ onSearch }: SearchPlaceProps) => {
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="w-full mt-[3rem] md:max-w-[60%] px-4 md:px-0 flex gap-2"
+      className="w-full mt-[3rem] md:max-w-[65%] px-4 md:px-0 flex gap-2"
       onSubmit={handleSubmit}
       role="search"
       aria-label="장소 검색"

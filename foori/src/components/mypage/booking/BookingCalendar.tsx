@@ -7,6 +7,7 @@ const STYLES = {
   container: `
     w-full
     h-full
+    min-h-[620px]
     flex
     flex-col
     gap-4
@@ -66,8 +67,8 @@ const STYLES = {
       dayIndex === 0
         ? 'text-red-500'
         : dayIndex === 6
-        ? 'text-blue-500'
-        : 'text-gray-600'
+          ? 'text-blue-500'
+          : 'text-gray-600'
     }
     py-2
   `,
@@ -96,10 +97,10 @@ const STYLES = {
       !hasBooking || !isCurrentMonth
         ? 'text-gray-300 cursor-not-allowed'
         : dayIndex === 0
-        ? 'text-red-500'
-        : dayIndex === 6
-        ? 'text-blue-500'
-        : 'text-gray-600'
+          ? 'text-red-500'
+          : dayIndex === 6
+            ? 'text-blue-500'
+            : 'text-gray-600'
     }
     rounded-lg
     transition-colors
@@ -136,8 +137,8 @@ const STYLES = {
       status === 1
         ? 'bg-yellow-500'
         : status === 3
-        ? 'bg-green-500'
-        : 'bg-red-500'
+          ? 'bg-green-500'
+          : 'bg-red-500'
     }
     group-hover:ring-2
     group-hover:ring-offset-1
@@ -155,8 +156,8 @@ const STYLES = {
       status === 3
         ? 'text-green-400'
         : status === 1
-        ? 'text-yellow-400'
-        : 'text-red-400'
+          ? 'text-yellow-400'
+          : 'text-red-400'
     }
     group-hover:font-medium
   `,
@@ -172,7 +173,7 @@ const BookingCalendar = () => {
   );
 
   const { bookings } = useBookings();
-  console.log('bookings', bookings);
+  //console.log('bookings', bookings);
 
   // 해당 월의 모든 날짜 가져오기
   const getDaysInMonth = () => {

@@ -12,7 +12,7 @@ const ProfileSettings = () => {
 
   const STYLES = {
     // 전체 컨테이너 - 화면 높이에서 헤더와 하단 네비게이션 높이를 뺀 값
-    container: 'w-full flex flex-col bg-white',
+    container: 'w-full min-h-[620px] flex flex-col bg-white',
     // 탭 컨테이너
     tabContainer: 'md:hidden flex border-b bg-white',
     tab: 'flex-1 py-3 text-center text-sm font-medium transition-colors',
@@ -38,12 +38,12 @@ const ProfileSettings = () => {
       await logout();
       navigate('/login');
     } catch (error) {
-      showToast('로그아웃 중 오류가 발생했습니다.');
+      showToast('로그아웃 중 오류가 발생했습니다.', 'error');
     }
   };
 
   const handleSave = async () => {
-    showToast('프로필이 성공적으로 저장되었습니다.');
+    showToast('프로필이 성공적으로 저장되었습니다.', 'success');
   };
 
   return (

@@ -1,36 +1,20 @@
 import { useEffect, useState } from 'react';
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { ResponsiveContainer } from 'recharts';
+import { getConsumptionData } from '../../../api/endpoints/consumption';
+import ConsumptionChart from './ConsumptionChart';
+import DateRangePicker from './DateRangePicker';
 
 type ChartType = 'pie' | 'line' | 'bar';
-type TimeRange = 'weekly' | 'monthly' | 'yearly';
 
 const STYLES = {
   container: `
     w-full
-    p-3
-    md:p-6
-  `,
-  header: `
-    mb-4
-    md:mb-8
-  `,
-  headerTitle: `
-    text-lg
-    md:text-2xl
-    font-bold
-    text-gray-800
+    h-full
+    min-h-[620px]
+    flex
+    flex-col
+    gap-4
+    p-4
   `,
   cardSection: `
     overflow-x-auto
@@ -43,20 +27,17 @@ const STYLES = {
   `,
   cardContainer: `
     flex
-    md:grid
-    md:grid-cols-3
     gap-3
-    md:gap-4
+    md:gap-12
     w-max
     md:w-auto
   `,
   card: `
     bg-white
-    p-4
+    p-2
     rounded-lg
     shadow-sm
-    min-w-[180px]
-    md:min-w-0
+    min-w-[100px]
   `,
   cardTitle: `
     text-sm
@@ -76,13 +57,9 @@ const STYLES = {
   `,
   filterSection: `
     flex
-    flex-col
     md:flex-row
     gap-3
-    mb-4
-    bg-white
     p-3
-    md:p-4
     rounded-lg
     shadow-sm
   `,
@@ -120,11 +97,8 @@ const STYLES = {
     }
   `,
   chartSection: `
-    h-[160px]
-    md:h-[300px]
-    bg-white
-    rounded-lg
-    shadow-sm
+    h-[250px]
+    shadow-md
     p-3
     md:p-6
   `,
@@ -134,38 +108,48 @@ const STYLES = {
   `,
   totalAmount: `
     text-right
-    mt-3
+    mt-12
     text-sm
     md:text-lg
     font-bold
     text-[#e38994fb]
   `,
+  searchButton: (isEnabled: boolean) => `
+    px-4
+    py-2
+    rounded-lg
+    text-sm
+    transition-colors
+    ${
+      isEnabled
+        ? 'bg-[#e38994fb] text-white hover:bg-[#d27883fb]'
+        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+    }
+  `,
 } as const;
-
-const COLORS = ['#4C6EF5', '#51CF66', '#FAB005', '#FF6B6B', '#845EF7'];
 
 const CONSUMPTION_DATA = {
   weekly: [
-    { name: '월', value: 50000 },
-    { name: '화', value: 35000 },
-    { name: '수', value: 42000 },
-    { name: '목', value: 31000 },
-    { name: '금', value: 85000 },
-    { name: '토', value: 120000 },
-    { name: '일', value: 95000 },
+    { name: '월', value: 50000, date: '2024-01-01' },
+    { name: '화', value: 35000, date: '2024-01-02' },
+    { name: '수', value: 42000, date: '2024-01-03' },
+    { name: '목', value: 31000, date: '2024-01-04' },
+    { name: '금', value: 85000, date: '2024-01-05' },
+    { name: '토', value: 120000, date: '2024-01-06' },
+    { name: '일', value: 95000, date: '2024-01-07' },
   ],
   monthly: [
-    { name: '양식', value: 350000 },
-    { name: '한식', value: 250000 },
-    { name: '일식', value: 200000 },
-    { name: '중식', value: 150000 },
-    { name: '카페', value: 180000 },
+    { name: '양식', value: 350000, date: '2024-01-01' },
+    { name: '한식', value: 250000, date: '2024-01-05' },
+    { name: '일식', value: 200000, date: '2024-01-10' },
+    { name: '중식', value: 150000, date: '2024-01-15' },
+    { name: '카페', value: 180000, date: '2024-01-20' },
   ],
   yearly: [
-    { name: '1월', value: 950000 },
-    { name: '2월', value: 880000 },
-    { name: '3월', value: 1130000 },
-    { name: '4월', value: 980000 },
+    { name: '1월', value: 950000, date: '2024-01-01' },
+    { name: '2월', value: 880000, date: '2024-02-01' },
+    { name: '3월', value: 1130000, date: '2024-03-01' },
+    { name: '4월', value: 980000, date: '2024-04-01' },
   ],
 };
 
@@ -188,17 +172,17 @@ const ADDITIONAL_ANALYSIS = {
 };
 
 const Consumption = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>('monthly');
   const [chartType, setChartType] = useState<ChartType>('pie');
   const [chartSize, setChartSize] = useState({
     outerRadius: window.innerWidth < 768 ? 70 : 100,
     innerRadius: window.innerWidth < 768 ? 15 : 40,
   });
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: '',
+    end: '',
+  });
+  const [showData, setShowData] = useState(false);
 
-  const data = CONSUMPTION_DATA[timeRange] || [];
-  const totalSpent = data.reduce((acc, curr) => acc + curr.value, 0);
-
-  // 화면 크기 변경 감지
   useEffect(() => {
     const handleResize = () => {
       setChartSize({
@@ -211,175 +195,104 @@ const Consumption = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 원형 차트 렌더링
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-    name,
-  }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor="middle"
-        dominantBaseline="central"
-        className="text-xs md:text-sm"
-      >
-        {`${name} ${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
+  const handleDateRangeChange = (startDate: string, endDate: string) => {
+    setDateRange({ start: startDate, end: endDate });
+    setShowData(false); // 날짜 변경 시 데이터 숨기기
   };
 
-  // 차트 렌더링
-  const renderChart = () => {
-    const commonChartConfig = {
-      margin: { top: 5, right: 5, left: 0, bottom: 5 },
-      tick: { fontSize: 10 },
-    };
-
-    switch (chartType) {
-      case 'pie':
-        return (
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={renderCustomizedLabel}
-              outerRadius={chartSize.outerRadius}
-              innerRadius={chartSize.innerRadius}
-              fill="#8884d8"
-              dataKey="value"
-              isAnimationActive={false}
-            >
-              {data.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip
-              formatter={(value: number) => value.toLocaleString() + '원'}
-            />
-          </PieChart>
-        );
-
-      case 'line':
-        return (
-          <LineChart data={data} {...commonChartConfig}>
-            <XAxis dataKey="name" {...commonChartConfig.tick} />
-            <YAxis {...commonChartConfig.tick} />
-            <Tooltip
-              formatter={(value: number) => value.toLocaleString() + '원'}
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#e38994fb"
-              strokeWidth={2}
-            />
-          </LineChart>
-        );
-
-      case 'bar':
-        return (
-          <BarChart data={data} {...commonChartConfig}>
-            <XAxis dataKey="name" {...commonChartConfig.tick} />
-            <YAxis {...commonChartConfig.tick} />
-            <Tooltip
-              formatter={(value: number) => value.toLocaleString() + '원'}
-            />
-            <Bar dataKey="value">
-              {data.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        );
+  // 소비 데이터 조회
+  const handleSearch = () => {
+    if (dateRange.start && dateRange.end) {
+      setShowData(true);
+      getConsumptionData(dateRange.start, dateRange.end);
     }
   };
 
+  const getFilteredData = () => {
+    if (!dateRange.start || !dateRange.end) return [];
+
+    return CONSUMPTION_DATA.monthly.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        itemDate >= new Date(dateRange.start) &&
+        itemDate <= new Date(dateRange.end)
+      );
+    });
+  };
+
+  const filteredData = getFilteredData();
+  const totalSpent = filteredData.reduce((acc, curr) => acc + curr.value, 0);
+
   return (
     <div className={STYLES.container}>
-      <div className={STYLES.header}>
-        <h1 className={STYLES.headerTitle}>소비 분석</h1>
-      </div>
-
-      <div className={STYLES.cardSection}>
-        <div className={STYLES.cardContainer}>
-          {Object.entries(ADDITIONAL_ANALYSIS).map(([key, data]) => (
-            <div key={key} className={STYLES.card}>
-              <h3 className={STYLES.cardTitle}>{data.title}</h3>
-              <p className={STYLES.cardValue}>{data.value}</p>
-              <p className={STYLES.cardDescription}>{data.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className={STYLES.filterSection}>
         <div className={STYLES.filterGroup}>
-          <span className={STYLES.filterLabel}>기간 선택</span>
-          <div className={STYLES.buttonGroup}>
-            {[
-              { value: 'weekly', label: '주간' },
-              { value: 'monthly', label: '월간' },
-              { value: 'yearly', label: '연간' },
-            ].map((range) => (
-              <button
-                key={range.value}
-                onClick={() => setTimeRange(range.value as TimeRange)}
-                className={STYLES.button(timeRange === range.value)}
-              >
-                {range.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className={STYLES.filterGroup}>
-          <span className={STYLES.filterLabel}>차트 유형</span>
-          <div className={STYLES.buttonGroup}>
-            {[
-              { value: 'pie', label: '원형' },
-              { value: 'line', label: '선형' },
-              { value: 'bar', label: '막대' },
-            ].map((type) => (
-              <button
-                key={type.value}
-                onClick={() => setChartType(type.value as ChartType)}
-                className={STYLES.button(chartType === type.value)}
-              >
-                {type.label}
-              </button>
-            ))}
+          <div className="flex flex-col md:flex-row items-start gap-3">
+            <DateRangePicker onRangeChange={handleDateRangeChange} />
+            <button
+              onClick={handleSearch}
+              disabled={!dateRange.start || !dateRange.end}
+              className={STYLES.searchButton(
+                !!dateRange.start && !!dateRange.end,
+              )}
+            >
+              조회하기
+            </button>
           </div>
         </div>
       </div>
 
-      <div className={STYLES.chartSection}>
-        <div className={STYLES.chartContainer}>
-          <ResponsiveContainer>{renderChart()}</ResponsiveContainer>
-        </div>
-        <div className={STYLES.totalAmount}>
-          총 소비금액: {totalSpent.toLocaleString()}원
-        </div>
-      </div>
+      {showData && (
+        <>
+          <div className={STYLES.cardSection}>
+            <div className={STYLES.cardContainer}>
+              {Object.entries(ADDITIONAL_ANALYSIS).map(([key, data]) => (
+                <div key={key} className={STYLES.card}>
+                  <h3 className={STYLES.cardTitle}>{data.title}</h3>
+                  <p className={STYLES.cardValue}>{data.value}</p>
+                  <p className={STYLES.cardDescription}>{data.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={STYLES.filterSection}>
+            <div className={STYLES.filterGroup}>
+              <span className={STYLES.filterLabel}>차트 유형</span>
+              <div className={STYLES.buttonGroup}>
+                {[
+                  { value: 'pie', label: '원형' },
+                  { value: 'line', label: '선형' },
+                  { value: 'bar', label: '막대' },
+                ].map((type) => (
+                  <button
+                    key={type.value}
+                    onClick={() => setChartType(type.value as ChartType)}
+                    className={STYLES.button(chartType === type.value)}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className={STYLES.chartSection}>
+            <div className={STYLES.chartContainer}>
+              <ResponsiveContainer>
+                <ConsumptionChart
+                  data={filteredData}
+                  chartType={chartType}
+                  chartSize={chartSize}
+                />
+              </ResponsiveContainer>
+            </div>
+            <div className={STYLES.totalAmount}>
+              총 소비금액: {totalSpent.toLocaleString()}원
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

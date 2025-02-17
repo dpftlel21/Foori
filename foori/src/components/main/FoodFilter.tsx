@@ -8,11 +8,9 @@ interface FoodFilterProps {
 
 const STYLES = {
   container: `
-    w-full
-    md:w-[67.5%]
-    px-4
-    md:px-8
-    lg:px-16
+    w-[90%]
+    md:w-[65%]
+    mx-[2.5%]
     mt-4
   `,
   button: (expanded: boolean) => `
