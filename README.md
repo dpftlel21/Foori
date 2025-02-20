@@ -21,7 +21,21 @@ Foori는 맛집 예약과 결제를 원스톱으로 처리할 수 있는 플랫�
 
 - **[피그마](https://www.figma.com/design/K2RbAMXOjnQUoztBqQdVze/Foori?node-id=0-1&p=f&t=AnulHALlyHtMn0jj-0)**
 - **[포스트맨](https://winter-escape-178167.postman.co/workspace/41c40088-cce2-46df-86e3-5e94800f91a4/overview)**
-  .
+
+---
+
+### 📚 구현 화면 및 기능
+
+| 화면             | GIF                                                                                                                                                                                                          | 기능                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| 소개 화면 (Home) | ![소개 화면 (Home)](https://postfiles.pstatic.net/MjAyNTAyMjBfNiAg/MDAxNzQwMDM5NTg3NDE2.ucId2dz-HGnoReKAFmAuoOQ73a3rK5ID8hgd722uJkAg.KJwOAEkWoXQy3ozKnXLldU0UShU9Z-edhypSWiMVPMog.GIF/home.gif?type=w3840)   | 소개 화면                    |
+| 로그인           | ![로그인](https://postfiles.pstatic.net/MjAyNTAyMjBfMjM3/MDAxNzQwMDM5NTg3NzY4.00XOfmPHprKsE6CXQnZFDQwa2wagHRQqX5wUT7YCii8g.BSRY5xrA-pOa-Z2EsOV8tl2GLzCDFEPs8kIVrrPS6ykg.GIF/login.gif?type=w3840)            | 소셜 로그인 및 이메일 로그인 |
+| 회원가입         | ![회원가입](https://postfiles.pstatic.net/MjAyNTAyMjBfMjI4/MDAxNzQwMDM5NTg5MDAx.13Vn3BDkP1Jycx6jCqAa-3O0WkD9CLaoD6QrfJg75Bcg.jZzyAGn4aJzcVInsckm0vvLYOH9K9Hju6J5WxZRZSbsg.GIF/signup.gif?type=w3840)         | 회원 가입, 유효성 검사       |
+| 회원가입         | ![이메일 인증](https://postfiles.pstatic.net/MjAyNTAyMjBfMTQ1/MDAxNzQwMDM5NTg3OTA5.7vZ0AXjMX-2unxkh9eF5q2NZK_sxp5TwKY9ZZ-RjCskg.wHg4krNwsFVeXUvcMUAIgw9LrsPFzXzslJ82KxQMndEg.GIF/emailVerify.gif?type=w3840) | 이메일 인증                  |
+| 맛집 검색        | ![맛집 검색](https://postfiles.pstatic.net/MjAyNTAyMjBfMTg3/MDAxNzQwMDM5NTg4MzM2.AiWDtfUcb5I2Uys_vQqItVx3072o51kLAo2RgySbnw8g.e5hQY9duTmaPJFJZvVmhTLBAdk4YJ3I2eu_SMu1Pgzcg.GIF/searchPlace.gif?type=w3840)   | 맛집 검색                    |
+| 맛집 예약        | ![맛집 예약](https://postfiles.pstatic.net/MjAyNTAyMjBfODkg/MDAxNzQwMDM5NTg3ODE4.zxH2xI6fJXK4oD5fq5VCn-0gF_mprDo26XzQMyKOdKAg.vNmdc-_Aq2qBhpNp9sTvQeffsSeaim6lN7ymbktPyTUg.GIF/booking.gif?type=w3840)       | 맛집 예약                    |
+| 맛집 예약        | ![맛집 예약](https://postfiles.pstatic.net/MjAyNTAyMjBfMTQx/MDAxNzQwMDM5NTg5NDg4.4O7kd-rJ7nI54WezjMp9Iz_rPw72sPZh-GLqx3ZKTPwg._ax2th2bUOZ_-eK0Z-sdT56ozgBF1kaoMg1vF1isrIwg.GIF/tossPayments.gif?type=w3840)  | 토스페이먼츠                 |
+| 리뷰 쓰기        | ![리뷰 쓰기](https://postfiles.pstatic.net/MjAyNTAyMjBfMjk2/MDAxNzQwMDM5NTg3OTQz.Ymr9egfOkiY_ewUd28csCY9ZgXaS5cXx5vQXThOku80g.5zsG7VuXsBzVyA6IUha55TzP9wNrQAVXp3BA42EAvMAg.GIF/review.gif?type=w3840)        | 리뷰 쓰기                    |
 
 ---
 
