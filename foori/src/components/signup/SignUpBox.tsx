@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from '../../assets/images/calendar.png';
 import Lock from '../../assets/images/lock.png';
 import Person from '../../assets/images/person.png';
+import Phone from '../../assets/images/phone.png';
 import { useToast } from '../../contexts/ToastContext';
 import { useRegister } from '../../hooks/auth/useAuth';
 import { useFormValidation } from '../../hooks/form/useFormValidation';
@@ -14,10 +15,7 @@ const SignUpBox = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [showVerificationInput, setShowVerificationInput] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
-  const { registerMutation, verifyEmailMutation, verifyCodeMutation } =
-    useRegister();
+  const { registerMutation } = useRegister();
 
   const { formData, handleChange, errors, validateForm } = useFormValidation(
     {
@@ -31,44 +29,21 @@ const SignUpBox = () => {
     'signup',
   );
 
-  const handleCertify = async () => {
-    try {
-      if (!formData.email) {
-        showToast('이메일을 입력해주세요.', 'error');
-        return;
-      }
-      await verifyEmailMutation.mutate(formData.email);
-      showToast('인증 메일이 발송되었습니다.', 'success');
-      setShowVerificationInput(true);
-    } catch (error) {
-      showToast('인증 메일 발송에 실패했습니다.', 'error');
-    }
-  };
-
-  const handleVerifyCode = async () => {
-    try {
-      if (!verificationCode) {
-        showToast('인증 코드를 입력해주세요.', 'error');
-        return;
-      }
-      await verifyCodeMutation.mutate(verificationCode);
-      setIsEmailVerified(true);
-      showToast('이메일 인증이 완료되었습니다.', 'success');
-    } catch (error) {
-      showToast('인증 코드가 올바르지 않습니다.', 'error');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted', formData);
+
     if (!isEmailVerified) {
       showToast('이메일 인증이 필요합니다.', 'warning');
       return;
     }
 
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      if (!validateForm()) return;
-      await registerMutation.mutate({
+      await registerMutation.mutateAsync({
         email: formData.email,
         password: formData.password,
         name: formData.nickname,
@@ -78,6 +53,7 @@ const SignUpBox = () => {
       showToast('회원가입이 완료되었습니다.', 'success');
       navigate('/login');
     } catch (error) {
+      console.error('Registration error:', error);
       showToast('회원가입 중 오류가 발생했습니다.', 'error');
     }
   };
@@ -88,11 +64,8 @@ const SignUpBox = () => {
       <form onSubmit={handleSubmit} className={COMMON_INPUT_STYLES.form}>
         <EmailVerification
           email={formData.email}
-          verificationCode={verificationCode}
           onChange={handleChange}
-          onVerify={handleCertify}
-          onCodeSubmit={handleVerifyCode}
-          onCodeChange={setVerificationCode}
+          onVerificationComplete={() => setIsEmailVerified(true)}
           error={errors.email}
         />
 
@@ -102,16 +75,15 @@ const SignUpBox = () => {
             <img src={Lock} alt="" className={COMMON_INPUT_STYLES.labelIcon} />
             <label className={COMMON_INPUT_STYLES.label}>비밀번호</label>
           </div>
-          <div className={COMMON_INPUT_STYLES.inputContainer}>
-            <input
-              className={COMMON_INPUT_STYLES.input(!!errors.password)}
-              type="password"
-              name="password"
-              value={formData.password}
-              placeholder="비밀번호를 입력하세요"
-              onChange={handleChange}
-            />
-          </div>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="비밀번호를 입력하세요"
+            className={COMMON_INPUT_STYLES.input(!!errors.password)}
+            required
+          />
           {errors.password && (
             <p className={COMMON_INPUT_STYLES.errorText}>{errors.password}</p>
           )}
@@ -123,16 +95,15 @@ const SignUpBox = () => {
             <img src={Lock} alt="" className={COMMON_INPUT_STYLES.labelIcon} />
             <label className={COMMON_INPUT_STYLES.label}>비밀번호 확인</label>
           </div>
-          <div className={COMMON_INPUT_STYLES.inputContainer}>
-            <input
-              className={COMMON_INPUT_STYLES.input(!!errors.confirmPassword)}
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              placeholder="비밀번호를 다시 입력하세요"
-              onChange={handleChange}
-            />
-          </div>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="비밀번호를 다시 입력하세요"
+            className={COMMON_INPUT_STYLES.input(!!errors.confirmPassword)}
+            required
+          />
           {errors.confirmPassword && (
             <p className={COMMON_INPUT_STYLES.errorText}>
               {errors.confirmPassword}
@@ -150,16 +121,15 @@ const SignUpBox = () => {
             />
             <label className={COMMON_INPUT_STYLES.label}>닉네임</label>
           </div>
-          <div className={COMMON_INPUT_STYLES.inputContainer}>
-            <input
-              className={COMMON_INPUT_STYLES.input(!!errors.nickname)}
-              type="text"
-              name="nickname"
-              value={formData.nickname}
-              placeholder="닉네임을 입력하세요"
-              onChange={handleChange}
-            />
-          </div>
+          <input
+            type="text"
+            name="nickname"
+            value={formData.nickname}
+            onChange={handleChange}
+            placeholder="닉네임을 입력하세요"
+            className={COMMON_INPUT_STYLES.input(!!errors.nickname)}
+            required
+          />
           {errors.nickname && (
             <p className={COMMON_INPUT_STYLES.errorText}>{errors.nickname}</p>
           )}
@@ -175,17 +145,36 @@ const SignUpBox = () => {
             />
             <label className={COMMON_INPUT_STYLES.label}>생년월일</label>
           </div>
-          <div className={COMMON_INPUT_STYLES.inputContainer}>
-            <input
-              className={COMMON_INPUT_STYLES.input(!!errors.birth)}
-              type="date"
-              name="birth"
-              value={formData.birth}
-              onChange={handleChange}
-            />
-          </div>
+          <input
+            type="date"
+            name="birth"
+            value={formData.birth}
+            onChange={handleChange}
+            className={COMMON_INPUT_STYLES.input(!!errors.birth)}
+            required
+          />
           {errors.birth && (
             <p className={COMMON_INPUT_STYLES.errorText}>{errors.birth}</p>
+          )}
+        </div>
+
+        {/* 휴대폰 번호 입력 */}
+        <div className={COMMON_INPUT_STYLES.fieldContainer}>
+          <div className={COMMON_INPUT_STYLES.labelContainer}>
+            <img src={Phone} alt="" className={COMMON_INPUT_STYLES.labelIcon} />
+            <label className={COMMON_INPUT_STYLES.label}>휴대폰 번호</label>
+          </div>
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="휴대폰 번호를 입력하세요"
+            className={COMMON_INPUT_STYLES.input(!!errors.phone)}
+            required
+          />
+          {errors.phone && (
+            <p className={COMMON_INPUT_STYLES.errorText}>{errors.phone}</p>
           )}
         </div>
 

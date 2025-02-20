@@ -9,6 +9,11 @@ import * as authApi from '../../api/endpoints/auth';
 import { cookieStorage } from '../../api/utils/cookies';
 import { useToast } from '../../contexts/ToastContext';
 
+interface VerifyCodeResponse {
+  code: string;
+  email: string;
+}
+
 // 로그인
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -48,7 +53,9 @@ export const useRegister = () => {
   });
 
   const verifyEmailMutation = useMutation(authApi.verifyEmail);
-  const verifyCodeMutation = useMutation(authApi.verifyCode);
+  const verifyCodeMutation = useMutation<void, Error, VerifyCodeResponse>(
+    (params) => authApi.verifyCode(params),
+  );
 
   return {
     registerMutation,
