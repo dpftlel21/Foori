@@ -4,29 +4,28 @@ import { COMMON_INPUT_STYLES } from '../../styles/commonStyles';
 
 interface EmailVerificationProps {
   email: string;
+  verificationCode: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onVerify: () => void;
-  onCodeSubmit: (code: string) => void;
+  onCodeSubmit: () => void;
+  onCodeChange: (code: string) => void;
   error?: string;
 }
 
 const EmailVerification = ({
   email,
+  verificationCode,
   onChange,
   onVerify,
   onCodeSubmit,
+  onCodeChange,
   error,
 }: EmailVerificationProps) => {
   const [showCodeInput, setShowCodeInput] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
 
   const handleVerifyClick = () => {
     onVerify();
     setShowCodeInput(true);
-  };
-
-  const handleCodeSubmit = () => {
-    onCodeSubmit(verificationCode);
   };
 
   return (
@@ -62,12 +61,12 @@ const EmailVerification = ({
             type="text"
             placeholder="인증번호를 입력하세요"
             value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
+            onChange={(e) => onCodeChange(e.target.value)}
           />
           <button
             type="button"
             className={COMMON_INPUT_STYLES.button}
-            onClick={handleCodeSubmit}
+            onClick={onCodeSubmit}
           >
             확인
           </button>

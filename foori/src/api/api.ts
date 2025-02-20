@@ -18,6 +18,8 @@ export const getData = async (url: string) => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
+  //console.log('response', response);
+
   return response.json();
 };
 

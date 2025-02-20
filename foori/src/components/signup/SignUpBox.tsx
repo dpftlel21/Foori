@@ -88,9 +88,11 @@ const SignUpBox = () => {
       <form onSubmit={handleSubmit} className={COMMON_INPUT_STYLES.form}>
         <EmailVerification
           email={formData.email}
+          verificationCode={verificationCode}
           onChange={handleChange}
           onVerify={handleCertify}
           onCodeSubmit={handleVerifyCode}
+          onCodeChange={setVerificationCode}
           error={errors.email}
         />
 
