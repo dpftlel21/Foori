@@ -45,21 +45,20 @@ export const passwordChange = async (
 
 // 프로필 이미지 업로드
 export const profileImageUpload = async (image: File) => {
-  //console.log('프로필 이미지 업로드', image);
   const token = cookieStorage.getToken();
+  const formData = new FormData();
+  formData.append('file', image);
+
   const response = await fetch(
     `${import.meta.env.VITE_BACK_URL}/api/users/profile/upload`,
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
-      body: image,
+      body: formData,
     },
   );
-
-  console.log('프로필 이미지 response', response);
 
   return response;
 };

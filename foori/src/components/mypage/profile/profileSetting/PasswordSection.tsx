@@ -1,43 +1,40 @@
 import { useState } from 'react';
 import ActionButtons from './ActionButtons';
 
-const PasswordSection = ({
-  onSave,
-  onLogout,
-}: {
-  onSave: () => void;
-  onLogout: () => void;
-}) => {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const STYLES = {
-    section: 'p-[0.1rem] flex flex-col',
-    title: 'text-xl font-bold mb-6',
-    formGroup: 'space-y-5',
-    inputGroup: 'space-y-2',
-    label: 'text-sm text-gray-700 block',
-    input: `
+const STYLES = {
+  section: 'p-[0.1rem] flex flex-col',
+  title: 'text-xl font-bold mb-6',
+  formGroup: 'space-y-5',
+  inputGroup: 'space-y-2',
+  label: 'text-sm text-gray-700 block',
+  input: `
       w-full h-9 text-sm md:w-[500px] md:h-10 px-4 bg-[#FFF1F1] rounded-lg
       border border-[#FFD7D7]
       focus:outline-none focus:ring-2 focus:ring-[#D87373]
       placeholder:text-gray-400 text-gray-700
     `,
-    // 버튼 스타일 수정
-    buttonGroup: 'flex gap-2 mt-8', // 간격 조정
-    button: `
+  buttonGroup: 'flex gap-2 mt-8',
+  button: `
       flex-1 h-12 rounded-lg font-medium
       bg-[#D87373] text-white
       hover:bg-[#fcb69f] transition-colors duration-200
       disabled:opacity-50 disabled:cursor-not-allowed
     `,
-    secondaryButton: `
+  secondaryButton: `
       flex-1 h-12 rounded-lg font-medium
       bg-gray-100 text-gray-600
       hover:bg-gray-200 transition-colors duration-200
     `,
-  } as const;
+} as const;
+
+const PasswordSection = ({ onLogout }: { onLogout: () => void }) => {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleSave = async () => {
+    console.log('비밀번호 변경');
+  };
 
   return (
     <section className={STYLES.section}>
@@ -80,7 +77,7 @@ const PasswordSection = ({
 
       <div className="w-full flex justify-center items-center md:justify-start">
         <ActionButtons
-          onSave={onSave}
+          onSave={handleSave}
           onLogout={onLogout}
           disabled={!currentPassword || !newPassword || !confirmPassword}
           saveText="비밀번호 변경"

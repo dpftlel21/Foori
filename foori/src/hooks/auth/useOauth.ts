@@ -62,8 +62,8 @@ export const useKakaoConnect = () => {
             }),
           },
         );
-        //console.log('kakaoTokenResponse', kakaoTokenResponse);
         const kakaoToken = await kakaoTokenResponse.json();
+        console.log('kakaoToken', kakaoToken);
 
         // 2. 카카오 사용자 정보 가져오기
         const userInfoResponse = await fetch(

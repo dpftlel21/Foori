@@ -38,10 +38,6 @@ const ProfileSettings = () => {
     }
   };
 
-  const handleSave = async () => {
-    showToast('프로필이 성공적으로 저장되었습니다.', 'success');
-  };
-
   return (
     <div className={STYLES.container}>
       {/* 모바일 탭 */}
@@ -66,16 +62,16 @@ const ProfileSettings = () => {
 
       {/* 데스크톱: 모든 섹션 표시 */}
       <div className="hidden md:block space-y-8">
-        <ImageSection onSave={handleSave} onLogout={handleLogout} />
-        <PasswordSection onSave={handleSave} onLogout={handleLogout} />
+        <ImageSection onLogout={handleLogout} />
+        <PasswordSection onLogout={handleLogout} />
       </div>
 
       {/* 모바일: 활성 탭에 따라 섹션 표시 */}
       <div className="md:hidden">
         {activeTab === 'profile' ? (
-          <ImageSection onSave={handleSave} onLogout={handleLogout} />
+          <ImageSection onLogout={handleLogout} />
         ) : (
-          <PasswordSection onSave={handleSave} onLogout={handleLogout} />
+          <PasswordSection onLogout={handleLogout} />
         )}
       </div>
     </div>
