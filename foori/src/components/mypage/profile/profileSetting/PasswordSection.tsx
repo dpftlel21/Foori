@@ -13,7 +13,7 @@ const PasswordSection = ({
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const STYLES = {
-    section: 'min-h-0 p-4 flex flex-col',
+    section: 'p-[0.1rem] flex flex-col',
     title: 'text-xl font-bold mb-6',
     formGroup: 'space-y-5',
     inputGroup: 'space-y-2',

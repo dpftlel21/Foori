@@ -27,6 +27,7 @@ const ConsumptionChart = ({
   chartType,
   chartSize,
 }: ConsumptionChartProps) => {
+  console.log('chart data2', data);
   const commonChartConfig = {
     margin: { top: 5, right: 5, left: 0, bottom: 5 },
     tick: { fontSize: 10 },
@@ -60,10 +61,16 @@ const ConsumptionChart = ({
     );
   };
 
+  // 화면 크기에 따른 차트 크기 설정
+  const chartDimensions = {
+    width: window.innerWidth < 768 ? 320 : 400, // 모바일이면 300, 데스크탑이면 400
+    height: window.innerWidth < 768 ? 200 : 320, // 모바일이면 250, 데스크탑이면 320
+  };
+
   switch (chartType) {
     case 'pie':
       return (
-        <PieChart>
+        <PieChart width={chartDimensions.width} height={chartDimensions.height}>
           <Pie
             data={data}
             cx="50%"
@@ -74,7 +81,7 @@ const ConsumptionChart = ({
             innerRadius={chartSize.innerRadius}
             fill="#8884d8"
             dataKey="value"
-            isAnimationActive={false}
+            isAnimationActive={true}
           >
             {data.map((_, index) => (
               <Cell
@@ -91,7 +98,11 @@ const ConsumptionChart = ({
 
     case 'line':
       return (
-        <LineChart data={data} {...commonChartConfig}>
+        <LineChart
+          width={chartDimensions.width}
+          height={chartDimensions.height}
+          data={data}
+        >
           <XAxis dataKey="name" {...commonChartConfig.tick} />
           <YAxis {...commonChartConfig.tick} />
           <Tooltip
@@ -108,7 +119,11 @@ const ConsumptionChart = ({
 
     case 'bar':
       return (
-        <BarChart data={data} {...commonChartConfig}>
+        <BarChart
+          width={chartDimensions.width}
+          height={chartDimensions.height}
+          data={data}
+        >
           <XAxis dataKey="name" {...commonChartConfig.tick} />
           <YAxis {...commonChartConfig.tick} />
           <Tooltip

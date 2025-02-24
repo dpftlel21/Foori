@@ -12,7 +12,7 @@ const ImageSection = ({
 
   const STYLES = {
     section:
-      'md:flex md:flex-col md:items-start md:ml-4 rounded-lg p-4 space-y-4',
+      'md:flex md:flex-col md:items-start md:ml-4 rounded-lg p-[0.1rem] space-y-4',
     sectionTitle: 'text-lg font-bold text-gray-800 mb-2',
     imageSection: 'flex flex-col items-center space-y-3',
     imageUploadContainer: 'relative',

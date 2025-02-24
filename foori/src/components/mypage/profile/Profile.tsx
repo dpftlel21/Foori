@@ -2,7 +2,7 @@ import { useUserInfo } from '../../../hooks/query/useGetUserInfo';
 import OauthCon from './oauthCon/OauthCon';
 
 const STYLES = {
-  wrapper: 'p-4 md:p-6 border-solid border-b-2 border-[#EE6677]',
+  wrapper: 'p-2 md:p-6 border-solid border-b-2 border-[#EE6677]',
   container: 'flex flex-col md:flex-row justify-between items-center gap-4',
   userSection: 'flex items-center gap-4 w-full',
   imageWrapper: `

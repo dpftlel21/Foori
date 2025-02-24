@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ResponsiveContainer } from 'recharts';
-import { getConsumptionData } from '../../../api/endpoints/consumption';
+import { useConsumption } from '../../../hooks/query/useConsumption';
 import ConsumptionChart from './ConsumptionChart';
 import DateRangePicker from './DateRangePicker';
-
 type ChartType = 'pie' | 'line' | 'bar';
 
 const STYLES = {
@@ -97,7 +96,8 @@ const STYLES = {
     }
   `,
   chartSection: `
-    h-[250px]
+    h-[220px]
+    md:h-[350px]
     shadow-md
     p-3
     md:p-6
@@ -128,49 +128,6 @@ const STYLES = {
   `,
 } as const;
 
-const CONSUMPTION_DATA = {
-  weekly: [
-    { name: '월', value: 50000, date: '2024-01-01' },
-    { name: '화', value: 35000, date: '2024-01-02' },
-    { name: '수', value: 42000, date: '2024-01-03' },
-    { name: '목', value: 31000, date: '2024-01-04' },
-    { name: '금', value: 85000, date: '2024-01-05' },
-    { name: '토', value: 120000, date: '2024-01-06' },
-    { name: '일', value: 95000, date: '2024-01-07' },
-  ],
-  monthly: [
-    { name: '양식', value: 350000, date: '2024-01-01' },
-    { name: '한식', value: 250000, date: '2024-01-05' },
-    { name: '일식', value: 200000, date: '2024-01-10' },
-    { name: '중식', value: 150000, date: '2024-01-15' },
-    { name: '카페', value: 180000, date: '2024-01-20' },
-  ],
-  yearly: [
-    { name: '1월', value: 950000, date: '2024-01-01' },
-    { name: '2월', value: 880000, date: '2024-02-01' },
-    { name: '3월', value: 1130000, date: '2024-03-01' },
-    { name: '4월', value: 980000, date: '2024-04-01' },
-  ],
-};
-
-const ADDITIONAL_ANALYSIS = {
-  comparison: {
-    title: '지난달 대비',
-    value: '+12%',
-    description: '지난달보다 소비가 증가했어요',
-  },
-  frequent: {
-    title: '가장 자주 방문',
-    value: '스시 오마카세',
-    description: '이번 달 3회 방문',
-  },
-  average: {
-    title: '1회 평균 소비',
-    value: '32,000원',
-    description: '전체 평균 25,000원',
-  },
-};
-
 const Consumption = () => {
   const [chartType, setChartType] = useState<ChartType>('pie');
   const [chartSize, setChartSize] = useState({
@@ -182,6 +139,11 @@ const Consumption = () => {
     end: '',
   });
   const [showData, setShowData] = useState(false);
+
+  const { data, isLoading } = useConsumption(
+    showData ? dateRange.start : '',
+    showData ? dateRange.end : '',
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -204,24 +166,19 @@ const Consumption = () => {
   const handleSearch = () => {
     if (dateRange.start && dateRange.end) {
       setShowData(true);
-      getConsumptionData(dateRange.start, dateRange.end);
     }
   };
 
-  const getFilteredData = () => {
-    if (!dateRange.start || !dateRange.end) return [];
+  const getChartData = () => {
+    if (!data) return [];
 
-    return CONSUMPTION_DATA.monthly.filter((item) => {
-      const itemDate = new Date(item.date);
-      return (
-        itemDate >= new Date(dateRange.start) &&
-        itemDate <= new Date(dateRange.end)
-      );
-    });
+    const chartData = data.map((item) => ({
+      name: item.category,
+      value: parseInt(item.sumPrice),
+    }));
+
+    return chartData;
   };
-
-  const filteredData = getFilteredData();
-  const totalSpent = filteredData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <div className={STYLES.container}>
@@ -242,17 +199,33 @@ const Consumption = () => {
         </div>
       </div>
 
-      {showData && (
+      {showData && !isLoading && data && (
         <>
           <div className={STYLES.cardSection}>
             <div className={STYLES.cardContainer}>
-              {Object.entries(ADDITIONAL_ANALYSIS).map(([key, data]) => (
-                <div key={key} className={STYLES.card}>
-                  <h3 className={STYLES.cardTitle}>{data.title}</h3>
-                  <p className={STYLES.cardValue}>{data.value}</p>
-                  <p className={STYLES.cardDescription}>{data.description}</p>
-                </div>
-              ))}
+              <div className={STYLES.card}>
+                <h3 className={STYLES.cardTitle}>가장 자주 방문</h3>
+                <p className={STYLES.cardValue}>{data[0].MyMaxVisit}</p>
+                <p className={STYLES.cardDescription}>
+                  이번 달 {data[0].MyMaxVisitCount}회 방문
+                </p>
+              </div>
+              <div className={STYLES.card}>
+                <h3 className={STYLES.cardTitle}>1회 평균 소비</h3>
+                <p className={STYLES.cardValue}>
+                  {parseInt(data[0].myAvgPrice).toLocaleString()}원
+                </p>
+                <p className={STYLES.cardDescription}>
+                  전체 평균{' '}
+                  {parseInt(data[0].totalUserAvgPrice).toLocaleString()}원
+                </p>
+              </div>
+              <div className={STYLES.card}>
+                <h3 className={STYLES.cardTitle}>총 소비금액</h3>
+                <p className={STYLES.cardValue}>
+                  {parseInt(data[0].sumPrice).toLocaleString()}원
+                </p>
+              </div>
             </div>
           </div>
 
@@ -281,14 +254,11 @@ const Consumption = () => {
             <div className={STYLES.chartContainer}>
               <ResponsiveContainer>
                 <ConsumptionChart
-                  data={filteredData}
+                  data={getChartData()}
                   chartType={chartType}
                   chartSize={chartSize}
                 />
               </ResponsiveContainer>
-            </div>
-            <div className={STYLES.totalAmount}>
-              총 소비금액: {totalSpent.toLocaleString()}원
             </div>
           </div>
         </>

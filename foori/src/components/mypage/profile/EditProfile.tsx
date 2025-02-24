@@ -5,8 +5,8 @@ import ProfileSettings from './profileSetting/ProfileSettings';
 
 const STYLES = {
   container:
-    'w-full h-full min-h-[620px] flex flex-col justify-center items-center space-y-4 p-4 md:p-6',
-  wrapper: 'flex flex-col justify-center items-center space-y-4 p-4 md:p-6',
+    'w-full h-full min-h-[620px] flex flex-col justify-center items-center space-y-4 p-2 md:p-6',
+  wrapper: 'flex flex-col justify-center items-center space-y-4 p-2 md:p-6',
   titleContainer: 'w-full flex justify-start items-center space-x-3',
   lockIcon: 'w-8 h-8',
   title: 'text-lg font-medium',
