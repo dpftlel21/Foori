@@ -1,3 +1,4 @@
+import React from 'react';
 import Logo from '../common/Logo';
 import Navigation from './Navigation';
 
@@ -14,7 +15,7 @@ const STYLES = {
   container: 'h-full max-w-6xl mx-auto flex items-center justify-between',
 } as const;
 
-const Header = () => {
+const Header = React.memo(() => {
   return (
     <header className={STYLES.header}>
       <div className={STYLES.container}>
@@ -23,6 +24,6 @@ const Header = () => {
       </div>
     </header>
   );
-};
+});
 
 export default Header;

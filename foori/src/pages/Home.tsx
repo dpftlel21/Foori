@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import bookingInfo from '../assets/images/bookingInfo.png';
 import consumption from '../assets/images/consumption.png';
@@ -146,137 +145,113 @@ const STYLES = {
     mt-8
     px-4
   `,
+  fadeInUp: `
+    opacity: 0
+    transform: translateY(20px)
+    animation: fadeInUp 0.6s ease-out forwards
+  `,
+  cardAnimation: `
+    opacity: 0
+    transform: translateY(50px)
+    animation: cardFadeIn 0.8s ease-out forwards
+  `,
 } as const;
+
+const animations = `
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes cardFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const handleStart = () => {
-    navigate('/main');
-  };
-
-  // 텍스트 애니메이션 variants
-  const textVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
+  const cards = [
+    {
+      src: bookingInfo,
+      alt: '예약 정보',
+      className: 'left-[5%] top-[5%] w-[400px] h-[300px] -rotate-12',
+      zIndex: 1,
     },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
+    {
+      src: consumption,
+      alt: '소비 분석',
+      className: 'left-[25%] top-[20%] w-[380px] h-[285px] rotate-6',
+      zIndex: 2,
     },
-  };
-
-  // 카드 애니메이션 variants
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 50,
+    {
+      src: review,
+      alt: '리뷰',
+      className: 'left-[10%] top-[40%] w-[390px] h-[292px] -rotate-6',
+      zIndex: 3,
     },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: 0.2 * i,
-        duration: 0.8,
-        ease: 'easeOut',
-      },
-    }),
-  };
+    {
+      src: search,
+      alt: '검색',
+      className: 'left-[35%] top-[50%] w-[360px] h-[270px] rotate-12',
+      zIndex: 4,
+    },
+  ];
 
   return (
     <div className={STYLES.container}>
+      <style>{animations}</style>
       <section className={STYLES.heroSection}>
         <div className={STYLES.contentWrapper}>
           <div className="flex flex-col lg:flex-row items-center justify-between w-full">
-            {/* 왼쪽 텍스트 영역 */}
-            <motion.div
-              className={STYLES.textContent}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={textVariants}
-            >
-              <motion.h1 className={STYLES.heading} variants={textVariants}>
+            {/* motion.div를 일반 div로 변경 */}
+            <div className={`${STYLES.textContent} ${STYLES.fadeInUp}`}>
+              <h1 className={STYLES.heading}>
                 맛있는 발견,
                 <br />
                 <span className={STYLES.brandText}>Foori</span>와 함께
-              </motion.h1>
-              <motion.p className={STYLES.description} variants={textVariants}>
+              </h1>
+              <p className={STYLES.description}>
                 맛집 예약부터 리뷰까지,
                 <br />
                 당신의 미식 여정을 더 특별하게
-              </motion.p>
-              <motion.button
-                className={STYLES.ctaButton}
-                onClick={handleStart}
-                variants={textVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              </p>
+              <button
+                className={`${STYLES.ctaButton} hover:scale-105 active:scale-95 transition-transform`}
+                onClick={() => navigate('/main')}
               >
                 지금 시작하기
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
 
-            {/* 오른쪽 3D 아이소메트릭 UI 영역 */}
             <div className={STYLES.isometricContainer}>
               <div className={STYLES.isometricWrapper}>
-                {[
-                  {
-                    src: bookingInfo,
-                    alt: '예약 정보',
-                    className:
-                      'left-[5%] top-[5%] w-[400px] h-[300px] -rotate-12',
-                    zIndex: 1,
-                  },
-                  {
-                    src: consumption,
-                    alt: '소비 분석',
-                    className:
-                      'left-[25%] top-[20%] w-[380px] h-[285px] rotate-6',
-                    zIndex: 2,
-                  },
-                  {
-                    src: review,
-                    alt: '리뷰',
-                    className:
-                      'left-[10%] top-[40%] w-[390px] h-[292px] -rotate-6',
-                    zIndex: 3,
-                  },
-                  {
-                    src: search,
-                    alt: '검색',
-                    className:
-                      'left-[35%] top-[50%] w-[360px] h-[270px] rotate-12',
-                    zIndex: 4,
-                  },
-                ].map((card, index) => (
-                  <motion.div
+                {cards.map((card, index) => (
+                  <div
                     key={card.alt}
-                    className={`${STYLES.card} ${card.className}`}
+                    className={`${STYLES.card} ${card.className} ${STYLES.cardAnimation}`}
                     style={{
                       zIndex: card.zIndex,
                       backdropFilter: 'blur(8px)',
                       WebkitBackdropFilter: 'blur(8px)',
+                      animationDelay: `${index * 0.2}s`,
                     }}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    custom={index}
-                    variants={cardVariants}
                   >
                     <img
                       src={card.src}
                       alt={card.alt}
                       className={STYLES.cardImage}
                       loading="lazy"
+                      srcSet={`${card.src} 1x, ${card.src} 2x`}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       draggable="false"
                     />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>

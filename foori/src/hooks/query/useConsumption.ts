@@ -9,6 +9,7 @@ interface ConsumptionResponse {
   categoryCount: string;
   myAvgPrice: string;
   sumPrice: string;
+  categorySumPrice: string;
   totalUserAvgPrice: string;
 }
 

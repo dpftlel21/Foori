@@ -19,7 +19,7 @@ const STYLES = {
     overflow-x-auto
     mb-4
     md:mb-6
-    -mx-3
+    mx-3
     px-3
     md:mx-0
     md:px-0
@@ -97,7 +97,7 @@ const STYLES = {
   `,
   chartSection: `
     h-[220px]
-    md:h-[350px]
+    md:h-[330px]
     shadow-md
     p-3
     md:p-6
@@ -145,6 +145,8 @@ const Consumption = () => {
     showData ? dateRange.end : '',
   );
 
+  console.log('data', data);
+
   useEffect(() => {
     const handleResize = () => {
       setChartSize({
@@ -174,7 +176,7 @@ const Consumption = () => {
 
     const chartData = data.map((item) => ({
       name: item.category,
-      value: parseInt(item.sumPrice),
+      value: parseInt(item.categorySumPrice),
     }));
 
     return chartData;

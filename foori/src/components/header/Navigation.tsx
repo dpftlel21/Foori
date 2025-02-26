@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { cookieStorage } from '../../api/utils/cookies';
 import { useUserInfo } from '../../hooks/query/useGetUserInfo';
@@ -88,7 +88,7 @@ const Navigation = () => {
             <span className={STYLES.userName}>{userInfo.name}님</span>
           </div>
         ) : (
-          <FaBars size={20} className={STYLES.menuIcon} />
+          '로그인 하기'
         )}
       </button>
 
@@ -106,9 +106,7 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
                 className={STYLES.closeButton}
                 aria-label="메뉴 닫기"
-              >
-                <FaTimes size={20} />
-              </button>
+              ></button>
               {userInfo && (
                 <div className={STYLES.mobileUserInfo}>
                   <FaUser size={20} />

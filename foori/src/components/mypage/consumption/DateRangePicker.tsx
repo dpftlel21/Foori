@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface DateRangePickerProps {
   onRangeChange: (startDate: string, endDate: string) => void;
@@ -36,8 +36,22 @@ const STYLES = {
 } as const;
 
 const DateRangePicker = ({ onRangeChange }: DateRangePickerProps) => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  // 오늘 날짜와 이번 달의 1일을 구합니다
+  const today = new Date();
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  // YYYY-MM-DD 형식의 문자열로 변환
+  const formatDate = (date: Date) => {
+    return date.toISOString().split('T')[0];
+  };
+
+  const [startDate, setStartDate] = useState(formatDate(firstDayOfMonth));
+  const [endDate, setEndDate] = useState(formatDate(today));
+
+  // 컴포넌트 마운트 시 초기 날짜 범위 전달
+  useEffect(() => {
+    onRangeChange(startDate, endDate);
+  }, []);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStartDate = e.target.value;

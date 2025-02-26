@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 
 interface ConsumptionChartProps {
-  data: any[];
+  data: { name: string; value: number }[];
   chartType: 'pie' | 'line' | 'bar';
   chartSize: {
     outerRadius: number;
@@ -27,11 +27,7 @@ const ConsumptionChart = ({
   chartType,
   chartSize,
 }: ConsumptionChartProps) => {
-  console.log('chart data2', data);
-  const commonChartConfig = {
-    margin: { top: 5, right: 5, left: 0, bottom: 5 },
-    tick: { fontSize: 10 },
-  };
+  console.log('data', data);
 
   const renderCustomizedLabel = ({
     cx,
@@ -103,8 +99,8 @@ const ConsumptionChart = ({
           height={chartDimensions.height}
           data={data}
         >
-          <XAxis dataKey="name" {...commonChartConfig.tick} />
-          <YAxis {...commonChartConfig.tick} />
+          <XAxis dataKey="name" />
+          <YAxis />
           <Tooltip
             formatter={(value: number) => value.toLocaleString() + '원'}
           />
@@ -124,8 +120,8 @@ const ConsumptionChart = ({
           height={chartDimensions.height}
           data={data}
         >
-          <XAxis dataKey="name" {...commonChartConfig.tick} />
-          <YAxis {...commonChartConfig.tick} />
+          <XAxis dataKey="name" />
+          <YAxis />
           <Tooltip
             formatter={(value: number) => value.toLocaleString() + '원'}
           />
