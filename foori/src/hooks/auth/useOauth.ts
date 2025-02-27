@@ -65,34 +65,18 @@ export const useKakaoConnect = () => {
         const kakaoToken = await kakaoTokenResponse.json();
         console.log('kakaoToken', kakaoToken);
 
-        // 2. 카카오 사용자 정보 가져오기
-        const userInfoResponse = await fetch(
-          'https://kapi.kakao.com/v2/user/me',
-          {
-            headers: {
-              Authorization: `Bearer ${kakaoToken.access_token}`,
-            },
-          },
-        );
-        const userInfo = await userInfoResponse.json();
-
         // 3. 백엔드로 카카오 데이터 전송
         const response = await fetch(
-          `${import.meta.env.VITE_SOCIAL_CONNECT_URL}/kakao`,
+          `${import.meta.env.VITE_SOCIAL_CONNECT_URL}/kakao/callback?code=${code}&accessToken=${kakaoToken.access_token}`,
           {
-            method: 'POST',
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              kakaoAccessToken: kakaoToken.access_token,
-              email: userInfo.kakao_account.email,
-              nickname: userInfo.properties.nickname,
-              profileImage: userInfo.properties.profile_image,
-            }),
           },
         );
+        console.log('response', response);
         return response.json();
       } catch (error) {
         throw new Error('카카오 계정 연동 실패');

@@ -5,7 +5,6 @@ import { FiZoomIn, FiZoomOut } from 'react-icons/fi';
 interface MapControlsProps {
   zoomIn: () => void;
   zoomOut: () => void;
-  moveCurrent: () => void;
 }
 
 const STYLES = {
@@ -47,46 +46,30 @@ const STYLES = {
   `,
 } as const;
 
-const MapControls = memo(
-  ({ zoomIn, zoomOut, moveCurrent }: MapControlsProps) => {
-    return (
-      <div className={STYLES.container}>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={zoomIn}
-          className={STYLES.button}
-          aria-label="지도 확대"
-        >
-          <FiZoomIn className={STYLES.icon} />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={zoomOut}
-          className={STYLES.button}
-          aria-label="지도 축소"
-        >
-          <FiZoomOut className={STYLES.icon} />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={moveCurrent}
-          className={STYLES.button}
-          aria-label="현재 위치로 이동"
-        >
-          <img
-            src="/assets/images/location.png"
-            alt="현재 위치"
-            className={STYLES.locationIcon}
-            loading="lazy"
-          />
-        </motion.button>
-      </div>
-    );
-  },
-);
+const MapControls = memo(({ zoomIn, zoomOut }: MapControlsProps) => {
+  return (
+    <div className={STYLES.container}>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={zoomIn}
+        className={STYLES.button}
+        aria-label="지도 확대"
+      >
+        <FiZoomIn className={STYLES.icon} />
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={zoomOut}
+        className={STYLES.button}
+        aria-label="지도 축소"
+      >
+        <FiZoomOut className={STYLES.icon} />
+      </motion.button>
+    </div>
+  );
+});
 
 MapControls.displayName = 'MapControls';
 

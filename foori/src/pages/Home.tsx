@@ -11,7 +11,7 @@ const STYLES = {
     flex
     justify-center
     items-center
-    bg-[#FFE4D6]
+    bg-gradient-to-b from-[#ffecd2] to-[#fcb69f]
   `,
   heroSection: `
     w-full
@@ -44,7 +44,7 @@ const STYLES = {
   `,
   heading: `
     text-5xl
-    lg:text-6xl
+    lg:text-5xl
     font-bold
     text-gray-800
     leading-tight
@@ -52,7 +52,7 @@ const STYLES = {
     md:text-left
   `,
   brandText: `
-    text-[#FF6B3D]
+    text-black
   `,
   description: `
     text-xl
@@ -61,7 +61,7 @@ const STYLES = {
     md:text-left
   `,
   ctaButton: `
-    bg-[#FF6B3D]
+    bg-[#f95d0fb9]
     text-white
     px-8
     py-4
@@ -98,7 +98,8 @@ const STYLES = {
     absolute
     rounded-2xl
     shadow-2xl
-    overflow-hidden
+    hidden
+    lg:block
     transition-all
     duration-500
     hover:shadow-3xl
@@ -209,7 +210,6 @@ const Home = () => {
       <section className={STYLES.heroSection}>
         <div className={STYLES.contentWrapper}>
           <div className="flex flex-col lg:flex-row items-center justify-between w-full">
-            {/* motion.div를 일반 div로 변경 */}
             <div className={`${STYLES.textContent} ${STYLES.fadeInUp}`}>
               <h1 className={STYLES.heading}>
                 맛있는 발견,

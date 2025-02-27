@@ -31,7 +31,6 @@ const KaKaoMap = memo(({ keyword, category }: KaKaoMapProps) => {
     selectedPlace,
     setSelectedPlace,
     center,
-    moveCurrent,
     isLoaded,
     zoomLevel,
     zoomIn,
@@ -39,8 +38,10 @@ const KaKaoMap = memo(({ keyword, category }: KaKaoMapProps) => {
   } = useKakaoMap({ keyword, category });
 
   const { data } = useCrawledData();
+
   const navigate = useNavigate();
 
+  // 카카오맵에서 검색된 장소와 크롤링된 장소를 비교하여 일치하는 장소를 찾음
   const matchedPlaces = useMemo(
     () =>
       places.filter((place) =>
@@ -107,11 +108,7 @@ const KaKaoMap = memo(({ keyword, category }: KaKaoMapProps) => {
           </Map>
         </div>
 
-        <MapControls
-          zoomIn={zoomIn}
-          zoomOut={zoomOut}
-          moveCurrent={moveCurrent}
-        />
+        <MapControls zoomIn={zoomIn} zoomOut={zoomOut} />
 
         <AnimatePresence>
           {places.length === 0 && (

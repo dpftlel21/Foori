@@ -34,7 +34,7 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
   const [zoomLevel, setZoomLevel] = useState<number>(3);
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
-  const defaultZoomLevel = isMobile ? 4 : 3;
+  const defaultZoomLevel = isMobile ? 4 : 5;
 
   // 카카오맵 SDK 로드 체크
   useEffect(() => {
@@ -62,14 +62,14 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
           gangnamStation.lat,
           gangnamStation.lng,
         ),
-        radius: 3000,
+        radius: 5000,
       };
 
       const searchKeyword = category
-        ? `강남 ${category}`
+        ? `${category}`
         : keyword
-        ? `강남 ${keyword}`
-        : '강남 맛집';
+          ? `${keyword}`
+          : '강남 맛집';
 
       ps.keywordSearch(
         searchKeyword,
@@ -112,21 +112,6 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
     }
   }, [keyword, category, isLoaded]);
 
-  // 현재 위치로 이동
-  const moveCurrent = () => {
-    if (!navigator.geolocation) return;
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCenter({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => console.error('Error getting location:', error),
-    );
-  };
-
   const zoomIn = () => {
     setZoomLevel((prev) => Math.max(1, prev - 1));
   };
@@ -140,7 +125,6 @@ export const useKakaoMap = ({ keyword, category }: UseKakaoMapProps) => {
     selectedPlace,
     setSelectedPlace,
     center,
-    moveCurrent,
     isLoaded,
     zoomLevel,
     zoomIn,

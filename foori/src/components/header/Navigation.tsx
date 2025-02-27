@@ -88,7 +88,12 @@ const Navigation = () => {
             <span className={STYLES.userName}>{userInfo.name}님</span>
           </div>
         ) : (
-          '로그인 하기'
+          <button
+            className={STYLES.button}
+            onClick={() => navigate(RouteConst.Login)}
+          >
+            로그인 하기
+          </button>
         )}
       </button>
 
@@ -148,30 +153,7 @@ const Navigation = () => {
                 </button>
               </>
             ) : (
-              <>
-                <NavLink
-                  to={RouteConst.Main}
-                  className={({ isActive }) =>
-                    `${STYLES.menuItem} ${
-                      isActive ? STYLES.activeMenuItem : ''
-                    }`
-                  }
-                  onClick={() => setIsOpen(false)}
-                >
-                  예약하기
-                </NavLink>
-                <NavLink
-                  to={RouteConst.Login}
-                  className={({ isActive }) =>
-                    `${STYLES.menuItem} ${
-                      isActive ? STYLES.activeMenuItem : ''
-                    }`
-                  }
-                  onClick={() => setIsOpen(false)}
-                >
-                  로그인
-                </NavLink>
-              </>
+              ''
             )}
           </div>
         </>
