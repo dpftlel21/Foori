@@ -66,11 +66,12 @@ export const useKakaoConnect = () => {
         );
         console.log('kakaoTokenResponse', kakaoTokenResponse);
         const kakaoToken = await kakaoTokenResponse.json();
+        const accessToken = kakaoToken.access_token;
         console.log('kakaoToken', kakaoToken);
 
         // 3. 백엔드로 카카오 데이터 전송
         const response = await fetch(
-          `${import.meta.env.VITE_SOCIAL_CONNECT_URL}/kakao/callback?code=${code}&accessToken=${kakaoToken.access_token}`,
+          `${import.meta.env.VITE_SOCIAL_CONNECT_URL}/kakao/callback?code=${code}&accessToken=${accessToken}`,
           {
             method: 'GET',
             headers: {
