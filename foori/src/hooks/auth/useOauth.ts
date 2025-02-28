@@ -62,6 +62,7 @@ export const useKakaoConnect = () => {
             }),
           },
         );
+        console.log('kakaoTokenResponse', kakaoTokenResponse);
         const kakaoToken = await kakaoTokenResponse.json();
         console.log('kakaoToken', kakaoToken);
 
