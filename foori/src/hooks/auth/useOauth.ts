@@ -57,9 +57,9 @@ export const useKakaoConnect = () => {
             },
             body: new URLSearchParams({
               grant_type: 'authorization_code',
-              client_id: import.meta.env.VITE_KAKAO_CLIENT_ID!,
-              redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI!,
-              client_secret: import.meta.env.VITE_KAKAO_CLIENT_SECRET_KEY!,
+              client_id: import.meta.env.VITE_KAKAO_CLIENT_ID,
+              redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
+              client_secret: import.meta.env.VITE_KAKAO_CLIENT_SECRET_KEY,
               code,
             }),
           },
