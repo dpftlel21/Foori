@@ -45,6 +45,8 @@ export const useKakaoConnect = () => {
   const kakaoConnectMutation = useMutation(
     async (code: string) => {
       try {
+        console.log('code', code);
+
         // 1. 먼저 카카오 토큰 받기
         const kakaoTokenResponse = await fetch(
           `https://kauth.kakao.com/oauth/token`,
